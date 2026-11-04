@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tumour AI, Explained</title>
+<meta name="description" content="How AI finds and outlines lung tumours on CT, built up from a single neuron, one step at a time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* a course-site palette: warm paper, green for the main idea, orange for "fires" and problems */
+  --bg: #fbfaf6;
+  --panel: #ffffff;
+  --ink: #1f2933;
+  --muted: #5f6b76;
+  --line: #e6e1d6;
+  --signal: #12925c;
+  --signal-soft: #e3f4ea;
+  --mask: #e8590c;
+  --mask-soft: #fdebdf;
+  --good: #12925c;
+  --code-bg: #f3f0e8;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 18px/1.6 var(--f-body);
+}
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; margin: 0 0 .5em; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -.02em; }
+h2 { font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.01em; }
+h3 { font-size: 1.15rem; }
+p { margin: 0 0 1em; }
+a { color: var(--signal); }
+code, .mono { font-family: var(--f-mono); font-size: .88em; }
+
+/* ---------- layout: story column + sticky growing diagram ---------- */
+.hero { max-width: 1180px; margin: 0 auto; padding: 56px 16px 24px; }
+.hero .kicker { font: 600 .8rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--signal); margin-bottom: 14px; }
+.hero p.lede { font-size: 1.2rem; color: var(--muted); max-width: 46em; }
+.layout {
+  max-width: 1180px; margin: 0 auto; padding: 0 16px 80px;
+  display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px;
+}
+.spine { position: sticky; top: 16px; align-self: start; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .spine { order: -1; top: 0; z-index: 5; margin: 0 -16px; padding: 8px 16px; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .spine .spine-card { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 12px; padding: 8px 12px; }
+  .spine .spine-card svg { height: 84px; }
+  .spine .spine-note { display: none; }
+}
+
+.spine-card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+.spine svg { width: 100%; height: 250px; display: block; }
+.spine-stage { font: 600 .75rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.spine-title { font: 700 1.1rem/1.2 var(--f-display); margin: 4px 0 0; }
+.spine-note { font-size: .92rem; color: var(--muted); margin: 8px 0 0; }
+.spine-progress { display: flex; gap: 4px; margin-top: 12px; }
+.spine-progress span { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+.spine-progress span.on { background: var(--signal); }
+.fade-in { animation: fade .45s ease; }
+@keyframes fade { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+
+/* ---------- table of contents ---------- */
+.toc { max-width: 1180px; margin: 0 auto 32px; padding: 0 16px; }
+.toc ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.toc li a {
+  display: block; text-decoration: none; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; height: 100%;
+}
+.toc li a:hover { border-color: var(--signal); }
+.toc .part { font: 600 .7rem/1 var(--f-mono); color: var(--signal); text-transform: uppercase; letter-spacing: .1em; }
+.toc .t { display: block; font-weight: 700; margin-top: 4px; }
+.toc .status { font-size: .8rem; color: var(--muted); }
+
+/* ---------- chapters ---------- */
+.part-head { margin: 56px 0 8px; font: 600 .85rem/1 var(--f-mono); color: var(--signal); text-transform: uppercase; letter-spacing: .14em; }
+.chapter { padding: 32px 0; border-top: 1px solid var(--line); scroll-margin-top: 110px; }
+.ch-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.ch-num { font: 600 .8rem/1 var(--f-mono); color: var(--muted); margin-bottom: 8px; }
+.depth { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
+.depth button {
+  font: 600 .8rem/1 var(--f-body); border: 0; background: transparent; color: var(--muted);
+  padding: 8px 14px; cursor: pointer; min-height: 36px;
+}
+.depth button[aria-pressed="true"] { background: var(--signal); color: #fff; }
+.chapter .detailed { display: none; }
+.chapter[data-depth="detailed"] .detailed { display: block; }
+.chapter[data-depth="detailed"] .simple-only { display: none; }
+.detailed { border-left: 3px solid var(--signal); padding-left: 14px; }
+
+.pf { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
+.pf > div { border-radius: 12px; padding: 14px 16px; }
+.pf .problem { background: var(--mask-soft); }
+.pf .fix { background: var(--signal-soft); }
+.pf b { display: block; font: 600 .75rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
+.pf .problem b { color: var(--mask); }
+.pf .fix b { color: var(--signal); }
+@media (max-width: 560px) { .pf { grid-template-columns: 1fr; } }
+
+.analogy { background: var(--panel); border: 1px dashed var(--line); border-radius: 12px; padding: 12px 16px; margin: 18px 0; font-size: .96rem; }
+.analogy::before { content: "The detective team · "; font-weight: 700; color: var(--signal); }
+
+.planned { background: var(--code-bg); border-radius: 12px; padding: 14px 16px; color: var(--muted); font-size: .95rem; }
+.planned::before { content: "Coming in a later build · "; font-weight: 700; color: var(--ink); }
+
+/* ---------- widgets ---------- */
+.widget { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin: 20px 0; }
+.widget svg { display: block; width: 100%; height: auto; }
+.sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 20px; margin-top: 14px; }
+.sliders label { display: grid; grid-template-columns: 2.4em 1fr 3em; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: .88rem; }
+.sliders input { width: 100%; accent-color: var(--signal); }
+.sum { font-family: var(--f-mono); font-size: .95rem; background: var(--code-bg); border-radius: 8px; padding: 10px 12px; margin-top: 14px; overflow-x: auto; white-space: nowrap; }
+
+.two-col { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 640px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+canvas.plot { width: 100%; max-width: 280px; aspect-ratio: 1; display: block; border-radius: 10px; background: var(--bg); }
+.caption { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+.sliders.one { grid-template-columns: 1fr; margin-top: 0; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.btns button {
+  font: 600 .88rem/1 var(--f-body); color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; min-height: 40px; cursor: pointer;
+}
+.btns button:hover { border-color: var(--signal); }
+.btns button.primary { background: var(--signal); border-color: transparent; color: #fff; }
+table.tt { border-collapse: collapse; font: .85rem/1.3 var(--f-mono); width: 100%; margin-top: 8px; }
+table.tt th, table.tt td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--line); }
+table.tt th { color: var(--muted); font-weight: 600; }
+table.tt td.ok { color: var(--good); font-weight: 600; }
+table.tt td.no { color: var(--mask); font-weight: 600; }
+.verdict { font-weight: 700; margin: 10px 0 0; }
+.tlabel { display: block; font-size: .9rem; color: var(--muted); margin-bottom: 6px; }
+#layer-t { width: 100%; accent-color: var(--signal); }
+.stat { margin: 4px 0; }
+#learn-loss { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px; }
+ol.loop { padding-left: 1.3em; }
+ol.loop li { margin-bottom: 4px; }
+pre.code { background: var(--code-bg); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font: .82rem/1.5 var(--f-mono); }
+
+.widget { position: relative; }
+.scene-cap { min-height: 1.5em; margin: 0 0 12px; font-weight: 700; color: var(--signal); opacity: 0; transition: opacity .3s; }
+.scene-cap.on { opacity: 1; }
+button.replay {
+  font: 600 .85rem/1 var(--f-body); color: var(--signal); background: transparent; border: 1px solid var(--line);
+  border-radius: 999px; padding: 9px 14px; margin-top: 12px; cursor: pointer; min-height: 38px;
+}
+button.replay[hidden] { display: none; }
+figure.video { margin: 20px 0; }
+figure.video video { width: 100%; display: block; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); }
+figure.video figcaption { font-size: .85rem; color: var(--muted); margin-top: 6px; }
+.hero h1 { color: var(--signal); }
+.part-head { display: inline-block; background: var(--signal); color: #fff; padding: 8px 14px; border-radius: 999px; }
+.toc li a:hover { box-shadow: 0 6px 20px -10px #12925c55; }
+.widget { box-shadow: 0 10px 30px -18px #1f293322; }
+.btns button:hover, button.replay:hover { background: var(--signal-soft); }
+footer { max-width: 1180px; margin: 0 auto; padding: 24px 16px 60px; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker">Tumour AI, explained</div>
+  <h1>How AI learns to outline a lung tumour on CT</h1>
+  <p class="lede">Starting from a single neuron: how a neural network is built, how its shape had to change for
+  pictures, 3D scans and outlines, the models we compare for outlining tumours, how we train and test them fairly,
+  and finally a lung CT scan flowing through the working system. Every chapter has a <b>Simple</b> and a
+  <b>Detailed</b> view.</p>
+</header>
+
+<nav class="toc" aria-label="Chapters">
+  <ol id="toc"></ol>
+</nav>
+
+<div class="layout">
+<main id="story">
+
+  <!-- ===================== PART 1 ===================== -->
+  <div class="part-head">Part 1 · A general neural network</div>
+
+  <section class="chapter" id="ch1" data-stage="0" data-title="A neuron is a weighted vote">
+    <div class="ch-head"><div><div class="ch-num">Chapter 1</div><h2>A neuron is a weighted vote</h2></div></div>
+    <p>A neuron takes a few numbers in. It multiplies each by a <b>weight</b> (how much it trusts that input),
+    adds them up together with a <b>bias</b> (its starting lean), and passes the total through an
+    <b>activation</b> that decides how strongly it fires.</p>
+    <div class="analogy">Picture a single detective weighing two clues. Each clue gets a level of trust (a weight),
+    and the detective starts with a hunch (the bias). Add it up: if the total is high enough, they say “suspect”.</div>
+
+    <div class="widget" id="neuron-widget">
+      <svg viewBox="0 0 560 200" role="img" aria-label="A neuron with two inputs, two weights, a bias and an output">
+        <g id="nw"></g>
+      </svg>
+      <div class="sliders">
+        <label>x₁ <input type="range" id="x1" min="0" max="1" step="0.05" value="0.8"><span id="x1v"></span></label>
+        <label>x₂ <input type="range" id="x2" min="0" max="1" step="0.05" value="0.3"><span id="x2v"></span></label>
+        <label>w₁ <input type="range" id="w1" min="-2" max="2" step="0.1" value="1.2"><span id="w1v"></span></label>
+        <label>w₂ <input type="range" id="w2" min="-2" max="2" step="0.1" value="-0.6"><span id="w2v"></span></label>
+        <label>b <input type="range" id="b" min="-2" max="2" step="0.1" value="-0.3"><span id="bv"></span></label>
+      </div>
+      <div class="sum" id="nsum"></div>
+    </div>
+    <p>The weights and the bias are the <b>knobs</b>. Training a network means finding good knob settings.
+    Every model later on this page, including our 3D U-Net with 5.6 million knobs, is this one idea repeated.</p>
+    <div class="detailed">
+      <p>Written out: <code>y = f(w₁·x₁ + w₂·x₂ + b)</code>. Here <code>f</code> is a sigmoid,
+      <code>1 / (1 + e<sup>−z</sup>)</code>, which squeezes any total into 0 to 1. Real networks use other
+      activations too; our U-Net uses LeakyReLU, which keeps positive totals and shrinks negative ones.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="ch2" data-stage="0" data-title="AND, OR, and the XOR wall">
+    <div class="ch-head"><div><div class="ch-num">Chapter 2</div><h2>AND, OR, and the XOR wall</h2></div></div>
+    <p>Give the neuron inputs that are only 0 or 1, and make the activation a simple step: fire (1) if the total
+    is above 0, otherwise stay quiet (0). Now one neuron can act as a logic gate. Move the knobs, or load a preset,
+    and watch the truth table and the dividing line.</p>
+
+    <div class="widget">
+      <div class="two-col">
+        <div>
+          <canvas id="gate-canvas" class="plot" width="280" height="280" aria-label="The four input points and the neuron's dividing line"></canvas>
+          <p class="caption">Filled dot = neuron says 1, hollow = 0. The shaded side of the line is where it fires.</p>
+        </div>
+        <div>
+          <div class="sliders one">
+            <label>w₁ <input type="range" id="g-w1" min="-2" max="2" step="0.1" value="1"><span id="g-w1v"></span></label>
+            <label>w₂ <input type="range" id="g-w2" min="-2" max="2" step="0.1" value="1"><span id="g-w2v"></span></label>
+            <label>b <input type="range" id="g-b" min="-2" max="2" step="0.1" value="-1.5"><span id="g-bv"></span></label>
+          </div>
+          <div class="btns">
+            <button type="button" data-preset="and">Load AND</button>
+            <button type="button" data-preset="or">Load OR</button>
+            <button type="button" data-preset="xor">Try for XOR</button>
+          </div>
+          <table class="tt" id="gate-table"></table>
+          <p class="verdict" id="gate-verdict"></p>
+        </div>
+      </div>
+    </div>
+
+    <p><b>AND</b> fires only when both inputs are 1. <b>OR</b> fires when at least one is. <b>XOR</b> means
+    “one or the other, but not both”: (0,1) and (1,0) give 1, while (0,0) and (1,1) give 0. Try it: no setting of
+    the three knobs works.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>A single neuron always splits the square with one straight
+    line. XOR's two 1-points sit on opposite corners, so no straight line can put them on one side and the two
+    0-points on the other.</div>
+    <div class="fix"><b>Fix</b>Use more than one neuron, arranged in layers (next chapter).</div></div>
+    <div class="analogy">One detective with one rule of thumb can say “both clues point to them” or “either clue does”.
+    They cannot say “exactly one clue does, but not both”.</div>
+    <div class="detailed">
+      <p><b>Why the presets work.</b> AND: w₁ = 1, w₂ = 1, b = −1.5. Only 1 + 1 − 1.5 = 0.5 is above zero, so only
+      (1,1) fires. OR: same weights, b = −0.5. Any single 1 gives 0.5, so three points fire.</p>
+      <p><b>Why it is always a line.</b> The neuron fires where w₁·x₁ + w₂·x₂ + b &gt; 0. The border,
+      w₁·x₁ + w₂·x₂ + b = 0, is the equation of a straight line. The weights tilt it and the bias slides it.
+      Problems a line can solve are called <i>linearly separable</i>. XOR is the classic one that is not; pointing
+      this out (Minsky and Papert, 1969) slowed neural-network research for years.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="ch3" data-stage="1" data-title="Layers: a team beats one detective">
+    <div class="ch-head"><div><div class="ch-num">Chapter 3</div><h2>Layers: a team beats one detective</h2></div></div>
+    <p>Put two neurons side by side in a <b>hidden layer</b>, and a third neuron after them. Each hidden neuron draws
+    its own line: neuron A is an OR, neuron B is a NAND (“not both”). The output neuron is an AND of the two: fire
+    when A <i>and</i> B fire. That is exactly XOR.</p>
+
+    <div class="widget">
+      <div class="two-col">
+        <div>
+          <canvas id="layer-canvas" class="plot" width="280" height="280" aria-label="The four XOR points moving from input space into the hidden layer's space"></canvas>
+          <p class="caption" id="layer-caption"></p>
+        </div>
+        <div>
+          <label class="tlabel" for="layer-t">Move the points through the hidden layer</label>
+          <input type="range" id="layer-t" min="0" max="1" step="0.01" value="0">
+          <div class="btns"><button type="button" id="layer-play">▶ Play</button></div>
+          <table class="tt" id="layer-table"></table>
+        </div>
+      </div>
+    </div>
+
+    <p>Watch what the hidden layer does: it <b>moves the points</b>. In the hidden layer's view, (0,1) and (1,0)
+    land on the same spot, and now a single straight line separates the 1s from the 0s. Each layer turns the clues
+    into new, more useful clues, until the last neuron's job is easy. That is the whole idea behind “deep” learning:
+    stack layers.</p>
+    <figure class="video">
+      <video src="video/xor-and-layers.mp4" poster="video/xor-and-layers.jpg" controls muted playsinline preload="metadata"
+        aria-label="Video: why one neuron cannot do XOR, and how a hidden layer fixes it"></video>
+      <figcaption>Chapters 2 and 3 as a 30-second video: one line fails at XOR, and a hidden layer fixes it.</figcaption>
+    </figure>
+    <div class="analogy">Two junior detectives each check one thing (“is at least one clue there?”, “are not both
+    there?”). The senior detective only has to read their two reports and agree with both.</div>
+    <div class="detailed">
+      <p><b>The weights.</b> A = step(x₁ + x₂ − 0.5) is OR. B = step(−x₁ − x₂ + 1.5) is NAND.
+      Output = step(A + B − 1.5) is AND. Nine knobs in total: 3 neurons × (2 weights + 1 bias).</p>
+      <p><b>Why the activation matters.</b> Without a bend in the middle (the step here, or tanh or LeakyReLU later),
+      two layers of weighted sums are still just one weighted sum, and you are back to a single straight line.
+      The activation is what lets layers build something new.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="ch4" data-stage="2" data-title="Learning: it finds its own knobs">
+    <div class="ch-head"><div><div class="ch-num">Chapter 4</div><h2>Learning: the network finds its own knobs</h2></div></div>
+    <p>Above, we set the knobs by hand. Our tumour model has 5.6 million of them, far too many for that. So
+    networks <b>learn</b> their knobs with a loop that repeats thousands of times:</p>
+    <ol class="loop">
+      <li><b>Guess.</b> Run the examples through the network.</li>
+      <li><b>How wrong?</b> Compare with the answers and boil it down to one number, the <b>loss</b>.</li>
+      <li><b>Who caused it?</b> Work backwards to find how much each knob added to the error (<b>backpropagation</b>).</li>
+      <li><b>Nudge.</b> Turn every knob a little in the direction that lowers the loss.</li>
+    </ol>
+
+    <div class="widget">
+      <div class="two-col">
+        <div>
+          <canvas id="learn-canvas" class="plot" width="280" height="280" aria-label="What the network answers for every point in the square"></canvas>
+          <p class="caption">Orange = the network says 1, grey = it says 0. The corner dots are the four XOR examples.</p>
+        </div>
+        <div>
+          <div class="btns">
+            <button type="button" id="learn-train" class="primary">▶ Train</button>
+            <button type="button" id="learn-step">One step</button>
+            <button type="button" id="learn-reset">New random knobs</button>
+          </div>
+          <div class="sliders one">
+            <label>lr <input type="range" id="learn-lr" min="0.05" max="3" step="0.05" value="0.5"><span id="learn-lrv"></span></label>
+          </div>
+          <p class="mono stat" id="learn-stat"></p>
+          <svg id="learn-loss" viewBox="0 0 300 90" aria-label="Loss over training steps"></svg>
+          <table class="tt" id="learn-table"></table>
+        </div>
+      </div>
+    </div>
+
+    <p>This network has 2 inputs, 4 hidden neurons and 1 output: 17 knobs, all starting random. Nobody tells it
+    “use an OR and a NAND”. Press Train and watch the loss fall and the orange area bend around the corners.
+    <b>lr</b> (the learning rate) is the size of each nudge: try 2.5 for faster but wobblier, 0.05 for steady but slow.
+    Now and then a random start gets stuck; new random knobs usually fix it.</p>
+    <div class="analogy">After every case with a known answer, the chief says how far off the team was. The blame is
+    passed back down the ranks, and each detective adjusts how much they trust each clue.</div>
+    <div class="detailed">
+      <p><b>The loss</b> here is binary cross-entropy: saying 0.9 when the answer is 1 costs a little, saying 0.1
+      costs a lot. Our tumour model uses Dice plus cross-entropy (chapter 15).</p>
+      <p><b>Backpropagation</b> is the chain rule from calculus, applied layer by layer from the output back to the
+      input. It gives, for each knob, the slope of the loss: which way to turn it, and how much it matters.
+      Then <b>gradient descent</b> moves every knob a step of size lr down that slope.</p>
+      <p>The same network in PyTorch, the library our models use:</p>
+      <pre class="code"><code>net = nn.Sequential(nn.Linear(2, 4), nn.Tanh(),     # hidden layer: 4 × 3 = 12 knobs
+                    nn.Linear(4, 1), nn.Sigmoid())  # output: 5 knobs
+opt = torch.optim.SGD(net.parameters(), lr=0.5)
+for step in range(2000):
+    loss = nn.BCELoss()(net(X), y)   # 1 guess, 2 how wrong
+    opt.zero_grad()
+    loss.backward()                  # 3 who caused it
+    opt.step()                       # 4 nudge</code></pre>
+    </div>
+  </section>
+
+  <!-- ===================== PART 2 ===================== -->
+  <div class="part-head">Part 2 · Changing the shape for pictures, scans and outlines</div>
+
+  <section class="chapter" id="ch5" data-stage="3" data-title="Pictures: sliding filters">
+    <div class="ch-head"><div><div class="ch-num">Chapter 5</div><h2>Pictures need sliding filters</h2></div></div>
+    <div class="pf"><div class="problem"><b>Problem</b>Give every pixel its own weight and one neuron needs
+    262,144 knobs for a 512 × 512 picture, and it cannot spot the same shape somewhere else.</div>
+    <div class="fix"><b>Fix</b>A convolution: one small 3 × 3 filter (9 knobs) slides over the whole picture.
+    Same pattern, found anywhere.</div></div>
+    <p class="planned">Slide a filter over a small picture; edge, blur and learned filters.</p>
+  </section>
+
+  <section class="chapter" id="ch6" data-stage="4" data-title="Zooming out: yes or no">
+    <div class="ch-head"><div><div class="ch-num">Chapter 6</div><h2>Zooming out answers “is it there?”</h2></div></div>
+    <p>Stack filters, halve the picture (pooling), repeat: each step sees a wider area. At the end, one answer:
+    yes or no.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>It says “yes, there is something”, but not <i>where</i>.
+    Zooming out threw away the position.</div>
+    <div class="fix"><b>Fix</b>Ask for an answer at every pixel instead (next chapter).</div></div>
+  </section>
+
+  <section class="chapter" id="ch7" data-stage="5" data-title="Outlining: zoom out, then back in">
+    <div class="ch-head"><div><div class="ch-num">Chapter 7</div><h2>Outlining: zoom out, then back in</h2></div></div>
+    <p>An outline needs a yes or no for every pixel. The first attempts:</p>
+    <ul>
+      <li><b>Pixel-by-pixel classifier (2012)</b>: crop a patch around every pixel and ask “yes or no?”. Works, but painfully slow and sees little of the surroundings.</li>
+      <li><b>Fully convolutional network, FCN (2015)</b>: zoom out (the <b>encoder</b>), then stretch back up to full size (the <b>decoder</b>). Fast, but the outline comes out blurry.</li>
+    </ul>
+    <div class="pf"><div class="problem"><b>Problem</b>By the bottom of the zoom-out, the fine detail of the edge is gone.</div>
+    <div class="fix"><b>Fix</b>Keep the detail from the way down and hand it back (next chapter).</div></div>
+    <p class="planned">The same picture through the patch classifier and the FCN, side by side.</p>
+  </section>
+
+  <section class="chapter" id="ch8" data-stage="6" data-title="U-Net: handing the detail across">
+    <div class="ch-head"><div><div class="ch-num">Chapter 8</div><h2>U-Net: handing the detail across</h2></div></div>
+    <p>U-Net (2015) zooms back in step by step, and at each step it is handed the sharp detail saved on the way
+    down (<b>skip connections</b>). The result is an outline that is both well placed and sharp.</p>
+    <div class="analogy">The chief sees the whole city and knows roughly where the gang is. To draw the exact boundary,
+    that knowledge comes back down the ranks, and the street detectives' original notes are handed straight across.</div>
+    <p class="planned">Blurry FCN outline vs sharp U-Net outline on the same picture; toggle the skip connections on and off.</p>
+  </section>
+
+  <section class="chapter" id="ch9" data-stage="7" data-title="3D scans: filters become cubes">
+    <div class="ch-head"><div><div class="ch-num">Chapter 9</div><h2>3D scans: filters become cubes</h2></div></div>
+    <div class="pf"><div class="problem"><b>Problem</b>A CT scan is a stack of slices. Reading slices one at a time,
+    a ball (tumour) and a tube (blood vessel) can look the same.</div>
+    <div class="fix"><b>Fix</b>3D U-Net (2016): 3 × 3 × 3 filters slide through the whole volume.</div></div>
+    <p class="planned">Showpiece (WebGL): a 3D U-Net you can rotate and fly through.</p>
+  </section>
+
+  <!-- ===================== PART 3 ===================== -->
+  <div class="part-head">Part 3 · The models we compare for tumour outlining</div>
+
+  <section class="chapter" id="ch10" data-stage="8" data-title="Our own 3D U-Net">
+    <div class="ch-head"><div><div class="ch-num">Chapter 10</div><h2>Our own 3D U-Net</h2></div></div>
+    <p>Written from scratch: 4 levels, 32 → 256 channels, 5.6 million knobs. The first zoom-out only shrinks
+    within each slice, because slices are 3 mm apart but pixels are about 1 mm.</p>
+    <p class="planned">Our U-Net layer by layer, with the reason for each setting.</p>
+  </section>
+
+  <section class="chapter" id="ch11" data-stage="9" data-title="nnU-Net: a U-Net that sets itself up">
+    <div class="ch-head"><div><div class="ch-num">Chapter 11</div><h2>nnU-Net: a U-Net that sets itself up</h2></div></div>
+    <p>Instead of a person choosing block size, zoom steps and brightness scaling, nnU-Net measures the dataset
+    (pixel spacing, scan size, brightness range) and picks them by rule.</p>
+    <p class="planned">Pick a dataset; watch nnU-Net's measurements turn into its settings.</p>
+  </section>
+
+  <section class="chapter" id="ch12" data-stage="10" data-title="Swin UNETR: a transformer that sees further">
+    <div class="ch-head"><div><div class="ch-num">Chapter 12</div><h2>Swin UNETR: a transformer that sees further</h2></div></div>
+    <div class="pf"><div class="problem"><b>Problem</b>A filter only sees its near neighbours, so the far side of
+    the scan has to travel through many layers to be noticed.</div>
+    <div class="fix"><b>Fix</b>A transformer lets every part of the scan look at every other part. Swin UNETR puts one
+    in the U-Net's zoom-out half.</div></div>
+    <p class="planned">Attention, shown as patches of the scan “looking at” each other.</p>
+  </section>
+
+  <section class="chapter" id="ch13" data-stage="11" data-title="Next in line: MedSAM and others">
+    <div class="ch-head"><div><div class="ch-num">Chapter 13</div><h2>Next in line: MedSAM and others</h2></div></div>
+    <p>MedSAM learned from more than a million medical images and outlines whatever you point at with a box.
+    It is shaped differently again: one very large picture reader, plus a small part that takes the pointer.</p>
+    <p class="planned">A table of every model: its shape, what it fixes, what it costs.</p>
+  </section>
+
+  <!-- ===================== PART 4 ===================== -->
+  <div class="part-head">Part 4 · Preparing, training, testing fairly, improving</div>
+
+  <section class="chapter" id="ch14" data-stage="12" data-title="Preparing the data">
+    <div class="ch-head"><div><div class="ch-num">Chapter 14</div><h2>Preparing the data</h2></div></div>
+    <p>Public scans with experts' outlines (NSCLC-Radiomics). Brightness rescaled, scans cut into blocks of
+    48 × 160 × 160, with a third of the blocks centred on a tumour so the model sees enough of them.</p>
+    <p class="planned">From a whole scan to training blocks.</p>
+  </section>
+
+  <section class="chapter" id="ch15" data-stage="12" data-title="Training on lung CT">
+    <div class="ch-head"><div><div class="ch-num">Chapter 15</div><h2>Training on lung CT</h2></div></div>
+    <p>The same guess → how wrong → blame → nudge loop from chapter 4, now on scan blocks, with a score that
+    rewards overlap with the expert's outline (Dice) plus a per-voxel score (cross-entropy).</p>
+    <p class="planned">Dice explained with two overlapping shapes.</p>
+  </section>
+
+  <section class="chapter" id="ch16" data-stage="12" data-title="Testing fairly">
+    <div class="ch-head"><div><div class="ch-num">Chapter 16</div><h2>Testing fairly</h2></div></div>
+    <p>Patients are split, never single scans, so no person is in both training and testing. 60 patients are locked
+    away until the end; the rest are rotated through 5 folds for checking along the way.</p>
+    <p class="planned">Patients sorted into folds and the locked test set.</p>
+  </section>
+
+  <section class="chapter" id="ch17" data-stage="12" data-title="Improving: what worked">
+    <div class="ch-head"><div><div class="ch-num">Chapter 17</div><h2>Improving: what worked</h2></div></div>
+    <p>Lowering the tumour cut-off from 0.5 to 0.3, chosen on the checking folds, raised our U-Net from 0.412 to
+    0.506 Dice and fixed outlines that were about 40% too small. On the locked test set: nnU-Net 0.591, our U-Net 0.468.
+    Swin UNETR looks most promising so far (about 0.52 on fold 0, against 0.45).</p>
+    <p class="planned">A cut-off slider that grows and shrinks the outline as the Dice score changes.</p>
+  </section>
+
+  <!-- ===================== PART 5 ===================== -->
+  <div class="part-head">Part 5 · The working system, and what comes next</div>
+
+  <section class="chapter" id="ch18" data-stage="13" data-title="A lung CT through the system">
+    <div class="ch-head"><div><div class="ch-num">Chapter 18</div><h2>A lung CT through the system</h2></div></div>
+    <p>One public scan, from file to outline: prepared, cut into blocks, run through the model, stitched back
+    together and drawn on the scan.</p>
+    <p class="planned">Showpieces (WebGL): a block moving through the network; then the scan with the model's and the expert's outlines.</p>
+  </section>
+
+  <section class="chapter" id="ch19" data-stage="13" data-title="Where it goes next">
+    <div class="ch-head"><div><div class="ch-num">Chapter 19</div><h2>Where it goes next</h2></div></div>
+    <p>What it would take to help in a hospital, and explaining a result three ways: for a patient, for a doctor,
+    and for a scientist.</p>
+    <p class="planned">One result, explained at the three levels.</p>
+  </section>
+
+</main>
+
+<aside class="spine" aria-label="The network so far">
+  <div class="spine-card">
+    <svg id="spine-svg" viewBox="0 0 320 250" role="img" aria-label="Diagram of the network so far"></svg>
+    <div>
+      <div class="spine-stage" id="spine-stage"></div>
+      <div class="spine-title" id="spine-title"></div>
+      <p class="spine-note" id="spine-note"></p>
+      <div class="spine-progress" id="spine-progress"></div>
+    </div>
+  </div>
+</aside>
+</div>
+
+<footer>
+  Example scans: NSCLC-Radiomics, The Cancer Imaging Archive (TCIA), CC BY-NC 3.0. No clinic or hospital data is used.
+</footer>
+
+<script>
+/* ---------- the growing diagram: one stage per step of the story ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C = () => getComputedStyle(document.documentElement);
+const col = n => C().getPropertyValue('--' + n).trim();
+
+function node(x, y, r, fill, stroke) {
+  return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+}
+function edge(x1, y1, x2, y2, c, w = 1.6, dash = '') {
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" ${dash ? `stroke-dasharray="${dash}"` : ''}/>`;
+}
+function box(x, y, w, h, c, fill) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${fill}" stroke="${c}" stroke-width="1.6"/>`;
+}
+function label(x, y, t, c, size = 12, anchor = 'middle') {
+  return `<text x="${x}" y="${y}" fill="${c}" font-size="${size}" font-family="JetBrains Mono, monospace" text-anchor="${anchor}">${t}</text>`;
+}
+function grid(x, y, s, n, c) {
+  let g = '';
+  for (let i = 0; i <= n; i++) {
+    g += edge(x + i * s / n, y, x + i * s / n, y + s, c, .6);
+    g += edge(x, y + i * s / n, x + s, y + i * s / n, c, .6);
+  }
+  return g;
+}
+// U-shaped stack of blocks; depth=levels, skip=draw skip arrows, cube=draw as 3D blocks, up=draw decoder side
+function uNet({ levels = 4, up = true, skip = true, cube = false, head = 'outline' }) {
+  const s = col('signal'), m = col('mask'), ink = col('ink'), soft = col('signal-soft'), mu = col('muted');
+  let g = '';
+  const x0 = 34, dx = 32, y0 = 30, dy = 42;
+  const lv = [];
+  for (let i = 0; i < levels; i++) {
+    const h = 56 - i * 11, w = 8 + i * 5;
+    lv.push({ h, w });
+  }
+  const drawBlock = (x, y, w, h, fill) => {
+    if (!cube) return box(x, y, w, h, s, fill);
+    const d = 7;
+    return `<path d="M${x},${y} l${d},-${d} h${w} v${h} l-${d},${d} z" fill="${soft}" stroke="${s}" stroke-width="1.2"/>` + box(x, y, w, h, s, fill);
+  };
+  // encoder
+  const pos = [];
+  for (let i = 0; i < levels; i++) {
+    const x = x0 + i * dx, y = y0 + i * dy, { w, h } = lv[i];
+    pos.push({ x, y, w, h });
+    g += drawBlock(x, y, w, h, soft);
+    if (i < levels - 1) g += edge(x + w / 2, y + h, x0 + (i + 1) * dx + lv[i + 1].w / 2, y0 + (i + 1) * dy, mu, 1.4);
+  }
+  if (!up) {
+    const last = pos[levels - 1];
+    g += edge(last.x + last.w, last.y + last.h / 2, last.x + last.w + 40, last.y + last.h / 2, mu, 1.4);
+    g += node(last.x + last.w + 54, last.y + last.h / 2, 12, col('mask-soft'), m);
+    g += label(last.x + last.w + 54, last.y + last.h / 2 + 30, 'yes/no', m, 11);
+    return g;
+  }
+  // decoder (mirror)
+  const xr = 320 - x0;
+  for (let i = levels - 2; i >= 0; i--) {
+    const { w, h } = lv[i];
+    const x = xr - i * dx - w, y = y0 + i * dy;
+    g += drawBlock(x, y, w, h, soft);
+    const below = i + 1 === levels - 1 ? pos[levels - 1] : { x: xr - (i + 1) * dx - lv[i + 1].w, y: y0 + (i + 1) * dy, w: lv[i + 1].w };
+    g += edge(below.x + below.w / 2, below.y, x + w / 2, y + h, mu, 1.4);
+    if (skip) g += edge(pos[i].x + pos[i].w + 4, pos[i].y + h / 2, x - 4, y + h / 2, s, 1.6, '5 4');
+  }
+  if (head === 'outline') {
+    g += `<ellipse cx="${xr + 14}" cy="${y0 + 28}" rx="9" ry="12" fill="none" stroke="${m}" stroke-width="2.4"/>`;
+  } else if (head === 'blurry') {
+    g += `<ellipse cx="${xr + 14}" cy="${y0 + 28}" rx="11" ry="14" fill="${col('mask-soft')}" stroke="${m}" stroke-width="5" stroke-opacity=".35"/>`;
+  }
+  return g;
+}
+
+const STAGES = [
+  { title: 'One neuron', note: 'Two inputs, two weights, one bias, one output.',
+    draw() {
+      const s = col('signal'), ink = col('ink'), soft = col('signal-soft'), mu = col('muted');
+      return edge(70, 85, 170, 125, mu, 2) + edge(70, 165, 170, 125, mu, 2) + edge(195, 125, 270, 125, mu, 2) +
+        node(60, 85, 14, col('panel'), ink) + node(60, 165, 14, col('panel'), ink) +
+        node(185, 125, 24, soft, s) + label(185, 130, 'Σ', s, 16) +
+        label(60, 60, 'x₁', ink) + label(60, 200, 'x₂', ink) + label(275, 105, 'y', ink, 13, 'start');
+    } },
+  { title: 'A small team: layers', note: 'A hidden layer of two neurons feeds one output neuron. Now XOR works.',
+    draw() {
+      const s = col('signal'), ink = col('ink'), soft = col('signal-soft'), mu = col('muted');
+      const I = [[50, 85], [50, 165]], H = [[160, 70], [160, 180]], O = [[265, 125]];
+      let g = '';
+      I.forEach(a => H.forEach(b => g += edge(a[0], a[1], b[0], b[1], mu, 1.6)));
+      H.forEach(a => O.forEach(b => g += edge(a[0], a[1], b[0], b[1], mu, 1.6)));
+      I.forEach(a => g += node(a[0], a[1], 13, col('panel'), ink));
+      H.forEach(a => g += node(a[0], a[1], 18, soft, s));
+      O.forEach(a => g += node(a[0], a[1], 20, soft, s));
+      return g + label(50, 225, 'input', mu, 11) + label(160, 225, 'hidden', mu, 11) + label(265, 225, 'output', mu, 11);
+    } },
+  { title: 'It learns its knobs', note: 'Guess, measure the error, pass the blame back, nudge.',
+    draw() {
+      const m = col('mask'), g = STAGES[1].draw();
+      return g + `<path d="M265,95 C240,20 80,20 55,62" fill="none" stroke="${m}" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>` +
+        `<defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${m}"/></marker></defs>` +
+        label(160, 30, 'blame flows back', m, 11);
+    } },
+  { title: 'A sliding filter', note: 'One 3 × 3 filter slides over the whole picture.',
+    draw() {
+      const s = col('signal'), ink = col('ink'), mu = col('muted');
+      return grid(40, 45, 160, 8, mu) +
+        `<rect x="80" y="85" width="60" height="60" fill="${col('signal-soft')}" fill-opacity=".7" stroke="${s}" stroke-width="2.5">` +
+        (reduceMotion ? '' : '<animateTransform attributeName="transform" type="translate" values="-40 -40;60 -40;60 60;-40 60;-40 -40" keyTimes="0;.3;.5;.8;1" dur="6s" repeatCount="indefinite"/>') + '</rect>' +
+        edge(140, 115, 250, 115, s, 1.6, '4 3') + box(240, 100, 30, 30, s, col('signal-soft')) +
+        label(120, 225, 'picture', mu, 11) + label(255, 160, 'feature', mu, 11);
+    } },
+  { title: 'Zoom out to a yes/no', note: 'Filters and pooling shrink the picture until one answer is left.',
+    draw() { return uNet({ up: false }); } },
+  { title: 'Zoom back in (FCN)', note: 'Stretch back to full size for an answer per pixel. The outline is blurry.',
+    draw() { return uNet({ skip: false, head: 'blurry' }); } },
+  { title: 'U-Net', note: 'Skip connections hand sharp early detail across. The outline is sharp.',
+    draw() { return uNet({}); } },
+  { title: '3D U-Net', note: 'Every block now works on cubes of the scan, not flat pictures.',
+    draw() { return uNet({ cube: true }); } },
+  { title: 'Our 3D U-Net', note: '4 levels, 32 → 256 channels, 5.6 million knobs. A CT block goes in, an outline comes out.',
+    draw() {
+      const mu = col('muted'), m = col('mask');
+      return uNet({ cube: true }) + label(48, 18, 'CT block', mu, 11) + label(272, 18, 'outline', m, 11);
+    } },
+  { title: 'nnU-Net', note: 'The same U, with settings chosen by measuring the dataset.',
+    draw() {
+      const s = col('signal');
+      return uNet({ cube: true }) + box(112, 6, 96, 22, s, col('panel')) + label(160, 21, 'auto-settings', s, 11);
+    } },
+  { title: 'Swin UNETR', note: 'A transformer in the zoom-out half: every part of the scan can look at every other part.',
+    draw() {
+      const m = col('mask');
+      let g = uNet({ cube: true });
+      // attention: arcs linking the encoder blocks to each other
+      const pts = [[38, 58], [70, 100], [102, 142], [134, 184]];
+      pts.forEach((a, i) => pts.slice(i + 1).forEach(b =>
+        g += `<path d="M${a[0]},${a[1]} Q${(a[0] + b[0]) / 2 - 40},${(a[1] + b[1]) / 2} ${b[0]},${b[1]}" fill="none" stroke="${m}" stroke-width="1.3" stroke-opacity=".7"/>`));
+      return g + label(40, 236, 'attention', m, 11, 'start');
+    } },
+  { title: 'MedSAM', note: 'A very large picture reader plus a small part that takes a pointer box.',
+    draw() {
+      const s = col('signal'), m = col('mask'), mu = col('muted'), soft = col('signal-soft');
+      return grid(20, 70, 90, 6, mu) +
+        `<rect x="48" y="96" width="40" height="38" fill="none" stroke="${m}" stroke-width="2" stroke-dasharray="5 3"/>` +
+        label(65, 186, 'scan + box', mu, 11) + edge(115, 115, 140, 115, mu, 1.6) +
+        box(142, 60, 70, 110, s, soft) + label(177, 118, 'reader', s, 11) +
+        edge(214, 115, 238, 115, mu, 1.6) + box(240, 95, 30, 40, s, soft) +
+        `<ellipse cx="292" cy="115" rx="10" ry="13" fill="none" stroke="${m}" stroke-width="2.4"/>`;
+    } },
+  { title: 'Training and testing', note: 'Scan blocks in, scored against the expert outline, knobs nudged; then a fair test on locked patients.',
+    draw() {
+      const m = col('mask');
+      return uNet({ cube: true }) +
+        `<path d="M292,40 C320,140 250,245 160,238 C80,238 20,150 34,48" fill="none" stroke="${m}" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr2)"/>` +
+        `<defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${m}"/></marker></defs>`;
+    } },
+  { title: 'The working system', note: 'A whole public CT scan in, a tumour outline drawn on it out.',
+    draw() {
+      const s = col('signal'), m = col('mask'), mu = col('muted'), soft = col('signal-soft');
+      let g = '';
+      for (let i = 0; i < 4; i++) g += box(16 + i * 6, 80 - i * 6, 60, 60, mu, col('panel'));
+      g += label(52, 175, 'CT scan', mu, 11) + edge(100, 105, 125, 105, mu, 1.6);
+      g += `<path d="M130,70 L150,140 L190,140 L210,70" fill="none" stroke="${s}" stroke-width="6" stroke-linejoin="round"/>`;
+      g += label(170, 175, 'model', s, 11) + edge(218, 105, 240, 105, mu, 1.6);
+      g += box(244, 75, 60, 60, mu, col('panel')) + `<ellipse cx="276" cy="102" rx="11" ry="14" fill="none" stroke="${m}" stroke-width="2.4"/>`;
+      return g + label(274, 175, 'outline', m, 11);
+    } },
+];
+STAGES.forEach((st, i) => st.stage = `Stage ${i + 1} of ${STAGES.length}`);
+
+const svg = document.getElementById('spine-svg');
+const prog = document.getElementById('spine-progress');
+prog.innerHTML = STAGES.map(() => '<span></span>').join('');
+let current = -1;
+function showStage(i, force) {
+  if (i === current && !force) return;
+  current = i;
+  const st = STAGES[i];
+  svg.innerHTML = `<g class="fade-in">${st.draw()}</g>`;
+  if (!reduceMotion) addFlow(svg);
+  document.getElementById('spine-stage').textContent = st.stage;
+  document.getElementById('spine-title').textContent = st.title;
+  document.getElementById('spine-note').textContent = st.note;
+  [...prog.children].forEach((el, k) => el.classList.toggle('on', k <= i));
+}
+
+// a dot travels along every wire of the diagram, so you can see which way the data flows
+function addFlow(root) {
+  const wires = [...root.querySelectorAll('line, path[fill="none"]')]
+    .filter(el => +el.getAttribute('stroke-width') >= 1.2 && !el.closest('marker'));
+  let html = '';
+  wires.forEach((el, i) => {
+    const d = el.tagName === 'line'
+      ? `M${el.getAttribute('x1')},${el.getAttribute('y1')} L${el.getAttribute('x2')},${el.getAttribute('y2')}`
+      : el.getAttribute('d');
+    const slow = el.tagName === 'path' ? 2.6 : 1.6;
+    html += `<circle r="3.2" fill="${el.getAttribute('stroke')}"><animateMotion dur="${slow}s" begin="${(i % 4) * .25}s" repeatCount="indefinite" path="${d}"/></circle>`;
+  });
+  root.insertAdjacentHTML('beforeend', `<g aria-hidden="true">${html}</g>`);
+}
+
+const chapters = [...document.querySelectorAll('.chapter')];
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) showStage(+e.target.dataset.stage); });
+}, { rootMargin: '-45% 0px -50% 0px' });
+chapters.forEach(c => io.observe(c));
+showStage(0);
+
+/* ---------- table of contents and Simple / Detailed switches ---------- */
+const BUILT = new Set(['ch1', 'ch2', 'ch3', 'ch4']);
+document.getElementById('toc').innerHTML = chapters.map((c, i) => {
+  const part = c.previousElementSibling && c.previousElementSibling.classList.contains('part-head')
+    ? c.previousElementSibling.textContent.split('·')[0].trim() : '';
+  return `<li><a href="#${c.id}"><span class="part">${part || '&nbsp;'}</span><span class="t">${i + 1}. ${c.dataset.title}</span>
+    <span class="status">${BUILT.has(c.id) ? 'Ready' : 'Planned'}</span></a></li>`;
+}).join('');
+
+let savedDepth = 'simple';
+try { savedDepth = localStorage.getItem('depth') || 'simple'; } catch (e) {}
+chapters.forEach(c => {
+  c.dataset.depth = savedDepth;
+  if (!c.querySelector('.detailed')) return;
+  const sw = document.createElement('div');
+  sw.className = 'depth'; sw.setAttribute('role', 'group'); sw.setAttribute('aria-label', 'Level of detail');
+  sw.innerHTML = ['simple', 'detailed'].map(d =>
+    `<button type="button" data-d="${d}" aria-pressed="${d === savedDepth}">${d[0].toUpperCase() + d.slice(1)}</button>`).join('');
+  sw.addEventListener('click', ev => {
+    const d = ev.target.dataset.d; if (!d) return;
+    c.dataset.depth = d;
+    sw.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.d === d));
+    try { localStorage.setItem('depth', d); } catch (e) {}
+  });
+  c.querySelector('.ch-head').appendChild(sw);
+});
+
+/* ---------- chapter 1: the neuron ---------- */
+let neuronPhase = null;   // 0..1 position of the travelling signals, or null when still
+const ids = ['x1', 'x2', 'w1', 'w2', 'b'];
+const inp = Object.fromEntries(ids.map(k => [k, document.getElementById(k)]));
+function neuron() {
+  const v = Object.fromEntries(ids.map(k => [k, +inp[k].value]));
+  ids.forEach(k => document.getElementById(k + 'v').textContent = v[k].toFixed(2));
+  const z = v.w1 * v.x1 + v.w2 * v.x2 + v.b;
+  const y = 1 / (1 + Math.exp(-z));
+  const s = col('signal'), m = col('mask'), ink = col('ink'), mu = col('muted'), soft = col('signal-soft');
+  const wc = w => (w >= 0 ? s : m);
+  const ww = w => 1 + Math.abs(w) * 3;
+  let g = '';
+  g += edge(70, 50, 270, 100, wc(v.w1), ww(v.w1)) + edge(70, 150, 270, 100, wc(v.w2), ww(v.w2));
+  g += edge(300, 100, 470, 100, mu, 2);
+  // while the chapter's animation plays, signals travel along the wires; bigger inputs send bigger signals
+  if (neuronPhase !== null) {
+    const ph = neuronPhase, along = (ax, ay, bx, by, t) => [ax + (bx - ax) * t, ay + (by - ay) * t];
+    const [ax, ay] = along(70, 50, 255, 93, ph), [bx, by] = along(70, 150, 255, 107, ph);
+    g += `<circle cx="${ax}" cy="${ay}" r="${3 + 5 * v.x1}" fill="${wc(v.w1)}"/>`;
+    g += `<circle cx="${bx}" cy="${by}" r="${3 + 5 * v.x2}" fill="${wc(v.w2)}"/>`;
+    const [ox, oy] = along(316, 100, 470, 100, ph);
+    g += `<circle cx="${ox}" cy="${oy}" r="${3 + 6 * y}" fill="${m}"/>`;
+  }
+  g += node(50, 50, 20, hexA(s, v.x1), ink) + node(50, 150, 20, hexA(s, v.x2), ink);
+  g += label(50, 55, v.x1.toFixed(1), v.x1 > .55 ? '#fff' : ink, 12) + label(50, 155, v.x2.toFixed(1), v.x2 > .55 ? '#fff' : ink, 12);
+  g += label(165, 62, '× ' + v.w1.toFixed(1), wc(v.w1), 13) + label(165, 150, '× ' + v.w2.toFixed(1), wc(v.w2), 13);
+  g += node(285, 100, 30, soft, s) + label(285, 97, 'Σ + b', s, 12) + label(285, 113, z.toFixed(2), ink, 11);
+  g += label(370, 90, 'activation', mu, 11);
+  // output: filled bar showing how strongly it fires
+  g += box(480, 40, 40, 120, mu, 'none');
+  g += `<rect x="482" y="${42 + 116 * (1 - y)}" width="36" height="${116 * y}" rx="2" fill="${m}" fill-opacity=".85"/>`;
+  g += label(500, 182, 'y = ' + y.toFixed(2), ink, 12);
+  document.getElementById('nw').innerHTML = g;
+  document.getElementById('nsum').textContent =
+    `total = ${v.w1.toFixed(1)}×${v.x1.toFixed(2)} + ${v.w2.toFixed(1)}×${v.x2.toFixed(2)} + (${v.b.toFixed(1)}) = ${z.toFixed(2)}  →  fires ${(y * 100).toFixed(0)}%`;
+}
+ids.forEach(k => inp[k].addEventListener('input', neuron));
+neuron();
+
+/* ---------- shared: a square plot of the input space, drawn on a canvas ---------- */
+const CORNERS = [[0, 0], [0, 1], [1, 0], [1, 1]];
+const XOR = [0, 1, 1, 0];
+// plot shows -0.25..1.25 on both axes
+function plotSetup(canvas) {
+  const dpr = window.devicePixelRatio || 1, S = 280;
+  canvas.width = S * dpr; canvas.height = S * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const px = v => (v + 0.25) / 1.5 * S;          // x value -> pixel
+  const py = v => S - (v + 0.25) / 1.5 * S;      // y value -> pixel (up is up)
+  return { ctx, S, px, py };
+}
+function hexA(hex, a) {
+  const h = hex.replace('#', '');
+  const n = parseInt(h.length === 3 ? h.replace(/./g, c => c + c) : h, 16);
+  return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+}
+function drawAxes(p, xl, yl) {
+  const { ctx, S, px, py } = p;
+  ctx.strokeStyle = col('line'); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(px(0), py(-0.2)); ctx.lineTo(px(0), py(1.2)); ctx.moveTo(px(-0.2), py(0)); ctx.lineTo(px(1.2), py(0)); ctx.stroke();
+  ctx.fillStyle = col('muted'); ctx.font = '12px JetBrains Mono, monospace';
+  ctx.fillText(xl, S - 26, py(0) + 16); ctx.fillText(yl, px(0) - 22, 14);
+  ctx.fillText('0', px(0) - 12, py(0) + 14); ctx.fillText('1', px(1) - 3, py(0) + 14); ctx.fillText('1', px(0) - 12, py(1) + 4);
+}
+// border line w1*x + w2*y + b = 0, clipped to the plot
+function drawLine(p, w1, w2, b, color, alpha = 1, dash = []) {
+  const { ctx, px, py } = p;
+  const lo = -0.25, hi = 1.25, pts = [];
+  if (Math.abs(w2) > 1e-6) { [lo, hi].forEach(x => pts.push([x, -(w1 * x + b) / w2])); }
+  else if (Math.abs(w1) > 1e-6) { [lo, hi].forEach(y => pts.push([-b / w1, y])); }
+  if (pts.length < 2) return;
+  ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.setLineDash(dash);
+  ctx.beginPath(); ctx.moveTo(px(pts[0][0]), py(pts[0][1])); ctx.lineTo(px(pts[1][0]), py(pts[1][1])); ctx.stroke();
+  ctx.restore();
+}
+// shade where f(x, y) is true (or, with a number 0..1, shade by strength)
+function shade(p, f, color, alpha) {
+  const { ctx, S } = p, n = 56, cell = S / n;
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+    const x = (i + .5) / n * 1.5 - .25, y = 1.25 - (j + .5) / n * 1.5;
+    const v = +f(x, y);
+    if (v > 0) {
+      // whole-pixel edges so neighbouring see-through cells do not overlap into a visible grid
+      const x0 = Math.round(i * cell), y0 = Math.round(j * cell);
+      ctx.fillStyle = hexA(color, alpha * v);
+      ctx.fillRect(x0, y0, Math.round((i + 1) * cell) - x0, Math.round((j + 1) * cell) - y0);
+    }
+  }
+}
+function drawPoint(p, x, y, filled, color, label) {
+  const { ctx, px, py } = p;
+  ctx.beginPath(); ctx.arc(px(x), py(y), 9, 0, Math.PI * 2);
+  ctx.fillStyle = filled ? color : col('panel'); ctx.fill();
+  ctx.lineWidth = 2.5; ctx.strokeStyle = color; ctx.stroke();
+  if (label) {
+    // labels near the right edge go on the left of the dot so they are not cut off
+    const left = x > .7;
+    ctx.fillStyle = col('muted'); ctx.font = '11px JetBrains Mono, monospace'; ctx.textAlign = left ? 'right' : 'left';
+    ctx.fillText(label, px(x) + (left ? -13 : 12), py(y) - 10);
+    ctx.textAlign = 'left';
+  }
+}
+const step = z => (z > 0 ? 1 : 0);
+
+/* ---------- chapter 2: AND / OR / XOR ---------- */
+const gate = { w1: document.getElementById('g-w1'), w2: document.getElementById('g-w2'), b: document.getElementById('g-b') };
+const PRESETS = { and: [1, 1, -1.5], or: [1, 1, -0.5], xor: [1, -1, -0.5] };
+// ov: knob values from the animation, which move more smoothly than the sliders' 0.1 steps
+function drawGate(ov) {
+  const k3 = ov || { w1: +gate.w1.value, w2: +gate.w2.value, b: +gate.b.value };
+  const { w1, w2, b } = k3;
+  ['w1', 'w2', 'b'].forEach(k => {
+    if (ov) gate[k].value = ov[k];
+    document.getElementById('g-' + k + 'v').textContent = k3[k].toFixed(1);
+  });
+  const p = plotSetup(document.getElementById('gate-canvas'));
+  p.ctx.clearRect(0, 0, p.S, p.S);
+  shade(p, (x, y) => w1 * x + w2 * y + b > 0, col('signal'), .18);
+  drawAxes(p, 'x₁', 'x₂');
+  drawLine(p, w1, w2, b, col('signal'));
+  const out = CORNERS.map(([x, y]) => step(w1 * x + w2 * y + b));
+  CORNERS.forEach(([x, y], i) => drawPoint(p, x, y, out[i] === 1, col('ink')));
+  const AND = [0, 0, 0, 1], OR = [0, 1, 1, 1];
+  const rows = CORNERS.map(([x, y], i) => {
+    const z = w1 * x + w2 * y + b;
+    const c = (want) => `<td class="${out[i] === want[i] ? 'ok' : 'no'}">${want[i]}</td>`;
+    return `<tr><td>${x}</td><td>${y}</td><td>${z.toFixed(1)}</td><td><b>${out[i]}</b></td>${c(AND)}${c(OR)}${c(XOR)}</tr>`;
+  }).join('');
+  const match = want => out.every((o, i) => o === want[i]);
+  document.getElementById('gate-table').innerHTML =
+    `<tr><th>x₁</th><th>x₂</th><th>total</th><th>says</th><th>AND</th><th>OR</th><th>XOR</th></tr>${rows}`;
+  const v = match(AND) ? 'This neuron is an AND gate.' : match(OR) ? 'This neuron is an OR gate.'
+    : match(XOR) ? 'XOR!' : 'Matches neither AND, OR nor XOR. Green = right for that gate, orange = wrong.';
+  const el = document.getElementById('gate-verdict');
+  el.textContent = v; el.style.color = (match(AND) || match(OR)) ? col('good') : col('muted');
+}
+Object.values(gate).forEach(el => el.addEventListener('input', () => drawGate()));
+document.querySelectorAll('[data-preset]').forEach(btn => btn.addEventListener('click', () => {
+  const [a, c, d] = PRESETS[btn.dataset.preset];
+  gate.w1.value = a; gate.w2.value = c; gate.b.value = d; drawGate(); setCaption('gate', '');
+}));
+drawGate();
+
+/* ---------- chapter 3: the hidden layer moves the points ---------- */
+const layerT = document.getElementById('layer-t');
+const hiddenOf = ([x, y]) => [step(x + y - 0.5), step(-x - y + 1.5)];   // A = OR, B = NAND
+const ease = t => t * t * (3 - 2 * t);
+function drawLayer() {
+  const t = +layerT.value, e = ease(t);
+  const p = plotSetup(document.getElementById('layer-canvas'));
+  p.ctx.clearRect(0, 0, p.S, p.S);
+  if (t > .6) shade(p, (a, b) => a + b - 1.5 > 0, col('mask'), .16 * (t - .6) / .4);
+  drawAxes(p, t < .5 ? 'x₁' : 'A', t < .5 ? 'x₂' : 'B');
+  drawLine(p, 1, 1, -0.5, col('signal'), 1 - e, [6, 4]);
+  drawLine(p, -1, -1, 1.5, col('signal'), 1 - e, [2, 4]);
+  drawLine(p, 1, 1, -1.5, col('mask'), e);
+  CORNERS.forEach((c, i) => {
+    const h = hiddenOf(c);
+    // (0,1) and (1,0) both land on (1,1): nudge them apart slightly so both stay visible
+    const off = (i === 1 ? -1 : i === 2 ? 1 : 0) * .05 * e;
+    const x = c[0] + (h[0] - c[0]) * e + off, y = c[1] + (h[1] - c[1]) * e - off;
+    // at the end (0,1) and (1,0) share a spot, so they share one label
+    const lab = t < .05 ? `(${c[0]},${c[1]})` : t > .95 ? (i === 1 ? '(0,1) and (1,0)' : i === 2 ? '' : `(${c[0]},${c[1]})`) : '';
+    drawPoint(p, x, y, XOR[i] === 1, col('ink'), lab);
+  });
+  document.getElementById('layer-caption').textContent = t < .5
+    ? 'Input view: dashed lines are neuron A (OR) and neuron B (NAND). No single line splits filled from hollow.'
+    : 'Hidden-layer view: each point is now at (A, B). The orange line is the output neuron (AND), and it splits them.';
+  document.getElementById('layer-table').innerHTML =
+    '<tr><th>x₁</th><th>x₂</th><th>A = OR</th><th>B = NAND</th><th>AND(A,B)</th><th>XOR wanted</th></tr>' +
+    CORNERS.map((c, i) => {
+      const [a, b] = hiddenOf(c), o = step(a + b - 1.5);
+      return `<tr><td>${c[0]}</td><td>${c[1]}</td><td>${a}</td><td>${b}</td><td><b>${o}</b></td><td class="${o === XOR[i] ? 'ok' : 'no'}">${XOR[i]} ✓</td></tr>`;
+    }).join('');
+}
+layerT.addEventListener('input', drawLayer);
+document.getElementById('layer-play').addEventListener('click', () => {
+  const from = +layerT.value >= 1 ? 1 : 0, to = 1 - from, t0 = performance.now();
+  (function tick(now) {
+    const k = Math.min(1, (now - t0) / 1600);
+    layerT.value = from + (to - from) * k; drawLayer();
+    if (k < 1) requestAnimationFrame(tick);
+  })(t0);
+});
+drawLayer();
+
+/* ---------- chapter 4: a 2-4-1 network learning XOR, in plain JavaScript ---------- */
+const H = 4;
+let net, lossHistory, steps, running = false;
+const randn = () => Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random());
+function newNet() {
+  net = {
+    W1: Array.from({ length: H }, () => [randn(), randn()]), b1: Array.from({ length: H }, () => randn() * .5),
+    w2: Array.from({ length: H }, () => randn()), b2: 0,
+  };
+  lossHistory = []; steps = 0;
+}
+function forward(x) {
+  const h = net.W1.map((w, j) => Math.tanh(w[0] * x[0] + w[1] * x[1] + net.b1[j]));
+  const z = h.reduce((s, v, j) => s + v * net.w2[j], net.b2);
+  return { h, o: 1 / (1 + Math.exp(-z)) };
+}
+function trainStep(lr) {
+  const gW1 = net.W1.map(() => [0, 0]), gb1 = Array(H).fill(0), gw2 = Array(H).fill(0);
+  let gb2 = 0, loss = 0;
+  CORNERS.forEach((x, i) => {
+    const { h, o } = forward(x), y = XOR[i];
+    loss += -(y * Math.log(o + 1e-9) + (1 - y) * Math.log(1 - o + 1e-9));
+    const dz = o - y;                       // cross-entropy + sigmoid: the slope is simply (guess − answer)
+    gb2 += dz;
+    for (let j = 0; j < H; j++) {
+      gw2[j] += dz * h[j];
+      const dh = dz * net.w2[j] * (1 - h[j] * h[j]);   // blame passed back through tanh
+      gW1[j][0] += dh * x[0]; gW1[j][1] += dh * x[1]; gb1[j] += dh;
+    }
+  });
+  const n = CORNERS.length;
+  for (let j = 0; j < H; j++) {
+    net.W1[j][0] -= lr * gW1[j][0] / n; net.W1[j][1] -= lr * gW1[j][1] / n;
+    net.b1[j] -= lr * gb1[j] / n; net.w2[j] -= lr * gw2[j] / n;
+  }
+  net.b2 -= lr * gb2 / n;
+  steps++;
+  return loss / n;
+}
+function currentLoss() {
+  return CORNERS.reduce((s, x, i) => { const o = forward(x).o, y = XOR[i]; return s - (y * Math.log(o + 1e-9) + (1 - y) * Math.log(1 - o + 1e-9)); }, 0) / 4;
+}
+const lrEl = document.getElementById('learn-lr');
+function drawLearn() {
+  document.getElementById('learn-lrv').textContent = (+lrEl.value).toFixed(2);
+  const p = plotSetup(document.getElementById('learn-canvas'));
+  p.ctx.clearRect(0, 0, p.S, p.S);
+  shade(p, (x, y) => 1, col('muted'), .12);
+  shade(p, (x, y) => forward([x, y]).o, col('mask'), .75);
+  drawAxes(p, 'x₁', 'x₂');
+  CORNERS.forEach(([x, y], i) => drawPoint(p, x, y, XOR[i] === 1, col('ink')));
+  const L = currentLoss();
+  document.getElementById('learn-stat').textContent = `step ${steps} · loss ${L.toFixed(4)}`;
+  // loss curve
+  const hist = lossHistory, maxL = Math.max(0.8, ...hist.slice(0, 5));
+  const pts = hist.map((l, k) => `${(k / Math.max(1, hist.length - 1) * 290 + 5).toFixed(1)},${(85 - Math.min(l / maxL, 1) * 78).toFixed(1)}`).join(' ');
+  document.getElementById('learn-loss').innerHTML =
+    `<text x="8" y="14" fill="${col('muted')}" font-size="10" font-family="JetBrains Mono, monospace">loss</text>` +
+    (hist.length > 1 ? `<polyline points="${pts}" fill="none" stroke="${col('mask')}" stroke-width="2"/>` : '');
+  document.getElementById('learn-table').innerHTML =
+    '<tr><th>x₁</th><th>x₂</th><th>network says</th><th>wanted</th></tr>' +
+    CORNERS.map((x, i) => {
+      const o = forward(x).o, ok = Math.round(o) === XOR[i];
+      return `<tr><td>${x[0]}</td><td>${x[1]}</td><td>${o.toFixed(2)}</td><td class="${ok ? 'ok' : 'no'}">${XOR[i]}</td></tr>`;
+    }).join('');
+}
+function record(l) { if (steps % 10 === 0 || lossHistory.length === 0) lossHistory.push(l); }
+const trainBtn = document.getElementById('learn-train');
+function setRunning(on) { running = on; trainBtn.textContent = on ? '❚❚ Pause' : '▶ Train'; }
+function loop() {
+  if (!running) return;
+  for (let k = 0; k < 10; k++) record(trainStep(+lrEl.value));
+  drawLearn();
+  if (steps >= 4000 || currentLoss() < 0.005) { setRunning(false); return; }
+  requestAnimationFrame(loop);
+}
+trainBtn.addEventListener('click', () => { setRunning(!running); if (running) loop(); });
+document.getElementById('learn-step').addEventListener('click', () => { setRunning(false); record(trainStep(+lrEl.value)); drawLearn(); });
+document.getElementById('learn-reset').addEventListener('click', () => { setRunning(false); newNet(); drawLearn(); });
+lrEl.addEventListener('input', drawLearn);
+newNet(); drawLearn();
+
+/* ---------- motion: each chapter plays its own animation when it scrolls into view ---------- */
+const lerp = (a, b, k) => a + (b - a) * k;
+const seg = (t, a, b) => ease(Math.min(1, Math.max(0, (t - a) / (b - a))));   // 0..1 progress of t through [a, b]
+function setCaption(name, text) {
+  const el = document.getElementById(name + '-cap');
+  if (el) { el.textContent = text; el.classList.toggle('on', !!text); }
+}
+// frame(t) draws the scene at t seconds; loops while the widget is on screen, until the reader takes over
+function makeScene(name, widget, duration, frame, onStop) {
+  let raf = null, t0 = 0, played = false;
+  const cap = document.createElement('p'); cap.className = 'scene-cap'; cap.id = name + '-cap';
+  const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'replay'; btn.textContent = '↻ Play animation';
+  widget.prepend(cap); widget.appendChild(btn);
+  function tick(now) {
+    frame(((now - t0) / 1000) % duration);
+    raf = requestAnimationFrame(tick);
+  }
+  function play() { stop(); played = true; btn.hidden = true; t0 = performance.now(); raf = requestAnimationFrame(tick); }
+  function stop() {
+    if (!raf) return;
+    cancelAnimationFrame(raf); raf = null; btn.hidden = false;
+    setCaption(name, ''); onStop && onStop();
+  }
+  btn.addEventListener('click', play);
+  // touching any control means the reader wants to drive it themselves
+  ['pointerdown', 'keydown'].forEach(ev => widget.addEventListener(ev, e => { if (e.target !== btn) stop(); }, true));
+  new IntersectionObserver(([en]) => {
+    if (en.isIntersecting && !played && !reduceMotion) play();
+    else if (!en.isIntersecting) stop();
+  }, { threshold: .45 }).observe(widget);
+}
+
+// chapter 1: the inputs rise and fall, and signals flow along the wires
+makeScene('neuron', document.getElementById('neuron-widget'), 1e9, t => {
+  inp.x1.value = (.5 + .45 * Math.sin(t * 1.1)).toFixed(2);
+  inp.x2.value = (.5 + .45 * Math.sin(t * .7 + 2)).toFixed(2);
+  neuronPhase = (t % 1.4) / 1.4;
+  neuron();
+  setCaption('neuron', 'Watch the inputs change: the bigger x₁, the more the neuron fires, because w₁ is positive. Drag any slider to take over.');
+}, () => { neuronPhase = null; neuron(); });
+
+// chapter 2: AND, slide the bias to OR, then sweep the line round looking for XOR
+makeScene('gate', document.querySelector('#ch2 .widget'), 16, t => {
+  let k, text;
+  if (t < 3) { k = { w1: 1, w2: 1, b: -1.5 }; text = 'AND: only (1,1) is past the line, so only it fires.'; }
+  else if (t < 6) { k = { w1: 1, w2: 1, b: lerp(-1.5, -.5, seg(t, 3, 4.5)) }; text = 'Slide the bias: the line moves, and now it is OR.'; }
+  else if (t < 13.5) {
+    const a = seg(t, 6, 13.5) * Math.PI * 2;
+    k = { w1: 1.4 * Math.cos(a), w2: 1.4 * Math.sin(a), b: -.5 * Math.cos(a * 2) - .2 };
+    text = 'Now hunt for XOR: turn the line all the way round. The two filled corners never end up on the same side.';
+  } else { k = { w1: 1, w2: -1, b: -.5 }; text = 'No straight line works for XOR. One neuron is not enough.'; }
+  drawGate(k); setCaption('gate', text);
+});
+
+// chapter 3: move the points into the hidden layer's view and back
+makeScene('layer', document.querySelector('#ch3 .widget'), 11, t => {
+  layerT.value = t < 5.5 ? seg(t, 1, 3.5) : 1 - seg(t, 7.5, 10);
+  drawLayer();
+  setCaption('layer', t < 1 ? 'In the input view, no single line splits filled from hollow.'
+    : t < 5.5 ? 'The hidden layer moves each point to (A, B). (0,1) and (1,0) land together, and one line now splits them.'
+    : 'And back to the inputs. Each layer reshapes the clues for the next.');
+});
+
+// chapter 4: start learning by itself the first time the reader arrives
+let learnAuto = false;
+new IntersectionObserver(([en]) => {
+  if (en.isIntersecting && !learnAuto && !reduceMotion) { learnAuto = true; newNet(); setRunning(true); loop(); }
+}, { threshold: .45 }).observe(document.querySelector('#ch4 .widget'));
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+__pycache__/
+# Manim: the Python environment and render cache stay local; finished MP4s in video/ are published
+video/.venv/
+video/media/
