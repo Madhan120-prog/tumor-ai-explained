@@ -102,9 +102,9 @@ code, .mono { font-family: var(--f-mono); font-size: .88em; }
 .pf > div { border-radius: 12px; padding: 14px 16px; }
 .pf .problem { background: var(--mask-soft); }
 .pf .fix { background: var(--signal-soft); }
-.pf b { display: block; font: 600 .75rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
-.pf .problem b { color: var(--mask); }
-.pf .fix b { color: var(--signal); }
+.pf > div > b:first-child { display: block; font: 600 .75rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
+.pf .problem > b:first-child { color: var(--mask); }
+.pf .fix > b:first-child { color: var(--signal); }
 @media (max-width: 560px) { .pf { grid-template-columns: 1fr; } }
 
 .analogy { background: var(--panel); border: 1px dashed var(--line); border-radius: 12px; padding: 12px 16px; margin: 18px 0; font-size: .96rem; }
@@ -163,6 +163,120 @@ figure.video figcaption { font-size: .85rem; color: var(--muted); margin-top: 6p
 .toc li a:hover { box-shadow: 0 6px 20px -10px #12925c55; }
 .widget { box-shadow: 0 10px 30px -18px #1f293322; }
 .btns button:hover, button.replay:hover { background: var(--signal-soft); }
+.conv-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 14px; }
+.conv-row figure { margin: 0; text-align: center; }
+.conv-row figcaption { font-size: .82rem; color: var(--muted); margin-top: 6px; }
+#conv-in { width: min(280px, 100%); }
+#conv-k { width: 96px; }
+#conv-out { width: min(224px, 100%); }
+.conv-row svg { display: block; height: auto; margin: 0 auto; }
+.conv-row .op { font: 700 1.4rem/1 var(--f-mono); color: var(--muted); }
+.btns button[aria-pressed="true"] { border-color: var(--signal); background: var(--signal-soft); }
+#zoom-canvas { width: 100%; height: auto; display: block; }
+#seg-canvas, #unet-canvas { width: 100%; height: auto; display: block; }
+#slice-canvas { width: 100%; height: auto; display: block; margin-bottom: 12px; }
+#slice-z { width: 100%; accent-color: var(--signal); }
+#u3d { position: relative; height: 400px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #ffffff; }
+@media (max-width: 640px) { #u3d { height: 320px; } }
+#u3d canvas { display: block; cursor: grab; }
+#u3d canvas:active { cursor: grabbing; }
+.u3d-msg { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--muted); padding: 16px; text-align: center; }
+.u3d-label {
+  position: absolute; transform: translate(-50%, -100%); pointer-events: none; white-space: nowrap;
+  font: 600 .72rem/1 var(--f-mono); color: var(--ink); background: rgba(255, 255, 255, .88);
+  padding: 4px 7px; border-radius: 5px; border: 1px solid var(--line);
+}
+.u3d-label.strong { color: var(--mask); border-color: var(--mask); }
+.u3d-label.below { transform: translate(-50%, 6px); }
+@media (max-width: 640px) { .u3d-label.below { display: none !important; } }
+.layers { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; align-items: start; }
+@media (max-width: 700px) { .layers { grid-template-columns: minmax(0, 1fr); } }
+.layer-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.layer-list button {
+  width: 100%; text-align: left; font: .88rem/1.2 var(--f-body); color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; cursor: pointer; display: flex; gap: 10px; align-items: center;
+}
+.layer-list button:hover { border-color: var(--signal); }
+.layer-list button[aria-current="true"] { background: var(--signal-soft); border-color: var(--signal); font-weight: 700; }
+.layer-list .ln { font: 600 .75rem/1 var(--f-mono); color: var(--muted); min-width: 1.4em; }
+.layer-view svg { width: 100%; height: auto; display: block; }
+.layer-facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: .9rem; margin: 0; }
+.layer-facts dt { color: var(--muted); }
+.layer-facts dd { margin: 0; font-family: var(--f-mono); font-size: .85rem; }
+.layer-why { margin: 14px 0 0; padding: 12px 14px; background: var(--code-bg); border-radius: 10px; min-height: 4.5em; }
+table.why td { text-align: left; font-family: var(--f-body); font-size: .92rem; vertical-align: top; }
+table.why td:first-child { font-weight: 700; white-space: nowrap; }
+table.why th { text-align: left; }
+@media (max-width: 560px) { table.why td:first-child { white-space: normal; } }
+.nn-flow { display: grid; grid-template-columns: 1fr auto 1.25fr auto 1fr; gap: 10px; align-items: stretch; margin-top: 6px; }
+@media (max-width: 760px) { .nn-flow { grid-template-columns: minmax(0, 1fr); } .nn-arrow { transform: rotate(90deg); justify-self: center; } }
+.nn-arrow { align-self: center; font: 700 1.4rem/1 var(--f-mono); color: var(--muted); }
+.nn-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--panel); }
+.nn-card.plan { border-color: var(--signal); background: var(--signal-soft); }
+.nn-card h3 { font-size: .95rem; margin-bottom: 8px; }
+.nn-card dl { margin: 0; display: grid; gap: 6px; }
+.nn-card dl div, .nn-card li { opacity: .12; transition: opacity .35s; }
+.nn-card dl div.on, .nn-card li.on { opacity: 1; }
+.nn-card dt { font-size: .78rem; color: var(--muted); }
+.nn-card dd { margin: 0; font: .85rem/1.3 var(--f-mono); }
+.nn-card ul { margin: 0; padding-left: 1.1em; font-size: .86rem; display: grid; gap: 5px; }
+.attn-note { margin: 4px 0 0; padding: 12px 14px; background: var(--code-bg); border-radius: 10px; font-size: .95rem; }
+#attn-canvas { cursor: pointer; }
+.bars { display: grid; gap: 10px; margin: 8px 0 4px; }
+.bar { display: grid; grid-template-columns: 8.5em minmax(0, 1fr) 7.5em; align-items: center; gap: 10px; font-size: .9rem; }
+.bar-track { height: 18px; background: var(--code-bg); border-radius: 4px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; border-radius: 4px; }
+.bar-val { font: .85rem/1 var(--f-mono); }
+@media (max-width: 480px) { .bar { grid-template-columns: 6.5em minmax(0, 1fr) 6.5em; font-size: .82rem; } }
+.sam-wrap { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 680px) { .sam-wrap { grid-template-columns: minmax(0, 1fr); } }
+#sam-canvas { width: 100%; height: auto; display: block; border-radius: 10px; cursor: crosshair; touch-action: none; }
+.table-scroll { overflow-x: auto; margin: 0 0 16px; }
+table.models { min-width: 600px; }
+table.models td:first-child { white-space: normal; min-width: 8em; }
+#block-stat { white-space: pre-line; }
+#ch14 .sliders label, #ch15 .sliders label { grid-template-columns: 4.2em minmax(0, 1fr) 3.6em; }
+#hu-ruler { width: 100%; max-width: 360px; height: auto; display: block; margin-top: 12px; }
+.dice-sum { background: var(--code-bg); border-radius: 8px; padding: 10px 12px; margin-top: 14px; font-size: .9rem; }
+#step-canvas { width: 100%; height: auto; display: block; }
+#block-canvas, #dice-canvas { cursor: default; }
+#split-canvas, #ch17 canvas#cut-canvas { display: block; }
+#split-canvas { width: 100%; height: auto; }
+#ch17 .sliders label { grid-template-columns: 4.2em minmax(0, 1fr) 3.6em; }
+h3.mini { font-size: .9rem; margin: 16px 0 6px; }
+.bar.on .bar-name, .bar.on .bar-val { font-weight: 700; color: var(--mask); }
+.hall { display: grid; gap: 6px; }
+.hall-row { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr) 3.6em; gap: 10px; align-items: center; font-size: .88rem; opacity: 0; transition: opacity .3s; }
+.hall-row.on { opacity: 1; }
+.hall-row.seed .hall-name { font-weight: 700; }
+.hall-track { position: relative; height: 18px; background: var(--code-bg); border-radius: 4px; }
+.hall-band { position: absolute; top: 0; bottom: 0; background: #d9d3c4; opacity: 0; transition: opacity .4s; }
+.hall.band .hall-band { opacity: .6; }
+.hall-base { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--ink); }
+.hall-bar { position: absolute; top: 3px; bottom: 3px; width: 0; border-radius: 3px; transition: width .5s; }
+.hall-row.on .hall-bar { width: var(--w); }
+.hall-val { font: .82rem/1 var(--f-mono); }
+@media (max-width: 520px) { .hall-row { grid-template-columns: minmax(0, 1fr) 3.4em; } .hall-track { grid-column: 1 / -1; grid-row: 2; } .hall-row { gap: 2px 8px; } }
+#pipe-canvas { width: 100%; height: auto; display: block; }
+.scan3d-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 18px; align-items: start; }
+@media (max-width: 760px) { .scan3d-wrap { grid-template-columns: minmax(0, 1fr); } }
+#scan3d { position: relative; height: 360px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #ffffff; }
+@media (max-width: 640px) { #scan3d { height: 300px; } }
+#scan3d canvas { display: block; cursor: grab; }
+#scan3d-stat { white-space: pre-line; font-size: .85rem; }
+#ch18 .sliders label { grid-template-columns: 4.2em minmax(0, 1fr) 3.6em; }
+.three-text p { margin: 0 0 10px; }
+.three-text { background: var(--code-bg); border-radius: 10px; padding: 12px 14px; min-height: 11em; }
+ol.road { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: road; }
+ol.road li { position: relative; padding: 10px 12px 10px 44px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); transition: border-color .3s, background .3s; }
+ol.road li::before { counter-increment: road; content: counter(road); position: absolute; left: 10px; top: 10px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 700 .8rem/1 var(--f-mono); color: #fff; }
+ol.road li[data-state="done"]::before, .road-key.done::before { background: var(--signal); }
+ol.road li[data-state="now"]::before, .road-key.now::before { background: var(--mask); }
+ol.road li[data-state="next"]::before, .road-key.next::before { background: #8a96a1; }
+ol.road li[data-state="later"]::before, .road-key.later::before { background: #c9c2b2; }
+ol.road li.lit { border-color: var(--signal); background: var(--signal-soft); }
+.road-key { margin-right: 12px; white-space: nowrap; }
+.road-key::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
 footer { max-width: 1180px; margin: 0 auto; padding: 24px 16px 60px; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); }
 </style>
 </head>
@@ -368,49 +482,222 @@ for step in range(2000):
 
   <section class="chapter" id="ch5" data-stage="3" data-title="Pictures: sliding filters">
     <div class="ch-head"><div><div class="ch-num">Chapter 5</div><h2>Pictures need sliding filters</h2></div></div>
-    <div class="pf"><div class="problem"><b>Problem</b>Give every pixel its own weight and one neuron needs
-    262,144 knobs for a 512 × 512 picture, and it cannot spot the same shape somewhere else.</div>
-    <div class="fix"><b>Fix</b>A convolution: one small 3 × 3 filter (9 knobs) slides over the whole picture.
-    Same pattern, found anywhere.</div></div>
-    <p class="planned">Slide a filter over a small picture; edge, blur and learned filters.</p>
+    <p>To a computer, a picture is a grid of numbers: one per pixel, dark for small numbers and bright for big ones.
+    Below is a tiny 10 × 10 picture of a bright spot on a dark background. Could we feed it to the network from
+    Part 1?</p>
+    <div class="pf"><div class="problem"><b>Problem</b>Give every pixel its own weight and a single neuron needs
+    262,144 knobs for a 512 × 512 picture. Worse, it learns “a spot <i>here</i>” and has to learn the same spot all
+    over again for every other place it could be.</div>
+    <div class="fix"><b>Fix</b>A <b>convolution</b>: one small 3 × 3 <b>filter</b> (9 knobs) slides over the whole
+    picture, doing a weighted sum at every position. The same filter finds the same pattern anywhere.</div></div>
+
+    <div class="widget" id="conv-widget">
+      <div class="conv-row">
+        <figure><svg id="conv-in" viewBox="0 0 280 280" aria-label="Input picture, 10 by 10 numbers"></svg><figcaption>picture (10 × 10)</figcaption></figure>
+        <span class="op">✱</span>
+        <figure><svg id="conv-k" viewBox="0 0 96 96" aria-label="The 3 by 3 filter"></svg><figcaption id="conv-kname">filter</figcaption></figure>
+        <span class="op">=</span>
+        <figure><svg id="conv-out" viewBox="0 0 224 224" aria-label="Output picture, 8 by 8, click a cell to see its sum"></svg><figcaption>what the filter found (8 × 8)</figcaption></figure>
+      </div>
+      <div class="btns">
+        <button type="button" data-filter="0">Edge filter</button>
+        <button type="button" data-filter="1">Blur filter</button>
+        <button type="button" data-filter="2">Vertical-edge filter</button>
+        <button type="button" id="conv-play" class="primary">▶ Slide</button>
+      </div>
+      <div class="sum" id="conv-sum"></div>
+      <p class="caption">Click any cell of the output to see how it was worked out. Orange = a strong positive answer, green = a strong negative one.</p>
+    </div>
+
+    <p>Each filter is a small <b>pattern detector</b>. The edge filter lights up only at the spot's border, where the
+    brightness changes; inside the spot and out in the dark it gives zero. The blur filter averages its neighbours.
+    The vertical-edge filter tells the left side of the spot (orange) from the right side (green).</p>
+    <p>In a real network the 9 numbers in each filter are <b>knobs</b>, learned with the same guess → how wrong → blame
+    → nudge loop from chapter 4. Nobody hand-picks them. And there are many filters per layer, each learning to spot
+    something different.</p>
+    <div class="analogy">Instead of one detective staring at the whole city map at once, every detective carries the same
+    small magnifying glass and checks the map square by square, looking for one tell-tale sign.</div>
+    <div class="detailed">
+      <p><b>The sum.</b> At each position, multiply the 9 picture numbers under the filter by the 9 filter numbers and
+      add them up (plus a bias, left out here). That one number is the output pixel. Sliding over all 8 × 8 positions where
+      the filter fits gives an 8 × 8 output. Adding a border of zeros around the picture (<i>padding</i>) keeps the
+      output 10 × 10; our U-Net uses padding so sizes stay neat.</p>
+      <p><b>Channels.</b> A layer with 32 filters makes 32 output pictures, called <i>feature maps</i> or
+      <i>channels</i>. The next layer's filters look at all 32 at once, so they can combine simple signs (edges) into
+      more complex ones (corners, round blobs).</p>
+      <p><b>Knob count.</b> A 3 × 3 filter has 9 weights per input channel, no matter how big the picture is. That is why
+      a network for 512 × 512 pictures does not need billions of knobs. In 3D (chapter 9) the filter becomes a
+      3 × 3 × 3 cube: 27 knobs.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch6" data-stage="4" data-title="Zooming out: yes or no">
     <div class="ch-head"><div><div class="ch-num">Chapter 6</div><h2>Zooming out answers “is it there?”</h2></div></div>
-    <p>Stack filters, halve the picture (pooling), repeat: each step sees a wider area. At the end, one answer:
-    yes or no.</p>
-    <div class="pf"><div class="problem"><b>Problem</b>It says “yes, there is something”, but not <i>where</i>.
-    Zooming out threw away the position.</div>
-    <div class="fix"><b>Fix</b>Ask for an answer at every pixel instead (next chapter).</div></div>
+    <p>One 3 × 3 filter only sees a tiny patch. To see bigger things, networks repeat two steps: filter, then
+    <b>pool</b>, which halves the picture by keeping the strongest value in each 2 × 2 square. Every halving means
+    each cell now stands for twice as wide an area. After a few rounds, one cell sees the whole picture, and the
+    network can give one answer: yes, there is a spot, or no.</p>
+
+    <div class="widget" id="zoom-widget">
+      <canvas id="zoom-canvas" width="640" height="240" aria-label="A 16 by 16 picture halved four times down to one answer"></canvas>
+      <div class="btns">
+        <button type="button" id="zoom-play" class="primary">▶ Zoom out</button>
+        <button type="button" id="zoom-move">Move the spot</button>
+      </div>
+      <p class="caption">The orange squares on the picture show how much of it one cell at each step can see.</p>
+    </div>
+
+    <p>This is how a picture <b>classifier</b> works: lots of filter-and-pool steps, then a final yes or no (or “cat”,
+    “dog”, “car”). It was the big breakthrough of 2012, and it is good at saying <i>whether</i> something is in a picture.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>Press “Move the spot”: the answer stays exactly the same. Zooming
+    out threw the position away. It can say “yes, there is a spot”, but not <i>where</i>, and an outline needs exactly
+    that.</div>
+    <div class="fix"><b>Fix</b>Instead of one answer for the whole picture, ask for an answer at every pixel
+    (next chapter).</div></div>
+    <div class="analogy">Reports go up the ranks. Street detectives report to district heads, district heads to the chief.
+    The chief now knows “there is a gang in this city”, but the reports along the way dropped the street names.</div>
+    <div class="detailed">
+      <p><b>Receptive field.</b> The area of the original picture that one cell depends on. Two 3 × 3 filters in a row
+      see 5 × 5; each 2 × 2 pool doubles it. After four pools, cells see areas 16 times wider, which is why the
+      deep cells in a U-Net can tell a tumour from a blood vessel by its surroundings.</p>
+      <p><b>More channels as it shrinks.</b> Networks usually double the number of filters at every halving, trading
+      “where” for “what”. Our U-Net goes 32 → 64 → 128 → 256 channels as the picture shrinks.</p>
+      <p><b>Max pooling</b> keeps the biggest of 4 values: “was the sign anywhere in this square?”. Some networks
+      instead use a filter that jumps 2 pixels at a time (a <i>stride</i> of 2), which learns its own way to shrink.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch7" data-stage="5" data-title="Outlining: zoom out, then back in">
     <div class="ch-head"><div><div class="ch-num">Chapter 7</div><h2>Outlining: zoom out, then back in</h2></div></div>
-    <p>An outline needs a yes or no for every pixel. The first attempts:</p>
+    <p>An outline needs a yes or no for <b>every pixel</b>: is this pixel part of the shape? Below is a 32 × 32
+    picture of a bright, lumpy shape. The dashed green line is its true outline. Here are the first two ways people
+    tried to draw it.</p>
+
+    <div class="widget" id="seg-widget">
+      <canvas id="seg-canvas" width="640" height="270" aria-label="A picture, the method's working, and the outline it found"></canvas>
+      <div class="btns">
+        <button type="button" data-seg="patch">Pixel-by-pixel (2012)</button>
+        <button type="button" data-seg="fcn">FCN (2015)</button>
+        <button type="button" id="seg-play" class="primary">▶ Run</button>
+      </div>
+      <p class="caption">Green dashed = true outline. Orange = the outline the method found. The overlap score is 100% when they match exactly.</p>
+    </div>
+
     <ul>
-      <li><b>Pixel-by-pixel classifier (2012)</b>: crop a patch around every pixel and ask “yes or no?”. Works, but painfully slow and sees little of the surroundings.</li>
-      <li><b>Fully convolutional network, FCN (2015)</b>: zoom out (the <b>encoder</b>), then stretch back up to full size (the <b>decoder</b>). Fast, but the outline comes out blurry.</li>
+      <li><b>Pixel-by-pixel classifier (2012).</b> Cut a small patch around every pixel and ask the yes/no network
+      from chapter 6 about each one. The outline is decent, but it means one full network run <i>per pixel</i>:
+      1,024 runs for this tiny picture, 262,144 for one 512 × 512 scan slice. Painfully slow, and each patch sees
+      very little of its surroundings.</li>
+      <li><b>Fully convolutional network, FCN (2015).</b> Run the zoom-out from chapter 6 once on the whole picture
+      (the <b>encoder</b>), then stretch the small result back up to full size in one go (the <b>decoder</b>).
+      One run instead of a thousand. But look at the outline: the lumps are gone, because by the bottom of the
+      zoom-out the fine detail of the edge has been thrown away.</li>
     </ul>
-    <div class="pf"><div class="problem"><b>Problem</b>By the bottom of the zoom-out, the fine detail of the edge is gone.</div>
-    <div class="fix"><b>Fix</b>Keep the detail from the way down and hand it back (next chapter).</div></div>
-    <p class="planned">The same picture through the patch classifier and the FCN, side by side.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>Stretching a 4 × 4 summary back to 32 × 32 cannot bring back
+    edges it no longer knows about. The outline comes out blurry and rounded.</div>
+    <div class="fix"><b>Fix</b>Keep the sharp detail from the way down and hand it back on the way up (next chapter).</div></div>
+    <div class="analogy">The chief knows roughly which district the gang is in. Asked to draw the exact border on a street
+    map, all they can do is draw a fat circle around the district.</div>
+    <div class="detailed">
+      <p><b>Why FCN is fast.</b> Filters do not care how big the picture is, so the same network that answered
+      yes/no for a patch can run over the whole picture at once, giving a small grid of answers instead of one.
+      Neighbouring patches share almost all their work, and FCN does that shared work only once.</p>
+      <p><b>Stretching back.</b> The real FCN learned its stretching (an <i>up-convolution</i>, or transposed
+      convolution) and added a little detail from earlier layers. That helped, but its sharpest version still
+      stretched by 8 in one step. U-Net took the idea all the way.</p>
+      <p>The patch classifier shown is the approach of Cireşan and colleagues, who won a 2012 contest outlining
+      nerve cells in microscope pictures this way.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch8" data-stage="6" data-title="U-Net: handing the detail across">
     <div class="ch-head"><div><div class="ch-num">Chapter 8</div><h2>U-Net: handing the detail across</h2></div></div>
-    <p>U-Net (2015) zooms back in step by step, and at each step it is handed the sharp detail saved on the way
-    down (<b>skip connections</b>). The result is an outline that is both well placed and sharp.</p>
-    <div class="analogy">The chief sees the whole city and knows roughly where the gang is. To draw the exact boundary,
-    that knowledge comes back down the ranks, and the street detectives' original notes are handed straight across.</div>
-    <p class="planned">Blurry FCN outline vs sharp U-Net outline on the same picture; toggle the skip connections on and off.</p>
+    <p><b>U-Net</b> (Ronneberger and colleagues, 2015, made for medical pictures) changes two things. It zooms back in
+    <b>step by step</b>, doubling the size each time, mirroring the way down. And at every step up, it is handed a copy
+    of the sharp picture from the same size on the way down. Those copies are the <b>skip connections</b>. Drawn out,
+    the way down and the way up make a U.</p>
+
+    <div class="widget" id="unet-widget">
+      <canvas id="unet-canvas" width="640" height="370" aria-label="A U-Net: four levels down, three levels up, with skip connections across"></canvas>
+      <div class="btns">
+        <button type="button" id="unet-skip" aria-pressed="true">Skip connections: ON</button>
+        <button type="button" id="unet-play" class="primary">▶ Run</button>
+      </div>
+      <p class="caption">Left: the picture shrinking (what is there). Right: the answer growing back (where it is),
+      shown in orange. Green dashed arrows: skip connections.</p>
+    </div>
+
+    <p>The bottom of the U knows <i>what</i> is in the picture but has only a rough idea of <i>where</i>. The skip
+    connections bring back the <i>where</i>: at each size, the decoder lays its rough answer over the sharp copy and
+    tidies the edge. Turn the skip connections off and you are back to a blurry, rounded outline, just like FCN.</p>
+    <div class="analogy">The chief's rough answer is passed back down the ranks. At each rank, the detectives who
+    worked that level on the way up hand over their own detailed notes, so by the time it reaches the street the
+    border can be drawn house by house.</div>
+    <div class="pf"><div class="problem"><b>Still to solve</b>This is a flat picture. A CT scan is a stack of slices,
+    and a flat U-Net reads them one at a time.</div>
+    <div class="fix"><b>Next</b>Make every filter, pool and skip three-dimensional (chapter 9).</div></div>
+    <div class="detailed">
+      <p><b>How the hand-over works.</b> The decoder doubles its feature maps with an up-convolution, then
+      <i>concatenates</i> (stacks) them with the encoder's feature maps of the same size, then runs two 3 × 3
+      filters over the stack. The filters learn how to mix “roughly here” with “sharp edge here”. In PyTorch:
+      <code>torch.cat([up, skip], dim=1)</code>.</p>
+      <p><b>Why it took off.</b> U-Net learned from only 30 training pictures, because the skips make outlining
+      easy to learn, and it ran on a whole picture at once. Almost every medical outlining model since, including
+      all three we compare in Part 3, keeps this U shape.</p>
+      <p><b>What this demo simplifies.</b> The boxes show one picture per level; a real U-Net has many feature maps
+      per level (ours: 32, 64, 128, 256), and their values are learned, not hand-written.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch9" data-stage="7" data-title="3D scans: filters become cubes">
     <div class="ch-head"><div><div class="ch-num">Chapter 9</div><h2>3D scans: filters become cubes</h2></div></div>
-    <div class="pf"><div class="problem"><b>Problem</b>A CT scan is a stack of slices. Reading slices one at a time,
-    a ball (tumour) and a tube (blood vessel) can look the same.</div>
-    <div class="fix"><b>Fix</b>3D U-Net (2016): 3 × 3 × 3 filters slide through the whole volume.</div></div>
-    <p class="planned">Showpiece (WebGL): a 3D U-Net you can rotate and fly through.</p>
+    <p>A CT scan is not one picture. It is a <b>stack of slices</b>, like a loaf of sliced bread, each slice a
+    grey picture of the body at one height. The U-Net from chapter 8 reads one slice at a time.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>On a single slice, a ball (like a tumour) and a tube (like a
+    blood vessel) can look exactly the same: a round bright spot. You only tell them apart by looking up and down
+    through the slices.</div>
+    <div class="fix"><b>Fix</b>Make the network itself 3D. Every 3 × 3 filter becomes a 3 × 3 × 3 cube that slides
+    through the whole stack, so the network sees shape in all three directions.</div></div>
+
+    <div class="widget" id="slice-widget">
+      <canvas id="slice-canvas" width="640" height="250" aria-label="Side view of a ball and a tube, and the slice the scanner sees"></canvas>
+      <label class="tlabel" for="slice-z">Move the slice up and down</label>
+      <input type="range" id="slice-z" min="-1" max="1" step="0.01" value="0.72">
+    </div>
+
+    <p>That is the <b>3D U-Net</b> (Çiçek and colleagues, 2016): the same U as chapter 8, but every filter, every
+    halving and every skip connection works on blocks of the scan instead of flat pictures. Below is one you can turn
+    around. Watch a block of a scan go down the U, the sharp copies cross over the top, and a 3D outline come out
+    on the right.</p>
+
+    <div class="widget" id="u3d-widget">
+      <div id="u3d" role="img" aria-label="A 3D U-Net drawn as blocks: the scan block on the left, four levels down, three levels up, and a 3D outline on the right">
+        <p class="u3d-msg" id="u3d-msg">Loading the 3D view…</p>
+      </div>
+      <div class="btns">
+        <button type="button" id="u3d-flow" class="primary">❚❚ Pause flow</button>
+        <button type="button" id="u3d-fly">✈ Fly through</button>
+        <button type="button" id="u3d-in" aria-label="Zoom in">＋</button>
+        <button type="button" id="u3d-out" aria-label="Zoom out">－</button>
+        <button type="button" id="u3d-reset">Reset view</button>
+      </div>
+      <p class="caption">Drag to turn it around. Green blocks: the way down (what is there). Orange blocks: the way up
+      (where it is). Dashed lines: skip connections. The small orange cube on the scan is one 3 × 3 × 3 filter.</p>
+    </div>
+
+    <div class="analogy">The detectives stop reading single pages of the case file and start reading the whole file at
+    once, so “a round shape on page 12” becomes “a ball across pages 10 to 14”, not “a pipe through every page”.</div>
+    <div class="detailed">
+      <p><b>Knobs.</b> A 3 × 3 × 3 filter has 27 weights per input channel instead of 9, so a 3D U-Net has about three
+      times the knobs of the same-shaped 2D one, and needs far more memory: a block of 48 × 160 × 160 voxels
+      (3D pixels) is 1.2 million numbers per channel. That is why 3D U-Nets train on blocks cut from the scan, not
+      the whole scan, and why ours trains on a university supercomputer (BigBlue).</p>
+      <p><b>Uneven voxels.</b> CT slices are often further apart than the pixels within a slice: in our data, slices
+      are 3 mm apart but pixels are about 1 mm. So a voxel is a tall brick, not a cube. Our U-Net's first halving
+      shrinks only within each slice (1 × 2 × 2), so after it the voxels are close to cubes (chapter 10).</p>
+      <p><b>2D vs 3D.</b> 3D is not always better: 2D models can see a whole slice at once and train on many more
+      examples. nnU-Net (chapter 11) tries both and picks whichever does better on the data.</p>
+    </div>
   </section>
 
   <!-- ===================== PART 3 ===================== -->
@@ -418,32 +705,213 @@ for step in range(2000):
 
   <section class="chapter" id="ch10" data-stage="8" data-title="Our own 3D U-Net">
     <div class="ch-head"><div><div class="ch-num">Chapter 10</div><h2>Our own 3D U-Net</h2></div></div>
-    <p>Written from scratch: 4 levels, 32 → 256 channels, 5.6 million knobs. The first zoom-out only shrinks
-    within each slice, because slices are 3 mm apart but pixels are about 1 mm.</p>
-    <p class="planned">Our U-Net layer by layer, with the reason for each setting.</p>
+    <p>We wrote a 3D U-Net from scratch, so every part is visible and we can change one thing at a time. It has
+    4 levels, 32 → 256 feature maps, and <b>5.6 million knobs</b>. Follow one block of a lung CT through it, layer by
+    layer. Click any step to read why it is there.</p>
+
+    <div class="widget" id="layers-widget">
+      <div class="layers">
+        <ol class="layer-list" id="layer-list"></ol>
+        <div class="layer-view">
+          <svg id="layer-svg" viewBox="0 0 300 250" aria-label="The block's shape at this step"></svg>
+          <div class="layer-facts" id="layer-facts"></div>
+        </div>
+      </div>
+      <p class="layer-why" id="layer-why"></p>
+    </div>
+
+    <h3>Why these choices</h3>
+    <table class="tt why">
+      <tr><th>Choice</th><th>Why, in plain words</th></tr>
+      <tr><td>Blocks of 48 × 160 × 160</td><td>A whole scan does not fit in the graphics card's memory with a 3D network,
+      so it trains on blocks. This size holds a whole tumour plus its surroundings.</td></tr>
+      <tr><td>⅓ of blocks centred on a tumour</td><td>Tumour is a tiny part of a chest scan. With purely random blocks the
+      network would mostly see healthy lung and learn to say “no tumour” everywhere.</td></tr>
+      <tr><td>First halving within slices only</td><td>Slices are 3 mm apart but pixels are about 1 mm. Halving across slices
+      too would blur the up-down direction first. After one in-slice halving the voxels are about 3 × 2 × 2 mm,
+      close to cubes.</td></tr>
+      <tr><td>InstanceNorm</td><td>Rescales each feature map to a steady range so learning stays stable. It works with tiny
+      batches (we fit only 2 blocks at a time); the more common BatchNorm needs bigger ones.</td></tr>
+      <tr><td>LeakyReLU</td><td>The activation: keeps positive totals, shrinks negative ones to 1%, so no neuron goes
+      completely silent.</td></tr>
+      <tr><td>Dice + cross-entropy loss</td><td>Dice scores the overlap with the expert's outline as a whole, so a small tumour
+      counts as much as a big one. Cross-entropy scores every voxel, which keeps learning smooth early on.</td></tr>
+    </table>
+    <div class="analogy">Our own detective team, set up by hand: we chose how many ranks there are, how big an area
+    each rank covers, and which case files they practise on.</div>
+    <div class="detailed">
+      <p><b>The code.</b> Each level is <code>Block</code>: two rounds of <code>Conv3d(3, padding=1)</code> →
+      <code>InstanceNorm3d</code> → <code>LeakyReLU(0.01)</code>. Shrinking is <code>MaxPool3d</code> with strides
+      (1,2,2), (2,2,2), (2,2,2). Growing back is <code>ConvTranspose3d</code> with the same strides, then
+      <code>torch.cat([up, skip])</code> and another Block. The head is a 1 × 1 × 1 <code>Conv3d(32, 2)</code>.</p>
+      <p><b>Where the knobs are.</b> The bottom level alone has 2.66 million of the 5.59 million, because its filters
+      read 128 maps and write 256. The whole first level has only 29 thousand.</p>
+      <p><b>Training.</b> AdamW optimiser, learning rate 0.0003 falling slowly to zero, light random noise added to each block, on the BigBlue supercomputer. Brightness: CT numbers (Hounsfield units) are clipped
+      to −1000 (air) … 500 and scaled to small numbers.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch11" data-stage="9" data-title="nnU-Net: a U-Net that sets itself up">
     <div class="ch-head"><div><div class="ch-num">Chapter 11</div><h2>nnU-Net: a U-Net that sets itself up</h2></div></div>
-    <p>Instead of a person choosing block size, zoom steps and brightness scaling, nnU-Net measures the dataset
-    (pixel spacing, scan size, brightness range) and picks them by rule.</p>
-    <p class="planned">Pick a dataset; watch nnU-Net's measurements turn into its settings.</p>
+    <p>Every choice in the table above took us thought and testing. <b>nnU-Net</b> (Isensee and colleagues, 2021)
+    asks: what if the computer made those choices itself? It is not a new shape. It is the same U-Net, plus a
+    rulebook. It <b>measures the dataset</b> (scan size, voxel spacing, brightness), then applies fixed rules to set
+    the block size, the halvings, the brightness scaling and more. Its authors tested it on 23 public datasets, and out of the box it matched or
+    beat methods built specially for most of them.</p>
+
+    <div class="widget" id="nn-widget">
+      <div class="btns" id="nn-pick"></div>
+      <div class="nn-flow">
+        <div class="nn-card"><h3>1 · Measure</h3><dl id="nn-measure"></dl></div>
+        <div class="nn-arrow" aria-hidden="true">→</div>
+        <div class="nn-card"><h3>2 · Rules</h3><ul id="nn-rules"></ul></div>
+        <div class="nn-arrow" aria-hidden="true">→</div>
+        <div class="nn-card plan"><h3>3 · Settings</h3><dl id="nn-plan"></dl></div>
+      </div>
+      <p class="caption">A simplified version of nnU-Net's rules, so you can see the idea. The real rulebook also
+      checks the graphics card's memory and the network's depth, so its exact numbers differ.</p>
+    </div>
+
+    <p>Look at our lung CT: by its own rule, nnU-Net also halves within slices first, the same choice we made by hand,
+    because slices are 3 mm apart and pixels about 1 mm. Even this simplified rulebook lands on 48 × 160 × 160 blocks,
+    the size we use. On a brain MRI with cube-shaped voxels it halves in all three
+    directions from the start.</p>
+    <div class="pf"><div class="problem"><b>Our result</b>On the same 60 locked test patients, nnU-Net scored
+    0.591 Dice and our own U-Net 0.468. Its tested defaults beat our hand-made choices.</div>
+    <div class="fix"><b>So we</b>test its choices one at a time in our own U-Net (Part 4), to learn which ones
+    matter, and keep nnU-Net as the bar to beat.</div></div>
+    <div class="analogy">A seasoned chief arrives at a new city, studies the map and the case files first, and sets up
+    the team to suit: how many ranks, how big each district, which files to practise on.</div>
+    <div class="detailed">
+      <p><b>What it measures</b> (the “fingerprint”): every scan's size and voxel spacing, and the brightness of
+      the voxels inside the outlines. <b>Fixed choices</b>: InstanceNorm, LeakyReLU, Dice + cross-entropy, SGD with
+      momentum 0.99, 1,000 rounds of training. <b>Rule-based choices</b>: target spacing (the median), block size
+      (as big as the memory allows, shaped like the median scan), how many halvings and along which axes (an axis
+      is halved only once its spacing is within 2 × of the finest one), batch size, and brightness scaling
+      (CT: clip to the 0.5–99.5% range inside outlines, then scale; MRI: scale each scan on its own).
+      <b>Chosen by testing</b>: it trains 2D, 3D and sometimes a low-resolution 3D version, with 5-fold
+      cross-validation, and keeps whichever (or whichever mix) scores best.</p>
+      <p>The name means “no new U-Net”: its authors' point was that careful set-up mattered more than new shapes.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch12" data-stage="10" data-title="Swin UNETR: a transformer that sees further">
     <div class="ch-head"><div><div class="ch-num">Chapter 12</div><h2>Swin UNETR: a transformer that sees further</h2></div></div>
-    <div class="pf"><div class="problem"><b>Problem</b>A filter only sees its near neighbours, so the far side of
-    the scan has to travel through many layers to be noticed.</div>
-    <div class="fix"><b>Fix</b>A transformer lets every part of the scan look at every other part. Swin UNETR puts one
-    in the U-Net's zoom-out half.</div></div>
-    <p class="planned">Attention, shown as patches of the scan “looking at” each other.</p>
+    <p>A filter only looks at its near neighbours. For a cell to “know” about something on the far side of the scan,
+    the news has to pass through many layers, one neighbour at a time. <b>Transformers</b>, the idea behind
+    chatbots, work differently: every piece of the input can look directly at every other piece and decide how much
+    each one matters to it. This is called <b>attention</b>.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>Filters see only a small neighbourhood. A tumour's meaning can
+    depend on things far away: the other lung, a lymph node, the chest wall.</div>
+    <div class="fix"><b>Fix</b>Cut the scan into small <b>patches</b> and let each patch attend to the others. Swin UNETR
+    puts such a transformer in the U-Net's zoom-out half and keeps the filter-based zoom-in half with skip
+    connections.</div></div>
+
+    <div class="widget" id="attn-widget">
+      <div class="two-col">
+        <div>
+          <canvas id="attn-canvas" class="plot" width="280" height="280" aria-label="A picture cut into 8 by 8 patches; orange shows what the chosen patch looks at"></canvas>
+          <p class="caption">Click any patch to choose it. Orange = how much the chosen patch looks at each other patch.</p>
+        </div>
+        <div>
+          <div class="btns" id="attn-modes">
+            <button type="button" data-attn="filter">Filter (U-Net)</button>
+            <button type="button" data-attn="full">Full attention</button>
+            <button type="button" data-attn="window">Swin: windows</button>
+            <button type="button" data-attn="shift">Swin: shifted windows</button>
+          </div>
+          <p class="attn-note" id="attn-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <p><b>Why “Swin”.</b> Letting every patch look at every other patch gets very expensive in 3D: double the patches and
+    the work goes up four times. The <b>Swin</b> transformer (short for <i>shifted windows</i>) only lets patches
+    attend within small windows, then, in the next layer, shifts the windows by half, so news crosses the old borders.
+    A few layers later, everything has had a chance to reach everything else, at a fraction of the cost.</p>
+
+    <div class="widget">
+      <h3>Our results (fold 0, checking patients)</h3>
+      <div class="bars" id="swin-bars"></div>
+      <p class="caption">Dice, 0 to 1, on the fold-0 checking patients (chapter 16). A single fold-0 run moves by about
+      ±0.05 by chance alone (chapter 17), so Swin's lead is real but not yet measured precisely.</p>
+    </div>
+    <p>Swin UNETR is one of the few changes that clearly helped, about 0.07 better than our U-Net on the same
+    patients. But it is much heavier: around 62 million knobs, eleven times ours, and it took 11½ hours to train
+    against our 5 hours.
+    And nnU-Net, a plain U-Net set up carefully, is still ahead.</p>
+    <div class="analogy">Instead of passing notes desk to desk, the detectives hold short meetings in small groups,
+    then reshuffle the groups and meet again, so every clue reaches every desk within a few rounds.</div>
+    <div class="detailed">
+      <p><b>Attention, in one line.</b> Each patch makes three short lists of numbers: a <i>query</i> (“what am I looking
+      for?”), a <i>key</i> (“what do I contain?”) and a <i>value</i> (“what do I pass on?”). A patch's new value is a
+      mix of all values, weighted by how well its query matches each key. The demo uses brightness similarity as a
+      stand-in for that match.</p>
+      <p><b>The model.</b> Swin UNETR (Hatamizadeh and colleagues, 2022) cuts the block into 2 × 2 × 2 patches, runs
+      four Swin stages that halve the size each time, and feeds each stage's output across to a filter-based decoder,
+      exactly like U-Net skip connections. We use MONAI's version with <code>feature_size=48</code>; block sizes must
+      divide by 32.</p>
+      <p><b>The catch.</b> Transformers know less to begin with than filters do (filters assume nearby pixels matter
+      most), so they usually need more data or pre-training. That is one reason nnU-Net's plain U-Net is hard to beat
+      on a dataset of a few hundred scans.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch13" data-stage="11" data-title="Next in line: MedSAM and others">
     <div class="ch-head"><div><div class="ch-num">Chapter 13</div><h2>Next in line: MedSAM and others</h2></div></div>
-    <p>MedSAM learned from more than a million medical images and outlines whatever you point at with a box.
-    It is shaped differently again: one very large picture reader, plus a small part that takes the pointer.</p>
-    <p class="planned">A table of every model: its shape, what it fixes, what it costs.</p>
+    <p>Every model so far finds the tumour by itself. <b>MedSAM</b> (Ma and colleagues, 2024) works differently: a
+    person draws a rough <b>box</b> around something, and it draws the exact outline of whatever is inside. It learned
+    from more than 1.5 million medical image–outline pairs, so it has seen a huge variety of shapes, but it does not
+    decide <i>what</i> to outline. You do.</p>
+
+    <div class="widget" id="sam-widget">
+      <div class="sam-wrap">
+        <canvas id="sam-canvas" width="360" height="360" aria-label="A picture; drag a box on it and an outline appears inside"></canvas>
+        <div>
+          <p class="attn-note" id="sam-note">Drag a box around something on the picture.</p>
+          <div class="btns">
+            <button type="button" id="sam-tumour">Box the lumpy shape</button>
+            <button type="button" id="sam-vessel">Box the tube</button>
+            <button type="button" id="sam-clear">Clear</button>
+          </div>
+        </div>
+      </div>
+      <p class="caption">Green dashed = the true outline of the lumpy shape. Orange = the outline drawn inside your box.
+      This is a simple stand-in that shows how MedSAM is used, not the real model.</p>
+    </div>
+
+    <p>It is shaped differently again: a very large <b>picture reader</b> (a transformer, run once per slice), a
+    small part that reads the <b>box</b>, and a small part that combines the two into an outline. It works on flat
+    slices, so a 3D tumour is outlined slice by slice. In our project it is the “doctor helps the AI” setting: we will
+    give it a box around each tumour and measure how good the outline is.</p>
+    <div class="analogy">A specialist who does not go looking for suspects, but who, shown a rough area on the map, can
+    draw the exact boundary of whatever is there faster than anyone.</div>
+
+    <h3>Every model, side by side</h3>
+    <div class="table-scroll">
+    <table class="tt why models">
+      <tr><th>Model</th><th>Shape</th><th>What it fixes</th><th>What it costs</th><th>Our result</th></tr>
+      <tr><td>Our 3D U-Net</td><td>Filters in a U with skips</td><td>Sharp 3D outlines; every part visible</td>
+        <td>We pick every setting by hand</td><td>0.533 test (0.468 before the cut-off fix)</td></tr>
+      <tr><td>nnU-Net</td><td>The same U, set up by rules</td><td>Settings chosen from the data, tested defaults</td>
+        <td>Long training (1,000 rounds)</td><td><b>0.591 test</b></td></tr>
+      <tr><td>Swin UNETR</td><td>Transformer down, filters up, skips</td><td>Sees far-apart parts of the scan</td>
+        <td>~11 × the knobs, more memory</td><td>0.517 fold 0 (vs 0.450)</td></tr>
+      <tr><td>MedSAM</td><td>Big 2D picture reader + box</td><td>Outlines almost anything it is pointed at</td>
+        <td>Needs a person to draw the box; 2D</td><td>To be tested</td></tr>
+      <tr><td>Pre-trained CT models (e.g. STU-Net, SuPreM)</td><td>U-Nets trained first on large organ datasets</td>
+        <td>Start already knowing what CT anatomy looks like</td><td>Large downloads; may not suit tumours</td><td>To be tested</td></tr>
+    </table>
+    </div>
+    <div class="detailed">
+      <p><b>Inside MedSAM.</b> It is Meta's Segment Anything Model (SAM) re-trained on medical images: a ViT-B image
+      encoder (a transformer of about 90 million knobs) turns a 1024 × 1024 slice into a grid of features once; a
+      prompt encoder turns the box's corners into a few numbers; a light mask decoder mixes the two and outputs the
+      outline. Because the heavy part runs once per slice, moving the box gives a new outline almost instantly.</p>
+      <p><b>Fair comparison.</b> MedSAM gets a box drawn from the expert's outline, which is information the other models
+      never see, so its score answers a different question: “how good is the outline if a person points at the
+      tumour?”, not “can it find the tumour?”.</p>
+    </div>
   </section>
 
   <!-- ===================== PART 4 ===================== -->
@@ -451,31 +919,328 @@ for step in range(2000):
 
   <section class="chapter" id="ch14" data-stage="12" data-title="Preparing the data">
     <div class="ch-head"><div><div class="ch-num">Chapter 14</div><h2>Preparing the data</h2></div></div>
-    <p>Public scans with experts' outlines (NSCLC-Radiomics). Brightness rescaled, scans cut into blocks of
-    48 × 160 × 160, with a third of the blocks centred on a tumour so the model sees enough of them.</p>
-    <p class="planned">From a whole scan to training blocks.</p>
+    <p>Every model so far needs examples with known answers. Ours come from <b>NSCLC-Radiomics</b>, a public collection
+    of lung cancer CT scans on The Cancer Imaging Archive (TCIA). For each of 422 patients there is a scan and an
+    expert's outline of the main tumour. We kept the <b>415</b> with a usable outline of the main tumour and no problems in the scan. Each scan
+    is about 112 slices of 512 × 512 pixels, one slice every 3 mm, so a single scan holds about 29 million voxels
+    (3D pixels).</p>
+    <p>Before a model can learn from them, three problems have to be fixed.</p>
+
+    <h3>1 · Brightness</h3>
+    <div class="pf"><div class="problem"><b>Problem</b>CT brightness is measured in <b>Hounsfield units (HU)</b>: air is
+    −1000, water 0, bone up to 3000. Lung, tumour and heart all sit in a narrow part of that range, so the full range
+    squeezes them into a few shades of grey.</div>
+    <div class="fix"><b>Fix</b>Keep only −1000 to 500, the range from air to dense soft tissue, and stretch it to
+    the full range of grey. Anything brighter, like bone, just becomes white.</div></div>
+
+    <div class="widget" id="hu-widget">
+      <div class="two-col">
+        <div>
+          <canvas id="hu-canvas" class="plot" width="280" height="280" aria-label="A drawn CT slice through the chest, shown with the chosen brightness window"></canvas>
+          <p class="caption">A drawn CT slice through the chest (not a real patient): body, two dark lungs, heart, spine,
+          ribs, and a tumour in the right lung (left side of the picture, as doctors view it).</p>
+        </div>
+        <div>
+          <div class="btns" id="hu-presets">
+            <button type="button" data-hu="-1000,3000">All values</button>
+            <button type="button" data-hu="-1000,500">Ours: −1000 to 500</button>
+            <button type="button" data-hu="300,1500">Bone window</button>
+          </div>
+          <div class="sliders one">
+            <label>from <input type="range" id="hu-lo" min="-1000" max="1400" step="10" value="-1000"><span id="hu-lov"></span></label>
+            <label>to <input type="range" id="hu-hi" min="-900" max="3000" step="10" value="500"><span id="hu-hiv"></span></label>
+          </div>
+          <canvas id="hu-ruler" width="360" height="86" aria-label="The Hounsfield scale, with the chosen window marked"></canvas>
+          <p class="attn-note" id="hu-note"></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>2 · Size</h3>
+    <div class="pf"><div class="problem"><b>Problem</b>A whole scan, with all the in-between results a 3D U-Net makes
+    from it, does not fit in a graphics card's memory.</div>
+    <div class="fix"><b>Fix</b>Train on <b>blocks</b> cut out of the scan: 48 slices deep and 160 × 160 pixels across,
+    about 14 × 16 × 16 cm. The model never needs the whole scan at once, because filters only look nearby
+    (chapter 5).</div></div>
+
+    <h3>3 · Balance</h3>
+    <div class="pf"><div class="problem"><b>Problem</b>The tumour is tiny next to the rest of the scan, about 1 voxel in
+    1,000. Blocks cut at random mostly show healthy lung, so the model could learn that “no tumour” is
+    nearly always right.</div>
+    <div class="fix"><b>Fix</b>Centre <b>one block in three</b> on a randomly chosen tumour voxel. The other two thirds
+    are still random, so the model also learns what healthy chest looks like.</div></div>
+
+    <div class="widget" id="block-widget">
+      <div class="two-col">
+        <div>
+          <canvas id="block-canvas" class="plot" width="280" height="280" aria-label="The CT slice with training blocks drawn as squares"></canvas>
+          <p class="caption">Each square is one training block seen from above. Orange = it holds some tumour; white = it
+          does not.</p>
+        </div>
+        <div>
+          <div class="sliders one">
+            <label>centred <input type="range" id="block-p" min="0" max="1" step="0.01" value="0.33"><span id="block-pv"></span></label>
+          </div>
+          <div class="btns">
+            <button type="button" id="block-draw" class="primary">Cut 12 blocks</button>
+            <button type="button" id="block-clear">Clear</button>
+          </div>
+          <p class="mono stat" id="block-stat"></p>
+          <p class="attn-note" id="block-note">Choose how many blocks are centred on the tumour, then cut some blocks.</p>
+        </div>
+      </div>
+    </div>
+
+    <p>The demo is a single slice, so random blocks hit the tumour more often here than in a real scan. In 3D,
+    the block also has to land on the right slices, so random blocks miss even more often.</p>
+    <div class="analogy">The trainees don't practise on the whole city archive. Each one gets a short stack of files,
+    trimmed to the pages that matter, and one stack in three is sure to contain a real culprit.</div>
+    <div class="detailed">
+      <p><b>From hospital files to model files.</b> Each scan arrives as about 110 DICOM files (one per slice) plus an
+      outline file listing points around the tumour on each slice. We join the slices into one 3D file (NIfTI,
+      <code>.nii.gz</code>), keeping the pixel spacing and position, and paint the outline onto the same grid as 0s and 1s.
+      We use only the main tumour (“GTV-1”). Lymph nodes are a separate question for later.</p>
+      <p><b>The brightness rule.</b> Clip to −1000 … 500, then map that range onto −1 … 1:</p>
+      <pre class="code"><code>x = (clip(hu, -1000, 500) - (-250)) / 750</code></pre>
+      <p><b>Small random changes.</b> Each training block gets its brightness and contrast nudged by up to 10% and a
+      little noise added, so the model doesn't rely on one scanner's exact grey levels. We don't flip left and right:
+      the left lung has two lobes and the right has three, so the sides are not mirror images.</p>
+      <p><b>Cutting a block</b>, as in our training code:</p>
+      <pre class="code"><code>def sample(img, lab, size, fg_prob, rng):
+    if rng.random() &lt; fg_prob and lab.any():          # one time in three
+        centre = a random tumour voxel
+        start  = centre - size // 2, kept inside the scan
+    else:
+        start  = a random corner anywhere in the scan
+    return img[start : start + size], lab[start : start + size]</code></pre>
+    </div>
   </section>
 
   <section class="chapter" id="ch15" data-stage="12" data-title="Training on lung CT">
     <div class="ch-head"><div><div class="ch-num">Chapter 15</div><h2>Training on lung CT</h2></div></div>
-    <p>The same guess → how wrong → blame → nudge loop from chapter 4, now on scan blocks, with a score that
-    rewards overlap with the expert's outline (Dice) plus a per-voxel score (cross-entropy).</p>
-    <p class="planned">Dice explained with two overlapping shapes.</p>
+    <p>Training works like chapter 4: guess, measure how wrong, find who caused it, nudge. It's the same loop, just
+    on a bigger scale. Each step, the model outlines two blocks, and the loss compares its outline with the expert's.
+    But the obvious way to measure “how wrong” fails here.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>Score the model by the share of voxels it gets right, and a model
+    that never draws any tumour scores 97% on a block, and over 99.9% on a whole scan. That score rewards doing
+    nothing.</div>
+    <div class="fix"><b>Fix</b>Score the <b>overlap</b> instead: the <b>Dice score</b>. Drawing nothing scores 0, and a
+    perfect outline scores 1. Our loss adds it to cross-entropy, a per-voxel score from chapter 4.</div></div>
+
+    <div class="widget" id="dice-widget">
+      <div class="two-col">
+        <div>
+          <canvas id="dice-canvas" class="plot" width="280" height="280" aria-label="The expert's outline and the model's outline, overlapping"></canvas>
+          <p class="caption">Green dashed = the expert's outline. Orange = the model's outline. Dark orange = where they
+          overlap.</p>
+        </div>
+        <div>
+          <div class="btns" id="dice-presets">
+            <button type="button" data-dice="0,6.5">Spot on</button>
+            <button type="button" data-dice="7,6.5">Shifted</button>
+            <button type="button" data-dice="0,3.5">Too small</button>
+            <button type="button" data-dice="0,0">Draws nothing</button>
+          </div>
+          <div class="sliders one">
+            <label>move <input type="range" id="dice-x" min="-22" max="22" step="0.5" value="0"><span id="dice-xv"></span></label>
+            <label>size <input type="range" id="dice-r" min="0" max="14" step="0.5" value="6.5"><span id="dice-rv"></span></label>
+          </div>
+          <div class="dice-sum mono" id="dice-sum"></div>
+          <table class="tt" id="dice-table"></table>
+        </div>
+      </div>
+    </div>
+
+    <p><b>Dice</b> = 2 × the overlap ÷ (the expert's area + the model's area). Shared area counts twice and every
+    extra or missing voxel counts against it, so the only way to reach 1 is to match the outline exactly. The model is
+    trained to push Dice up, so its loss uses 1 − Dice. Cross-entropy is added because it gives every voxel its own
+    clear signal, which makes the early steps of training steadier.</p>
+
+    <h3>One step, 50,000 times</h3>
+    <div class="widget" id="step-widget">
+      <canvas id="step-canvas" width="560" height="276" aria-label="One training step: a block goes in, an outline comes out, it is scored, and the blame flows back"></canvas>
+      <div class="btns">
+        <button type="button" data-step="0">Step 1</button>
+        <button type="button" data-step="1">Step 500</button>
+        <button type="button" data-step="2">Step 5,000</button>
+        <button type="button" data-step="3">Step 50,000</button>
+      </div>
+      <p class="caption">Each step is the same four moves. At first the guess is a random smudge; tens of
+      thousands of nudges later it follows the tumour. (Drawn to show the idea: these are not saved outputs from our
+      model.)</p>
+    </div>
+
+    <table class="tt why">
+      <tr><th>Setting</th><th>Ours</th><th>In plain words</th></tr>
+      <tr><td>Steps</td><td>50,000</td><td>guess → score → blame → nudge, fifty thousand times</td></tr>
+      <tr><td>Blocks per step</td><td>2</td><td>two 48 × 160 × 160 blocks; that is what fits on the card</td></tr>
+      <tr><td>Nudge rule</td><td>AdamW</td><td>gradient descent that remembers recent slopes, so knobs move smoothly</td></tr>
+      <tr><td>Nudge size (lr)</td><td>0.0003 → 0</td><td>starts small and shrinks slowly to nothing by the last step</td></tr>
+      <tr><td>Check-ups</td><td>every 500 steps</td><td>outline the checking patients' whole scans; keep the best knobs</td></tr>
+      <tr><td>Time</td><td>≈ 4 h 48 min</td><td>per fold, on one graphics card at a university computing centre</td></tr>
+    </table>
+    <div class="analogy">Two case files a round. After each round, the chief marks how well the team's boundary
+    matches the real one. Covering the whole map, or none of it, earns nothing; only the right boundary scores. Every
+    500 rounds the chief tests them on cases they have never seen and keeps the best version of the team.</div>
+    <div class="detailed">
+      <p><b>Soft Dice.</b> During training the model's output is a likelihood from 0 to 1 per voxel, not a hard yes or
+      no, so Dice is computed with those likelihoods (the “overlap” is the sum of likelihood × answer). That keeps it
+      smooth, so backpropagation can find a slope.</p>
+      <pre class="code"><code>def dice_ce_loss(logits, target):
+    p     = softmax(logits)[:, 1]                     # likelihood of tumour, per voxel
+    dice  = (2 * (p * target).sum() + 1) / (p.sum() + target.sum() + 1)
+    return cross_entropy(logits, target) + (1 - dice)</code></pre>
+      <p><b>The nudge size schedule</b> (“polynomial decay”): lr = 0.0003 × (1 − step / 50,000)<sup>0.9</sup>.
+      Big steps early to get close, tiny steps late to settle.</p>
+      <p><b>Keeping the best.</b> The loss on training blocks keeps falling, but that only shows how well the model
+      fits blocks it has seen. What counts is Dice on patients it has never seen (chapter 16), so those are the knobs
+      we keep.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch16" data-stage="12" data-title="Testing fairly">
     <div class="ch-head"><div><div class="ch-num">Chapter 16</div><h2>Testing fairly</h2></div></div>
-    <p>Patients are split, never single scans, so no person is in both training and testing. 60 patients are locked
-    away until the end; the rest are rotated through 5 folds for checking along the way.</p>
-    <p class="planned">Patients sorted into folds and the locked test set.</p>
+    <p>A model that scores well on scans it trained on has shown only that it remembers them. The real question is
+    how it does on <b>patients it has never seen</b>. So before any training, the 415 patients are split, and the
+    split never changes. Every model in this story uses exactly the same one.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>Neighbouring slices of one scan look almost the same. Split by
+    slice, and the model trains on slice 40 and is “tested” on slice 41 of the same person: the score looks great and
+    means nothing.</div>
+    <div class="fix"><b>Fix</b>Split by <b>patient</b>. Every slice of a person goes to the same group, so a test
+    patient is someone the model has truly never met.</div></div>
+
+    <div class="widget" id="split-widget">
+      <canvas id="split-canvas" width="560" height="352" aria-label="415 patients dealt into a locked test group and five folds"></canvas>
+      <div class="btns" id="split-rounds">
+        <button type="button" data-round="0">Round 1</button>
+        <button type="button" data-round="1">Round 2</button>
+        <button type="button" data-round="2">Round 3</button>
+        <button type="button" data-round="3">Round 4</button>
+        <button type="button" data-round="4">Round 5</button>
+        <button type="button" data-round="5">Final test</button>
+      </div>
+      <p class="caption">One dot = one patient; bigger dot = bigger tumour. Green = trains the model, orange = checks
+      it, dark = locked away. (Dot sizes show the idea; they are not each patient's real tumour size.)</p>
+    </div>
+
+    <ol class="loop">
+      <li><b>Sort</b> the patients from smallest tumour to largest.</li>
+      <li><b>Lock away the test group.</b> Take them in groups of 7 and pick one from each at random: 60 patients,
+      with small and large tumours alike. Nobody looks at how a model does on them until the very end.</li>
+      <li><b>Deal the other 355 into 5 folds</b> of 71, round-robin, so every fold also gets small and large tumours.</li>
+      <li><b>Five rounds.</b> Each round, train on 4 folds (284 patients) and check on the 5th (71). Each patient is a
+      checking patient exactly once. These checking scores are what we use to compare ideas and pick settings.</li>
+      <li><b>Once, at the end:</b> the five models outline the 60 locked patients, and their answers are averaged.</li>
+    </ol>
+    <div class="pf"><div class="problem"><b>Problem</b>Try 20 ideas and keep whichever scores best on the test
+    patients, and you have quietly tuned the model to those 60 people. The score no longer predicts how it does on
+    the 61st.</div>
+    <div class="fix"><b>Fix</b>Every choice (settings, cut-offs, which idea wins) is made on the <b>checking folds</b>.
+    The test group is opened only for a decision that has already been made.</div></div>
+
+    <h3>What we measure</h3>
+    <table class="tt why">
+      <tr><th>Score</th><th>In plain words</th><th>nnU-Net</th><th>Our U-Net</th></tr>
+      <tr><td>Dice</td><td>overlap with the expert's outline, 0 to 1</td><td>0.591</td><td>0.468</td></tr>
+      <tr><td>Found</td><td>patients whose outline overlaps the real tumour at least a little (Dice above 0.1)</td><td>47 of 60</td><td>40 of 60</td></tr>
+      <tr><td>Size</td><td>outline volume against the expert's</td><td>−6.5%</td><td>−39%</td></tr>
+      <tr><td>Small tumours</td><td>Dice for tumours under 20 cc (about 3.4 cm across)</td><td>0.449</td><td>0.244</td></tr>
+    </table>
+    <p class="caption">The locked test, the first time it was opened. Experts outlining the same lung tumour usually
+    agree to about 0.8 Dice, so that is the realistic ceiling.</p>
+    <p>The test showed exactly what was wrong: our U-Net's outlines were <b>39% too small</b>, and it missed small
+    tumours. Chapter 17 is about fixing that, using only the checking folds.</p>
+    <div class="analogy">The trainees practise on old cases in five study groups, taking turns to be quizzed. One
+    sealed envelope of cases stays in the chief's safe, opened once, for the final exam.</div>
+    <div class="detailed">
+      <p><b>The split, in code</b> (our <code>prep/03_split.py</code>):</p>
+      <pre class="code"><code>ordered = sorted(cases, key=tumour_size)
+for group in chunks(ordered, 7):          # 7 ≈ 1 / 0.15
+    shuffle(group)
+    test.append(group[0]); rest += group[1:]
+for i, patient in enumerate(rest):        # still roughly size-ordered
+    folds[i % 5].append(patient)</code></pre>
+      <p>A check runs after every split: no patient in both training and checking, no test patient anywhere in
+      training, and nobody lost. The split is saved in nnU-Net's own file format, so nnU-Net, our U-Net and Swin UNETR
+      all train and check on the very same people.</p>
+      <p><b>Why average five models?</b> Each fold's model saw a slightly different 284 patients. Averaging their
+      likelihoods on the test patients is steadier than trusting any one of them, and it means no model is
+      chosen by looking at test scores.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch17" data-stage="12" data-title="Improving: what worked">
-    <div class="ch-head"><div><div class="ch-num">Chapter 17</div><h2>Improving: what worked</h2></div></div>
-    <p>Lowering the tumour cut-off from 0.5 to 0.3, chosen on the checking folds, raised our U-Net from 0.412 to
-    0.506 Dice and fixed outlines that were about 40% too small. On the locked test set: nnU-Net 0.591, our U-Net 0.468.
-    Swin UNETR looks most promising so far (about 0.52 on fold 0, against 0.45).</p>
-    <p class="planned">A cut-off slider that grows and shrinks the outline as the Dice score changes.</p>
+    <div class="ch-head"><div><div class="ch-num">Chapter 17</div><h2>Improving: what worked, and what didn't</h2></div></div>
+    <p>The model doesn't answer yes or no per voxel. It gives a <b>likelihood</b> from 0 to 1, and a <b>cut-off</b>
+    turns that into an outline: above it is tumour, below it is not. The usual cut-off is 0.5. But our model was
+    timid: near the tumour's edges it often said 0.35 or 0.4, so a 0.5 cut-off drew outlines that were too small.</p>
+    <div class="pf"><div class="problem"><b>Problem</b>Outlines 39% too small on the test, and about 40% too small on
+    the checking folds. Training a new model would take days.</div>
+    <div class="fix"><b>Fix</b>Keep the trained model and lower the cut-off. Try 0.2, 0.3, 0.4 and 0.5 <b>on the
+    checking folds only</b>, and keep the best: 0.3.</div></div>
+
+    <div class="widget" id="cut-widget">
+      <div class="two-col">
+        <div>
+          <canvas id="cut-canvas" class="plot" width="280" height="280" aria-label="The model's likelihood map, with the outline at the chosen cut-off"></canvas>
+          <p class="caption">Orange shading = the model's likelihood. Orange line = outline at the cut-off. Green dashed =
+          the expert's outline.</p>
+        </div>
+        <div>
+          <div class="sliders one">
+            <label>cut-off <input type="range" id="cut-v" min="0.1" max="0.8" step="0.01" value="0.5"><span id="cut-vv"></span></label>
+          </div>
+          <div class="dice-sum mono" id="cut-sum"></div>
+          <h3 class="mini">Our real checking folds (5-fold mean Dice)</h3>
+          <div class="bars" id="cut-bars"></div>
+        </div>
+      </div>
+    </div>
+    <p>One number changed, no new training, and the checking score went from <b>0.412 to 0.506</b>. Then, with the
+    choice already made, the locked test was run again:</p>
+    <table class="tt why">
+      <tr><th>On the 60 test patients</th><th>Our U-Net, cut-off 0.5</th><th>Our U-Net, cut-off 0.3</th><th>nnU-Net</th></tr>
+      <tr><td>Dice</td><td>0.468</td><td><b>0.533</b></td><td>0.591</td></tr>
+      <tr><td>Found</td><td>40 of 60</td><td>43 of 60</td><td>47 of 60</td></tr>
+      <tr><td>Size</td><td>−39%</td><td><b>−9%</b></td><td>−6.5%</td></tr>
+      <tr><td>Small tumours</td><td>0.244</td><td>0.266</td><td>0.449</td></tr>
+      <tr><td>Medium tumours</td><td>–</td><td><b>0.682</b></td><td>0.639</td></tr>
+      <tr><td>Large tumours</td><td>–</td><td>0.693</td><td>0.720</td></tr>
+    </table>
+    <p>Our U-Net now reaches 90% of nnU-Net's score and is <b>ahead on medium-sized tumours</b>. What remains of the gap is almost
+    all small tumours.</p>
+
+    <h3>The hall of attempts</h3>
+    <p>Lots of other ideas were tried, each changing <b>one thing</b> from our U-Net and trained on fold 0. Its
+    checking score to beat was 0.450.</p>
+    <div class="widget" id="hall-widget">
+      <div class="hall" id="hall"></div>
+      <div class="btns"><button type="button" id="hall-band" aria-pressed="true">Show what chance alone does</button></div>
+      <p class="caption">Fold 0 checking Dice for each change. The line is our U-Net (0.450). The shaded band is
+      ±0.05: the same model, retrained with nothing changed but its random start, scored 0.496.</p>
+    </div>
+    <p>That top row is the most useful result of all. Retrain the <i>same</i> model with a different random start and
+    the score moves by about 0.05. So almost every change lands inside the band: it may help a little or hurt a little,
+    but one run can't tell. Only three stand clearly above it: the <b>bigger block</b>, the <b>combination</b>
+    (which turns out to be the bigger block's gain) and <b>Swin UNETR</b>. One is clearly below: nnU-Net's optimizer,
+    whose settings suit nnU-Net's own training but not ours.</p>
+    <p>Two more clues point the same way. Using only a quarter of the patients scored about the same as using all of
+    them, and the model scores about as well on its own training patients (0.55) as on new ones (0.54). It isn't
+    memorising, it's <b>under-fitting</b>: it can't even fit what it has seen. More data won't fix that. More context
+    will, which is exactly what a bigger block gives.</p>
+    <div class="analogy">The chief tried a dozen new routines on the team. Most made no difference you could tell apart
+    from a good or bad week. What really helped was handing each trainee a bigger piece of the map.</div>
+    <div class="detailed">
+      <p><b>The bigger block</b> is 64 × 192 × 192 voxels instead of 48 × 160 × 160: about twice the volume, roughly
+      19 × 19 × 19 cm. The model sees more of the chest around each tumour, which helps it tell a tumour from a
+      blood vessel or the chest wall.</p>
+      <p><b>Running now:</b> the bigger block on all 5 folds with the cut-off chosen on checking, then the final test
+      again. Every new idea now runs with two random starts, so its result can be told apart from chance. Also
+      queued: an even bigger block, twice as many steps, half the blocks centred on tumour, and a loss that punishes
+      missed tumour more than extra outline (Tversky).</p>
+      <p><b>The hard cases.</b> 11 of the 60 test patients are missed by <i>both</i> models (Dice 0.1 or less). They set
+      a ceiling for everyone, so the next step is to look at those scans before blaming any model.</p>
+    </div>
   </section>
 
   <!-- ===================== PART 5 ===================== -->
@@ -483,16 +1248,137 @@ for step in range(2000):
 
   <section class="chapter" id="ch18" data-stage="13" data-title="A lung CT through the system">
     <div class="ch-head"><div><div class="ch-num">Chapter 18</div><h2>A lung CT through the system</h2></div></div>
-    <p>One public scan, from file to outline: prepared, cut into blocks, run through the model, stitched back
-    together and drawn on the scan.</p>
-    <p class="planned">Showpieces (WebGL): a block moving through the network; then the scan with the model's and the expert's outlines.</p>
+    <p>Everything so far comes together here. Training is finished, and five trained models sit on disk, one per fold.
+    A new scan arrives, one no model has seen. This is what happens to it, from file to outline.</p>
+
+    <div class="widget" id="pipe-widget">
+      <canvas id="pipe-canvas" width="560" height="300" aria-label="One step of turning a CT scan into a tumour outline"></canvas>
+      <div class="btns" id="pipe-steps">
+        <button type="button" data-pipe="0">1 Read</button>
+        <button type="button" data-pipe="1">2 Brightness</button>
+        <button type="button" data-pipe="2">3 Blocks</button>
+        <button type="button" data-pipe="3">4 Five models</button>
+        <button type="button" data-pipe="4">5 Stitch</button>
+        <button type="button" data-pipe="5">6 Cut-off</button>
+        <button type="button" data-pipe="6">7 Outline</button>
+      </div>
+      <p class="attn-note" id="pipe-note"></p>
+    </div>
+
+    <h3>The result, in 3D</h3>
+    <p>A tumour is a 3D shape, and so are both outlines. Below, the scan's slices are stacked as they are in the body.
+    Drag to turn the stack, and move the slider to step through it slice by slice, the way a doctor scrolls through
+    a scan.</p>
+    <div class="widget" id="scan3d-widget">
+      <div class="scan3d-wrap">
+        <div id="scan3d" role="img" aria-label="CT slices stacked in 3D with the expert's and the model's tumour outlines on each slice">
+          <p class="u3d-msg" id="scan3d-msg">Loading the 3D view…</p>
+        </div>
+        <div>
+          <canvas id="scan3d-slice" class="plot" width="280" height="280" aria-label="The chosen slice, with both outlines"></canvas>
+          <p class="mono stat" id="scan3d-stat"></p>
+        </div>
+      </div>
+      <div class="sliders one">
+        <label>slice <input type="range" id="scan3d-z" min="0" max="23" step="1" value="12"><span id="scan3d-zv"></span></label>
+      </div>
+      <div class="btns">
+        <button type="button" id="scan3d-expert" aria-pressed="true">Expert outline</button>
+        <button type="button" id="scan3d-model" aria-pressed="true">Model outline</button>
+      </div>
+      <p class="caption">Green = the expert's outline, orange = the model's. A drawn case, not a real patient:
+      24 slices of the chest from chapter 14, with the tumour growing and shrinking through them.</p>
+    </div>
+    <p>Notice where the two differ: mostly at the top and bottom of the tumour, where it is smallest on the slice.
+    Those are the same thin edges where small tumours get missed (chapter 17). Judging an outline on one slice is
+    not enough; Dice is counted over the whole 3D shape.</p>
+    <div class="analogy">The case comes in. Each of the five study groups works through the whole archive, map piece
+    by map piece. The chief lays all their sketches over each other, keeps the boundary most of them agree on, and
+    hands it to the senior doctor to check.</div>
+    <div class="detailed">
+      <p><b>Overlapping blocks.</b> Blocks move half a block at a time, so every voxel is seen in several blocks and in
+      different positions within them. A filter near a block's edge sees less around it, so averaging the overlaps
+      evens out the weak edges. For a scan of 112 × 512 × 512 that is 4 × 6 × 6 = 144 blocks per model, 720 runs in
+      all.</p>
+      <p><b>Why keep only the largest piece?</b> The question is “outline the main tumour” (GTV-1, chapter 14), so a
+      small separate spot is most likely a false alarm. The catch: if a false alarm is bigger than a small real
+      tumour, the real one gets thrown away. Keeping the piece the model is most <i>sure</i> of, instead of the
+      biggest, is one of the ideas being tested.</p>
+      <p><b>The output</b> is saved in the same 3D format as the input (NIfTI), with the same spacing and position, so
+      it can be laid over the scan in any viewer and scored against the expert's outline voxel by voxel.</p>
+    </div>
   </section>
 
   <section class="chapter" id="ch19" data-stage="13" data-title="Where it goes next">
     <div class="ch-head"><div><div class="ch-num">Chapter 19</div><h2>Where it goes next</h2></div></div>
-    <p>What it would take to help in a hospital, and explaining a result three ways: for a patient, for a doctor,
-    and for a scientist.</p>
-    <p class="planned">One result, explained at the three levels.</p>
+    <p>A number like “Dice 0.533” means different things to different people. Here is one result, explained three
+    ways.</p>
+
+    <div class="widget" id="three-widget">
+      <div class="two-col">
+        <div>
+          <canvas id="three-canvas" class="plot" width="280" height="280" aria-label="The chosen slice, drawn for the chosen reader"></canvas>
+        </div>
+        <div>
+          <div class="btns" id="three-tabs" role="tablist">
+            <button type="button" role="tab" data-who="patient">For a patient</button>
+            <button type="button" role="tab" data-who="doctor">For a doctor</button>
+            <button type="button" role="tab" data-who="scientist">For a scientist</button>
+          </div>
+          <div class="three-text" id="three-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <h3>From a research result to something a hospital could use</h3>
+    <p>Our U-Net now reaches 90% of nnU-Net's score, but neither model is ready to help with a real patient. This is
+    the road from here, and where we are on it.</p>
+    <div class="widget" id="road-widget">
+      <ol class="road" id="road">
+        <li data-state="done"><b>A fair test on public scans.</b> 415 patients, a locked test group, every choice made
+        on checking folds. nnU-Net 0.591, our U-Net 0.533.</li>
+        <li data-state="now"><b>Lock in the bigger block.</b> It helped most on fold 0 (+0.095). Now running on all 5
+        folds, then the final test again. New ideas run twice, so chance can be told apart.</li>
+        <li data-state="next"><b>Small tumours.</b> The whole remaining gap. Ideas queued: half the blocks on tumour, a
+        loss that punishes misses more, keeping the most confident piece. And a careful look at the 11 test patients
+        both models miss.</li>
+        <li data-state="next"><b>Another hospital's scans.</b> Our scans all come from one hospital. Testing once on a
+        different public collection (NSCLC-Radiogenomics, from Stanford) shows whether the model still works on other
+        scanners and patients.</li>
+        <li data-state="next"><b>How much do doctors disagree?</b> A public set where five cancer doctors outlined the
+        same tumours gives the real ceiling: a model can't be judged against one expert more strictly than experts
+        agree with each other.</li>
+        <li data-state="next"><b>Does it matter for treatment?</b> In radiotherapy the outline decides where the
+        radiation goes. The real test of an outline is whether its errors change the dose the tumour gets.</li>
+        <li data-state="later"><b>Approval before any hospital data.</b> Only public data is used now. Using a
+        hospital's own scans needs both the hospital and the university to agree first, and the data never leaves
+        where it is allowed to be.</li>
+        <li data-state="later"><b>A medical device, with a doctor in charge.</b> To be used on patients, software like
+        this must be approved as a medical device. Even then it only suggests an outline; a doctor always checks and
+        corrects it.</li>
+      </ol>
+      <p class="caption"><span class="road-key done">done</span> <span class="road-key now">running now</span>
+      <span class="road-key next">next</span> <span class="road-key later">needs others to agree</span></p>
+    </div>
+
+    <div class="pf"><div class="problem"><b>What this is not</b>This is a research project. Nothing on this page has
+    been used on a patient, and no hospital's own scans were used.</div>
+    <div class="fix"><b>What it is</b>A careful, open attempt at a hard problem: every step on public data, every
+    score from patients no model saw, and the failures shown next to the successes.</div></div>
+    <div class="analogy">The team has passed its exams on old cases. Before it works a real case, it must be tested in
+    another city, compared with how much senior detectives disagree among themselves, and given a licence. Even
+    then, a senior detective signs off every report.</div>
+    <p>That is the whole story: one neuron weighing two inputs, a team of them, filters that slide over pictures,
+    a network that zooms out to understand and back in to outline, the same idea in 3D, and a fair way to test it on
+    real lung scans. Thank you for reading.</p>
+    <div class="detailed">
+      <p><b>Where the numbers come from.</b> Every result on this page is from the project's own experiment log:
+      test scores from the 60 locked patients, everything else from the checking folds. Where a drawing only shows an
+      idea (the scans in chapters 14 and 18, the training guesses in chapter 15, the dot sizes in chapter 16), its
+      caption says so.</p>
+      <p><b>Data.</b> NSCLC-Radiomics (Aerts and colleagues), from The Cancer Imaging Archive (TCIA), shared under
+      CC BY-NC 3.0. No clinic or hospital data is used anywhere in this project.</p>
+    </div>
   </section>
 
 </main>
@@ -724,7 +1610,7 @@ chapters.forEach(c => io.observe(c));
 showStage(0);
 
 /* ---------- table of contents and Simple / Detailed switches ---------- */
-const BUILT = new Set(['ch1', 'ch2', 'ch3', 'ch4']);
+const BUILT = new Set(['ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10', 'ch11', 'ch12', 'ch13', 'ch14', 'ch15', 'ch16', 'ch17', 'ch18', 'ch19']);
 document.getElementById('toc').innerHTML = chapters.map((c, i) => {
   const part = c.previousElementSibling && c.previousElementSibling.classList.contains('part-head')
     ? c.previousElementSibling.textContent.split('·')[0].trim() : '';
@@ -1034,7 +1920,7 @@ function makeScene(name, widget, duration, frame, onStop) {
   const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'replay'; btn.textContent = '↻ Play animation';
   widget.prepend(cap); widget.appendChild(btn);
   function tick(now) {
-    frame(((now - t0) / 1000) % duration);
+    frame((Math.max(0, now - t0) / 1000) % duration);   // the first frame's timestamp can be a little before t0
     raf = requestAnimationFrame(tick);
   }
   function play() { stop(); played = true; btn.hidden = true; t0 = performance.now(); raf = requestAnimationFrame(tick); }
@@ -1045,7 +1931,8 @@ function makeScene(name, widget, duration, frame, onStop) {
   }
   btn.addEventListener('click', play);
   // touching any control means the reader wants to drive it themselves
-  ['pointerdown', 'keydown'].forEach(ev => widget.addEventListener(ev, e => { if (e.target !== btn) stop(); }, true));
+  // (and if they touch it before the animation has started, it should not start later and undo their choice)
+  ['pointerdown', 'keydown'].forEach(ev => widget.addEventListener(ev, e => { if (e.target !== btn) { played = true; stop(); } }, true));
   new IntersectionObserver(([en]) => {
     if (en.isIntersecting && !played && !reduceMotion) play();
     else if (!en.isIntersecting) stop();
@@ -1088,6 +1975,1679 @@ let learnAuto = false;
 new IntersectionObserver(([en]) => {
   if (en.isIntersecting && !learnAuto && !reduceMotion) { learnAuto = true; newNet(); setRunning(true); loop(); }
 }, { threshold: .45 }).observe(document.querySelector('#ch4 .widget'));
+
+/* ---------- shared: picture colours ---------- */
+function mixHex(a, b, k) {
+  const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const A = p(a), B = p(b);
+  return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * k)).join(',')})`;
+}
+// a picture pixel: 0 = dark background, 1 = bright
+const pix = v => mixHex('#1f2933', '#fbfaf6', Math.max(0, Math.min(1, v)));
+
+/* ---------- chapter 5: a 3 × 3 filter sliding over a 10 × 10 picture ---------- */
+const PICTURE = [
+  '0000000000',
+  '0001221000',
+  '0026886200',
+  '0169999610',
+  '0289999820',
+  '0289999820',
+  '0169999610',
+  '0026886200',
+  '0001221000',
+  '0000000000',
+].map(r => [...r].map(Number));
+const FILTERS = [
+  { name: 'edge filter', k: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], div: 1,
+    cap: 'Edge filter: zero where the picture is flat, strong where the brightness changes. It traces the border.' },
+  { name: 'blur filter (÷ 9)', k: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], div: 9,
+    cap: 'Blur filter: the average of 9 neighbours. A softer copy of the picture.' },
+  { name: 'vertical-edge filter', k: [[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]], div: 1,
+    cap: 'Vertical-edge filter: right column minus left column. Orange on the spot\'s left side, green on its right.' },
+];
+let convF = 0, convPos = 63, convPick = null;   // filter, last computed cell (0..63), clicked cell
+function convAt(f, r, c) {
+  const { k, div } = FILTERS[f];
+  let s = 0;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) s += k[i][j] * PICTURE[r + i][c + j];
+  return s / div;
+}
+function outColour(v, f) {
+  const max = f === 1 ? 9 : 30;
+  const k = Math.min(1, Math.abs(v) / max);
+  if (f === 1) return pix(v / 9);
+  return v >= 0 ? mixHex('#ffffff', col('mask'), k) : mixHex('#ffffff', col('signal'), k);
+}
+function drawConv() {
+  const C = 28, f = convF, F = FILTERS[f];
+  const cur = convPick ?? convPos, cr = Math.floor(cur / 8), cc = cur % 8;
+  let g = '';
+  PICTURE.forEach((row, r) => row.forEach((v, c) => {
+    g += `<rect x="${c * C}" y="${r * C}" width="${C}" height="${C}" fill="${pix(v / 9)}"/>` +
+      `<text x="${c * C + C / 2}" y="${r * C + C / 2 + 4}" font-size="11" text-anchor="middle" font-family="JetBrains Mono, monospace" fill="${v > 4 ? '#1f2933' : '#fbfaf6'}">${v}</text>`;
+  }));
+  if (cur >= 0) g += `<rect x="${cc * C}" y="${cr * C}" width="${3 * C}" height="${3 * C}" fill="none" stroke="${col('mask')}" stroke-width="4" rx="3"/>`;
+  document.getElementById('conv-in').innerHTML = g;
+
+  g = '';
+  F.k.forEach((row, i) => row.forEach((w, j) => {
+    const fill = w > 0 ? col('mask-soft') : w < 0 ? col('signal-soft') : col('panel');
+    g += `<rect x="${j * 32}" y="${i * 32}" width="32" height="32" fill="${fill}" stroke="${col('line')}"/>` +
+      `<text x="${j * 32 + 16}" y="${i * 32 + 21}" font-size="13" text-anchor="middle" font-family="JetBrains Mono, monospace" fill="${col('ink')}">${w}</text>`;
+  }));
+  document.getElementById('conv-k').innerHTML = g;
+  document.getElementById('conv-kname').textContent = F.name;
+
+  g = '';
+  for (let i = 0; i < 64; i++) {
+    const r = Math.floor(i / 8), c = i % 8, done = convPick !== null || i <= convPos;
+    const v = convAt(f, r, c);
+    g += `<rect x="${c * C}" y="${r * C}" width="${C}" height="${C}" fill="${done ? outColour(v, f) : col('bg')}" stroke="${col('line')}" stroke-width=".5" data-i="${i}" style="cursor:pointer"/>`;
+    if (done) g += `<text x="${c * C + C / 2}" y="${r * C + C / 2 + 4}" font-size="10" text-anchor="middle" font-family="JetBrains Mono, monospace" fill="${f === 1 && v > 4 ? '#1f2933' : f === 1 ? '#fbfaf6' : col('ink')}" pointer-events="none">${Number.isInteger(v) ? v : v.toFixed(1)}</text>`;
+  }
+  if (cur >= 0) g += `<rect x="${cc * C}" y="${cr * C}" width="${C}" height="${C}" fill="none" stroke="${col('mask')}" stroke-width="3" pointer-events="none"/>`;
+  document.getElementById('conv-out').innerHTML = g;
+
+  if (cur >= 0) {
+    const terms = [];
+    F.k.forEach((row, i) => row.forEach((w, j) => { if (w) terms.push(`${w}×${PICTURE[cr + i][cc + j]}`); }));
+    const v = convAt(f, cr, cc);
+    document.getElementById('conv-sum').textContent =
+      `${F.div > 1 ? '(' : ''}${terms.join(' + ').replace(/\+ -/g, '− ')}${F.div > 1 ? ') ÷ 9' : ''} = ${Number.isInteger(v) ? v : v.toFixed(2)}`;
+  } else document.getElementById('conv-sum').textContent = 'Press ▶ Slide to watch the filter move.';
+}
+function setFilter(f) { convF = f; document.querySelectorAll('[data-filter]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.filter === f)); }
+document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => {
+  setFilter(+b.dataset.filter); convPick = null; convPos = 63; drawConv(); setCaption('conv', FILTERS[convF].cap);
+}));
+document.getElementById('conv-out').addEventListener('click', e => {
+  const i = e.target.dataset && e.target.dataset.i;
+  if (i !== undefined) { convPick = +i; drawConv(); }
+});
+let convRaf = null;
+document.getElementById('conv-play').addEventListener('click', () => {
+  cancelAnimationFrame(convRaf); convPick = null;
+  const t0 = performance.now();
+  (function tick(now) {
+    convPos = Math.min(63, Math.floor((now - t0) / 1000 * 8) - 1);
+    drawConv();
+    if (convPos < 63) convRaf = requestAnimationFrame(tick);
+  })(t0);
+});
+setFilter(0); drawConv();
+
+/* ---------- chapter 6: filter + pool, four times, down to one answer ---------- */
+let spot = { x: 5.5, y: 6 };
+function zoomLevels() {
+  // a 16 × 16 picture: a soft bright spot, plus a little fixed texture so it looks like a real picture
+  const L0 = [];
+  for (let r = 0; r < 16; r++) {
+    L0.push([]);
+    for (let c = 0; c < 16; c++) {
+      const d2 = (c + .5 - spot.x) ** 2 + (r + .5 - spot.y) ** 2;
+      const tex = .08 * (Math.sin(r * 12.9898 + c * 78.233) * 43758.5453 % 1 + 1) / 2;
+      L0[r].push(Math.min(1, Math.exp(-d2 / 3.2) + tex));
+    }
+  }
+  const levels = [L0];
+  while (levels[levels.length - 1].length > 1) {
+    const P = levels[levels.length - 1], n = P.length / 2, Q = [];
+    for (let r = 0; r < n; r++) {
+      Q.push([]);
+      for (let c = 0; c < n; c++) Q[r].push(Math.max(P[2 * r][2 * c], P[2 * r][2 * c + 1], P[2 * r + 1][2 * c], P[2 * r + 1][2 * c + 1]));
+    }
+    levels.push(Q);
+  }
+  return levels;   // 16, 8, 4, 2, 1
+}
+const ZOOM_X = [8, 238, 400, 530, 600], ZOOM_PX = [192, 128, 96, 64, 36];
+function drawZoom(shown) {   // shown: how many levels are visible (1..5), can be fractional for a fade
+  const cv = document.getElementById('zoom-canvas'), dpr = window.devicePixelRatio || 1;
+  cv.width = 640 * dpr; cv.height = 240 * dpr;
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, 640, 240);
+  const levels = zoomLevels(), top = 18;
+  ctx.font = '12px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+  levels.forEach((L, k) => {
+    const a = Math.max(0, Math.min(1, shown - k));
+    if (a <= 0) return;
+    ctx.globalAlpha = a;
+    const n = L.length, size = ZOOM_PX[k], cell = size / n, x0 = ZOOM_X[k], y0 = top + (192 - size) / 2;
+    L.forEach((row, r) => row.forEach((v, c) => { ctx.fillStyle = pix(v); ctx.fillRect(x0 + c * cell, y0 + r * cell, Math.ceil(cell), Math.ceil(cell)); }));
+    ctx.strokeStyle = col('line'); ctx.lineWidth = 1; ctx.strokeRect(x0, y0, size, size);
+    ctx.fillStyle = col('muted');
+    ctx.fillText(k === 4 ? 'answer' : `${n} × ${n}`, x0 + size / 2, top + 192 + 20);
+    if (k > 0) {
+      // arrow from the previous level
+      const px = ZOOM_X[k - 1] + ZOOM_PX[k - 1] + 6, ax = x0 - 6, ay = top + 96;
+      ctx.strokeStyle = col('muted'); ctx.beginPath(); ctx.moveTo(px, ay); ctx.lineTo(ax, ay); ctx.lineTo(ax - 6, ay - 4); ctx.moveTo(ax, ay); ctx.lineTo(ax - 6, ay + 4); ctx.stroke();
+      ctx.fillText('pool', (px + ax) / 2, ay - 8);
+      // what one cell at this level can see on the picture: the brightest cell's square, 2^k pixels wide
+      let br = 0, bc = 0;
+      L.forEach((row, r) => row.forEach((v, c) => { if (v > L[br][bc]) { br = r; bc = c; } }));
+      const span = 2 ** k, s0 = ZOOM_PX[0] / 16;
+      ctx.strokeStyle = col('mask'); ctx.lineWidth = k === 4 ? 3 : 2;
+      ctx.strokeRect(ZOOM_X[0] + bc * span * s0 + 1, top + br * span * s0 + 1, span * s0 - 2, span * s0 - 2);
+      ctx.strokeRect(x0 + bc * cell + 1, y0 + br * cell + 1, cell - 2, cell - 2);
+    }
+    if (k === 4) {
+      const v = L[0][0];
+      ctx.fillStyle = col(v > .5 ? 'mask' : 'ink'); ctx.font = 'bold 15px Atkinson Hyperlegible, sans-serif';
+      ctx.fillText(v > .5 ? 'YES' : 'NO', x0 + size / 2, y0 - 10);
+      ctx.font = '12px JetBrains Mono, monospace';
+    }
+    ctx.globalAlpha = 1;
+  });
+  ctx.textAlign = 'left';
+}
+let zoomShown = 5, zoomRaf = null;
+function playZoom() {
+  cancelAnimationFrame(zoomRaf);
+  const t0 = performance.now();
+  (function tick(now) {
+    zoomShown = 1 + Math.min(4, (now - t0) / 700);
+    drawZoom(zoomShown);
+    if (zoomShown < 5) zoomRaf = requestAnimationFrame(tick);
+  })(t0);
+}
+function moveSpot() {
+  // pick a new place, well away from the old one
+  let nx, ny;
+  do { nx = 2.5 + Math.random() * 11; ny = 2.5 + Math.random() * 11; } while (Math.hypot(nx - spot.x, ny - spot.y) < 5);
+  spot = { x: nx, y: ny };
+}
+document.getElementById('zoom-play').addEventListener('click', playZoom);
+document.getElementById('zoom-move').addEventListener('click', () => {
+  moveSpot(); drawZoom(zoomShown);
+  setCaption('zoom', 'The spot moved, but the answer is the same YES. Nothing in it says where the spot is.');
+});
+drawZoom(5);
+
+// autoplay: chapter 5 slides each filter in turn; chapter 6 zooms out, then moves the spot
+makeScene('conv', document.getElementById('conv-widget'), 33, t => {
+  const f = Math.floor(t / 11), local = t % 11;
+  if (f !== convF) setFilter(f);
+  convPick = null;
+  convPos = Math.min(63, Math.floor(local * 8) - 1);
+  drawConv();
+  setCaption('conv', FILTERS[f].cap);
+}, () => { convPos = 63; drawConv(); });
+
+let zoomLastT = 0;
+makeScene('zoom', document.getElementById('zoom-widget'), 13, t => {
+  if (t < zoomLastT) moveSpot();          // each new round, the spot is somewhere else
+  zoomLastT = t;
+  drawZoom(1 + Math.min(4, Math.max(0, t - 1) / .9));
+  setCaption('zoom', t < 1 ? 'A 16 × 16 picture with a bright spot.'
+    : t < 5 ? 'Filter and pool, again and again: half the size each time, and each cell sees twice as far.'
+    : t < 9 ? 'One cell is left. It sees the whole picture: YES, there is a spot.'
+    : 'Next round, the spot moves. Watch: the answer does not change. Where it is has been lost.');
+}, () => drawZoom(5));
+
+/* ---------- chapters 7–8: one lumpy shape, outlined three ways ---------- */
+const SN = 32;
+const grid2 = (n, f) => Array.from({ length: n }, (_, r) => Array.from({ length: n }, (_, c) => f(r, c)));
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const sig = z => 1 / (1 + Math.exp(-z));
+// the shape: a main body with four lumps of different sizes
+const BUMPS = [[15.5, 16, 6.2], [22.5, 11, 3.6], [9.5, 22.5, 3.4], [21.5, 22.5, 2.6], [9.5, 10, 2.8]];
+const shapeField = grid2(SN, (r, c) => BUMPS.reduce((s, [x, y, rad]) => s + Math.exp(-((c + .5 - x) ** 2 + (r + .5 - y) ** 2) / rad ** 2), 0));
+const TRUTH = shapeField.map(row => row.map(f => f > .5 ? 1 : 0));
+const noise = (r, c) => ((Math.sin(r * 91.7 + c * 47.3) * 9631.17) % 1 + 1) % 1;
+const SHAPE_PIC = grid2(SN, (r, c) => clamp01(.1 + .8 * sig(12 * (shapeField[r][c] - .5)) + .12 * (noise(r, c) - .5)));
+
+function poolAvg(img) {
+  const n = img.length / 2;
+  return grid2(n, (r, c) => (img[2 * r][2 * c] + img[2 * r][2 * c + 1] + img[2 * r + 1][2 * c] + img[2 * r + 1][2 * c + 1]) / 4);
+}
+function up2(img) {   // double the size, filling in smoothly between the old pixels
+  const n = img.length, m = 2 * n, at = (r, c) => img[Math.max(0, Math.min(n - 1, r))][Math.max(0, Math.min(n - 1, c))];
+  return grid2(m, (r, c) => {
+    const y = (r + .5) / 2 - .5, x = (c + .5) / 2 - .5, y0 = Math.floor(y), x0 = Math.floor(x), fy = y - y0, fx = x - x0;
+    return at(y0, x0) * (1 - fy) * (1 - fx) + at(y0, x0 + 1) * (1 - fy) * fx + at(y0 + 1, x0) * fy * (1 - fx) + at(y0 + 1, x0 + 1) * fy * fx;
+  });
+}
+const upTo = (img, n) => { while (img.length < n) img = up2(img); return img; };
+const toMask = img => img.map(row => row.map(v => v > .5 ? 1 : 0));
+function overlap(a, b) {   // Dice: 2 × shared pixels ÷ (pixels in a + pixels in b)
+  let both = 0, na = 0, nb = 0;
+  a.forEach((row, r) => row.forEach((v, c) => { both += v && b[r][c]; na += v; nb += b[r][c]; }));
+  return 2 * both / (na + nb || 1);
+}
+const PIC_LEVELS = [SHAPE_PIC];
+while (PIC_LEVELS.length < 4) PIC_LEVELS.push(poolAvg(PIC_LEVELS[PIC_LEVELS.length - 1]));   // 32, 16, 8, 4
+
+// method 1: one small patch per pixel
+const PATCH = 2;   // 5 × 5 patch
+const PATCH_MASK = grid2(SN, (r, c) => {
+  let s = 0, n = 0;
+  for (let i = -PATCH; i <= PATCH; i++) for (let j = -PATCH; j <= PATCH; j++) {
+    const rr = r + i, cc = c + j;
+    if (rr >= 0 && rr < SN && cc >= 0 && cc < SN) { s += SHAPE_PIC[rr][cc]; n++; }
+  }
+  return s / n > .5 ? 1 : 0;
+});
+// method 2: FCN, shrink to 4 × 4 and stretch back in one go
+const FCN_PROB = upTo(PIC_LEVELS[3], SN);
+// method 3: U-Net, step back up, mixing in the sharp copy at each size when the skips are on
+function unetDecoder(skip) {
+  const dec = { 3: PIC_LEVELS[3] };
+  for (let k = 2; k >= 0; k--) {
+    const up = up2(dec[k + 1]);
+    dec[k] = skip ? grid2(up.length, (r, c) => clamp01(.3 * up[r][c] + .7 * sig(14 * (PIC_LEVELS[k][r][c] - .5)))) : up;
+  }
+  return dec;
+}
+const DEC = { true: unetDecoder(true), false: unetDecoder(false) };
+
+function drawGrid(ctx, img, x, y, size, colour = pix, alpha = 1) {
+  const n = img.length, cell = size / n;
+  ctx.globalAlpha = alpha;
+  img.forEach((row, r) => row.forEach((v, c) => {
+    ctx.fillStyle = colour(v);
+    // whole-pixel edges that meet exactly, so see-through cells do not overlap into a grid
+    const x0 = Math.round(x + c * cell), y0 = Math.round(y + r * cell);
+    ctx.fillRect(x0, y0, Math.round(x + (c + 1) * cell) - x0, Math.round(y + (r + 1) * cell) - y0);
+  }));
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = col('line'); ctx.lineWidth = 1; ctx.strokeRect(x, y, size, size);
+}
+function drawOutline(ctx, mask, x, y, size, colour, width, dash = []) {
+  const n = mask.length, cell = size / n, m = (r, c) => (r >= 0 && r < n && c >= 0 && c < n ? mask[r][c] : 0);
+  ctx.save(); ctx.strokeStyle = colour; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.lineCap = 'round';
+  ctx.beginPath();
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    if (!mask[r][c]) continue;
+    const X = x + c * cell, Y = y + r * cell;
+    if (!m(r - 1, c)) { ctx.moveTo(X, Y); ctx.lineTo(X + cell, Y); }
+    if (!m(r + 1, c)) { ctx.moveTo(X, Y + cell); ctx.lineTo(X + cell, Y + cell); }
+    if (!m(r, c - 1)) { ctx.moveTo(X, Y); ctx.lineTo(X, Y + cell); }
+    if (!m(r, c + 1)) { ctx.moveTo(X + cell, Y); ctx.lineTo(X + cell, Y + cell); }
+  }
+  ctx.stroke(); ctx.restore();
+}
+const orangeOf = v => mixHex('#ffffff', col('mask'), clamp01(v));
+function canvasCtx(id, w, h) {
+  const cv = document.getElementById(id), dpr = window.devicePixelRatio || 1;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+  ctx.textAlign = 'center'; ctx.font = '12px JetBrains Mono, monospace';
+  return ctx;
+}
+function ctxLabel(ctx, text, x, y, colour = col('muted'), font = '12px JetBrains Mono, monospace') {
+  ctx.fillStyle = colour; ctx.font = font; ctx.fillText(text, x, y);
+}
+function arrow(ctx, x1, y1, x2, y2, colour, dash = []) {
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  ctx.save(); ctx.strokeStyle = colour; ctx.fillStyle = colour; ctx.lineWidth = 2; ctx.setLineDash(dash);
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - 9 * Math.cos(a - .4), y2 - 9 * Math.sin(a - .4));
+  ctx.lineTo(x2 - 9 * Math.cos(a + .4), y2 - 9 * Math.sin(a + .4)); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+
+/* chapter 7 */
+let segMode = 'patch', segP = 1;   // segP: 0..1 progress through the method
+function drawSeg() {
+  const ctx = canvasCtx('seg-canvas', 640, 270), S = 192, top = 16, LX = 8, RX = 440;
+  drawGrid(ctx, SHAPE_PIC, LX, top, S);
+  ctxLabel(ctx, 'picture (32 × 32)', LX + S / 2, top + S + 20);
+  const cell = S / SN;
+  if (segMode === 'patch') {
+    const done = Math.floor(segP * SN * SN), cur = Math.min(SN * SN - 1, done), r = Math.floor(cur / SN), c = cur % SN;
+    if (segP < 1) {
+      ctx.strokeStyle = col('mask'); ctx.lineWidth = 2.5;
+      ctx.strokeRect(LX + (c - PATCH) * cell, top + (r - PATCH) * cell, (2 * PATCH + 1) * cell, (2 * PATCH + 1) * cell);
+    }
+    // the patch, enlarged, and the network's verdict
+    const patch = grid2(2 * PATCH + 1, (i, j) => SHAPE_PIC[Math.max(0, Math.min(SN - 1, r + i - PATCH))][Math.max(0, Math.min(SN - 1, c + j - PATCH))]);
+    drawGrid(ctx, patch, 262, top + 30, 100);
+    arrow(ctx, 215, top + 80, 255, top + 80, col('muted'));
+    arrow(ctx, 368, top + 80, 432, top + 80, col('muted'));
+    ctxLabel(ctx, PATCH_MASK[r][c] ? 'YES' : 'NO', 400, top + 70, col(PATCH_MASK[r][c] ? 'mask' : 'ink'), 'bold 15px Atkinson Hyperlegible, sans-serif');
+    ctxLabel(ctx, 'one patch = one', 312, top + 152); ctxLabel(ctx, 'network run', 312, top + 168);
+    ctxLabel(ctx, `${Math.min(done, 1024).toLocaleString()} of 1,024 runs`, 312, top + 196, col('ink'));
+    // the answers so far
+    drawGrid(ctx, SHAPE_PIC, RX, top, S, pix, .35);
+    ctx.fillStyle = hexA(col('mask'), .55);
+    for (let i = 0; i < Math.min(done, SN * SN); i++) {
+      const rr = Math.floor(i / SN), cc = i % SN;
+      if (PATCH_MASK[rr][cc]) ctx.fillRect(RX + cc * cell, top + rr * cell, cell, cell);
+    }
+    if (segP >= 1) {
+      drawOutline(ctx, PATCH_MASK, RX, top, S, col('mask'), 3);
+      ctxLabel(ctx, `overlap ${Math.round(overlap(PATCH_MASK, TRUTH) * 100)}% · but 1,024 runs`, RX + S / 2, top + S + 40, col('ink'), 'bold 13px Atkinson Hyperlegible, sans-serif');
+    }
+  } else {
+    // shrink 32 → 16 → 8 → 4, then stretch back up in one jump
+    const phase = segP * 5, k = Math.min(3, Math.floor(phase) + 1), mid = PIC_LEVELS[phase < 3 ? k : 3];
+    drawGrid(ctx, mid, 262, top + 30, 100);
+    arrow(ctx, 215, top + 80, 255, top + 80, col('muted'));
+    ctxLabel(ctx, phase < 3 ? `shrinking: ${mid.length} × ${mid.length}` : 'zoomed out: 4 × 4', 312, top + 152);
+    if (phase >= 3) {
+      arrow(ctx, 368, top + 80, 432, top + 80, col('mask'));
+      ctxLabel(ctx, 'stretch × 8', 400, top + 70, col('mask'));
+      const a = Math.min(1, (phase - 3) / 1);
+      drawGrid(ctx, FCN_PROB, RX, top, S, orangeOf, a);
+      ctxLabel(ctx, 'one network run', 312, top + 196, col('ink'));
+    } else {
+      ctx.strokeStyle = col('line'); ctx.strokeRect(RX, top, S, S);
+    }
+    if (phase >= 4) {
+      drawOutline(ctx, toMask(FCN_PROB), RX, top, S, col('mask'), 3);
+      ctxLabel(ctx, `overlap ${Math.round(overlap(toMask(FCN_PROB), TRUTH) * 100)}% · lumps lost`, RX + S / 2, top + S + 40, col('ink'), 'bold 13px Atkinson Hyperlegible, sans-serif');
+    }
+  }
+  drawOutline(ctx, TRUTH, RX, top, S, col('signal'), 2, [5, 4]);
+  ctxLabel(ctx, 'outline found', RX + S / 2, top + S + 20);
+  document.querySelectorAll('[data-seg]').forEach(b => b.setAttribute('aria-pressed', b.dataset.seg === segMode));
+}
+const SEG_CAP = {
+  patch: 'Pixel-by-pixel: a patch around every pixel, one network run each. Slow.',
+  fcn: 'FCN: shrink the whole picture once, then stretch the 4 × 4 answer back to 32 × 32. Fast, but blurry.',
+};
+let segRaf = null;
+function runSeg() {
+  cancelAnimationFrame(segRaf);
+  const t0 = performance.now(), len = segMode === 'patch' ? 8000 : 5000;
+  (function tick(now) {
+    segP = Math.min(1, (now - t0) / len); drawSeg();
+    if (segP < 1) segRaf = requestAnimationFrame(tick);
+  })(t0);
+}
+document.querySelectorAll('[data-seg]').forEach(b => b.addEventListener('click', () => {
+  segMode = b.dataset.seg; segP = 1; drawSeg(); setCaption('seg', SEG_CAP[segMode]);
+}));
+document.getElementById('seg-play').addEventListener('click', runSeg);
+drawSeg();
+
+makeScene('seg', document.getElementById('seg-widget'), 22, t => {
+  if (t < 10.5) { segMode = 'patch'; segP = Math.min(1, t / 8.5); }
+  else { segMode = 'fcn'; segP = Math.min(1, (t - 10.5) / 6); }
+  drawSeg();
+  setCaption('seg', segMode === 'patch'
+    ? (segP < 1 ? SEG_CAP.patch : 'Pixel-by-pixel: a decent outline, but it took 1,024 network runs.')
+    : (segP < 1 ? SEG_CAP.fcn : 'FCN: one run instead of 1,024, but the lumps are smoothed away.'));
+}, () => { segP = 1; drawSeg(); });
+
+/* chapter 8 */
+const U_SIZE = [112, 80, 56, 40];
+const U_LEFT = [[16, 22], [126, 120], [236, 212], [300, 292]];          // x, y of each level on the way down
+const U_RIGHT = { 2: [348, 212], 1: [434, 120], 0: [512, 22] };          // and on the way up
+let unetSkip = true, unetStep = 7;   // unetStep: 0..7, how far the picture has travelled through the U
+function drawUnet() {
+  const ctx = canvasCtx('unet-canvas', 640, 370), dec = DEC[unetSkip], st = unetStep;
+  // skip connections first, so the boxes sit on top of them
+  for (let k = 0; k < 3; k++) {
+    if (!unetSkip || st < k) continue;
+    const [lx, ly] = U_LEFT[k], [rx, ry] = U_RIGHT[k], y = ly + U_SIZE[k] / 2, live = st >= 6 - k;
+    ctx.globalAlpha = live ? 1 : .35;
+    arrow(ctx, lx + U_SIZE[k] + 6, y, rx - 8, y, col('signal'), [7, 5]);
+    ctx.globalAlpha = 1;
+    ctxLabel(ctx, 'skip', (lx + U_SIZE[k] + rx) / 2, y - 8, col('signal'));
+  }
+  // the way down
+  for (let k = 0; k < 4; k++) {
+    if (st < k) break;
+    const [x, y] = U_LEFT[k], s = U_SIZE[k], a = Math.min(1, st - k + 1);
+    drawGrid(ctx, PIC_LEVELS[k], x, y, s, pix, a);
+    const n = PIC_LEVELS[k].length;
+    ctxLabel(ctx, `${n} × ${n}`, x + s / 2, y + s + 16);
+    if (k > 0) arrow(ctx, U_LEFT[k - 1][0] + U_SIZE[k - 1] / 2 + 20, U_LEFT[k - 1][1] + U_SIZE[k - 1] + 22, x + 8, y + 4, col('muted'));
+  }
+  if (st >= 3) ctxLabel(ctx, 'bottom: knows what, not where', 320, 362, col('ink'));
+  // the way up
+  for (let k = 2; k >= 0; k--) {
+    if (st < 6 - k) break;
+    const [x, y] = U_RIGHT[k], s = U_SIZE[k], a = Math.min(1, st - (6 - k) + 1);
+    drawGrid(ctx, dec[k], x, y, s, orangeOf, a);
+    const n = dec[k].length;
+    ctxLabel(ctx, `${n} × ${n}`, x + s / 2, y + s + 16);
+    const [bx, by] = k === 2 ? U_LEFT[3] : U_RIGHT[k + 1], bs = U_SIZE[k + 1];
+    arrow(ctx, bx + bs - 8, by - 4, x + s / 2 - 20, y + s + 22, col('muted'));
+  }
+  if (st >= 7) {
+    const [x, y] = U_RIGHT[0], s = U_SIZE[0];
+    drawOutline(ctx, toMask(dec[0]), x, y, s, col('mask'), 2.5);
+    drawOutline(ctx, TRUTH, x, y, s, col('signal'), 1.5, [4, 3]);
+    const sc = Math.round(overlap(toMask(dec[0]), TRUTH) * 100);
+    ctxLabel(ctx, `overlap ${sc}%`, x + s / 2, y + s + 36, col('ink'), 'bold 14px Atkinson Hyperlegible, sans-serif');
+  }
+  const btn = document.getElementById('unet-skip');
+  btn.textContent = `Skip connections: ${unetSkip ? 'ON' : 'OFF'}`; btn.setAttribute('aria-pressed', unetSkip);
+}
+let unetRaf = null;
+function runUnet() {
+  cancelAnimationFrame(unetRaf);
+  const t0 = performance.now();
+  (function tick(now) {
+    unetStep = Math.min(7, (now - t0) / 700); drawUnet();
+    if (unetStep < 7) unetRaf = requestAnimationFrame(tick);
+  })(t0);
+}
+document.getElementById('unet-skip').addEventListener('click', () => { unetSkip = !unetSkip; runUnet(); });
+document.getElementById('unet-play').addEventListener('click', runUnet);
+drawUnet();
+
+makeScene('unet', document.getElementById('unet-widget'), 20, t => {
+  unetSkip = t < 10;
+  unetStep = Math.min(7, (unetSkip ? t : t - 10) * 1.1);
+  drawUnet();
+  setCaption('unet', unetSkip
+    ? (unetStep < 3 ? 'Down the U: shrink, so each cell sees more.'
+      : unetStep < 7 ? 'Up the U, one size at a time, with the sharp copy handed across at each size.'
+      : 'With skip connections: the lumps are back, and the outline is sharp.')
+    : (unetStep < 7 ? 'Now the same U with the skip connections switched off…'
+      : 'Without skips: rounded and blurry again, just like FCN.'));
+}, () => { unetStep = 7; drawUnet(); });
+
+/* ---------- chapter 9: on one slice, a ball and a tube look the same ---------- */
+const sliceEl = document.getElementById('slice-z');
+const BALL_R = 70, TUBE_R = 25, MID = 125;
+function ballRadiusAt(z) { const d = z * 95; return d * d < BALL_R * BALL_R ? Math.sqrt(BALL_R * BALL_R - d * d) : 0; }
+function drawSlices() {
+  const ctx = canvasCtx('slice-canvas', 640, 250), z = +sliceEl.value, y = MID + z * 95;
+  // side view: the ball and the tube, with the slice cutting through both
+  ctx.fillStyle = col('code-bg'); ctx.fillRect(8, 10, 300, 230);
+  ctx.fillStyle = '#c9cfd6';
+  ctx.beginPath(); ctx.arc(110, MID, BALL_R, 0, Math.PI * 2); ctx.fill();
+  ctx.fillRect(230 - TUBE_R, 10, 2 * TUBE_R, 230);
+  ctxLabel(ctx, 'ball', 110, MID + 5, col('ink'), 'bold 14px Atkinson Hyperlegible, sans-serif');
+  ctxLabel(ctx, 'tube', 230, 40, col('ink'), 'bold 14px Atkinson Hyperlegible, sans-serif');
+  ctx.strokeStyle = col('mask'); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(8, y); ctx.lineTo(308, y); ctx.stroke();
+  ctxLabel(ctx, 'side view: the slice', 158, 236 + 0, col('muted'));
+  arrow(ctx, 318, y, 352, 125, col('mask'));
+  // what the scanner shows on that slice: two round spots
+  ctx.fillStyle = '#1f2933'; ctx.fillRect(360, 10, 272, 210);
+  const rb = ballRadiusAt(z);
+  ctx.fillStyle = '#eef0ee';
+  if (rb > 0) { ctx.beginPath(); ctx.arc(440, 115, rb, 0, Math.PI * 2); ctx.fill(); }
+  ctx.beginPath(); ctx.arc(560, 115, TUBE_R, 0, Math.PI * 2); ctx.fill();
+  ctxLabel(ctx, 'A', 440, 205, '#c9cfd6', 'bold 14px Atkinson Hyperlegible, sans-serif');
+  ctxLabel(ctx, 'B', 560, 205, '#c9cfd6', 'bold 14px Atkinson Hyperlegible, sans-serif');
+  ctxLabel(ctx, 'what this one slice shows', 496, 236, col('muted'));
+  return rb;
+}
+function sliceCaption(rb) {
+  return rb === 0 ? 'Past the edge of the ball: only the tube is left. The tube shows on every slice.'
+    : Math.abs(rb - TUBE_R) < 7 ? 'On this slice, A and B are the same size: which one is the ball? You cannot tell.'
+    : 'Up and down through the slices, the ball grows and shrinks; the tube stays the same.';
+}
+sliceEl.addEventListener('input', () => setCaption('slice', sliceCaption(drawSlices())));
+drawSlices();
+makeScene('slice', document.getElementById('slice-widget'), 12, t => {
+  // sweep down and up, pausing where the two spots look the same
+  const k = t / 12, z = k < .25 ? lerp(.72, -.9, seg(k, 0, .25)) : k < .5 ? lerp(-.9, .72, seg(k, .25, .5)) : k < .75 ? .72 : lerp(.72, .98, seg(k, .75, .9));
+  sliceEl.value = z;
+  setCaption('slice', k >= .5 && k < .75 ? 'On this slice, A and B are the same size: which one is the ball? You cannot tell.' : sliceCaption(drawSlices()));
+  drawSlices();
+});
+
+/* ---------- chapter 9: a 3D U-Net in WebGL (Three.js is loaded only when the reader gets close) ---------- */
+const THREE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+const ORBIT_SRC = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
+function loadScript(src) {
+  return new Promise((ok, fail) => {
+    const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = fail; document.head.appendChild(s);
+  });
+}
+let threePromise = null;   // chapters 9 and 18 share one download
+const threeReady = () => threePromise || (threePromise = loadScript(THREE_SRC).then(() => loadScript(ORBIT_SRC)));
+new IntersectionObserver(([en], obs) => {
+  if (!en.isIntersecting) return;
+  obs.disconnect();
+  threeReady().then(initUnet3d).catch(() => {
+    document.getElementById('u3d-msg').textContent = 'The 3D view could not load. Check the internet connection and reload the page.';
+  });
+}, { rootMargin: '700px' }).observe(document.getElementById('u3d-widget'));
+
+function initUnet3d() {
+  const wrap = document.getElementById('u3d');
+  const probe = document.createElement('canvas');
+  if (!(probe.getContext('webgl') || probe.getContext('experimental-webgl'))) {
+    document.getElementById('u3d-msg').textContent = 'This browser cannot show 3D (WebGL is turned off).';
+    return;
+  }
+  document.getElementById('u3d-msg').remove();
+  const hex = n => new THREE.Color(col(n));
+  let W = wrap.clientWidth, H = wrap.clientHeight;
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(W, H); renderer.setClearColor(0xffffff);
+  wrap.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, W / H, .1, 100);
+  const HOME = new THREE.Vector3(-1.2, 4.2, 13.8), HOME_TARGET = new THREE.Vector3(0, -1.6, 0);
+  // on narrow screens, stand further back so the whole U still fits across
+  const homeFor = () => HOME_TARGET.clone().add(HOME.clone().sub(HOME_TARGET).multiplyScalar(Math.max(1, 1.65 / (W / H))));
+  camera.position.copy(homeFor());
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.target.copy(HOME_TARGET); controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true;
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xe6e1d6, .95));
+  const sun = new THREE.DirectionalLight(0xffffff, .55); sun.position.set(3, 6, 5); scene.add(sun);
+
+  // the U: levels get smaller (the scan block halves) and thicker (more feature maps)
+  const SIZE = [2.3, 1.55, 1.05, .72], THICK = [.16, .28, .44, .66], Y = [0, -1.3, -2.6, -3.8];
+  const ENC_X = [-4.2, -2.75, -1.45, 0], DEC_X = [4.2, 2.75, 1.45];
+  const TEXT = ['full · 32 maps', '½ · 64 maps', '¼ · 128 maps', '⅛ · 256 maps'];
+  const blocks = [];   // { mesh, time } so a block can glow when the data reaches it
+  function block(x, y, k, colourName) {
+    const g = new THREE.BoxGeometry(THICK[k], SIZE[k], SIZE[k]);
+    const m = new THREE.MeshStandardMaterial({ color: hex(colourName), roughness: .6, transparent: true, opacity: .88, emissive: hex(colourName), emissiveIntensity: 0 });
+    const mesh = new THREE.Mesh(g, m); mesh.position.set(x, y, 0); scene.add(mesh);
+    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({ color: 0x1f2933, transparent: true, opacity: .35 }));
+    mesh.add(edges);
+    return mesh;
+  }
+  const line = (pts, colour, dashed) => {
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = dashed ? new THREE.LineDashedMaterial({ color: colour, dashSize: .18, gapSize: .12 }) : new THREE.LineBasicMaterial({ color: colour });
+    const l = new THREE.Line(geo, mat); if (dashed) l.computeLineDistances(); scene.add(l); return l;
+  };
+  const V = (x, y, z = 0) => new THREE.Vector3(x, y, z);
+  const enc = ENC_X.map((x, k) => block(x, Y[k], k, 'signal'));
+  const dec = DEC_X.map((x, k) => block(x, Y[k], k, 'mask'));
+  const muted = hex('muted');
+  for (let k = 0; k < 3; k++) {
+    line([V(ENC_X[k], Y[k] - SIZE[k] / 2), V(ENC_X[k + 1], Y[k + 1] + SIZE[k + 1] / 2)], muted);
+    const below = k === 2 ? ENC_X[3] : DEC_X[k + 1];
+    line([V(below, Y[k + 1] + SIZE[k + 1] / 2), V(DEC_X[k], Y[k] - SIZE[k] / 2)], muted);
+    line([V(ENC_X[k] + THICK[k] / 2, Y[k] + SIZE[k] * .3), V(DEC_X[k] - THICK[k] / 2, Y[k] + SIZE[k] * .3)], hex('signal'), true);
+  }
+
+  // the input: a block of scan, shown as a stack of slices with a bright ball inside
+  const INPUT_X = -6.3, input = new THREE.Group(); input.position.set(INPUT_X, 0, 0); scene.add(input);
+  const NSL = 9;
+  for (let i = 0; i < NSL; i++) {
+    const cv = document.createElement('canvas'); cv.width = cv.height = 64;
+    const c = cv.getContext('2d'); c.fillStyle = '#26303a'; c.fillRect(0, 0, 64, 64);
+    const d = (i - (NSL - 1) / 2) / ((NSL - 1) / 2), r = Math.sqrt(Math.max(0, 1 - d * d)) * 16;
+    if (r > 0) { c.fillStyle = '#f2f2ee'; c.beginPath(); c.arc(30, 34, r, 0, Math.PI * 2); c.fill(); }
+    c.fillStyle = '#7c8794'; c.fillRect(46, 0, 7, 64);   // a vessel running through every slice
+    const tex = new THREE.CanvasTexture(cv);
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(SIZE[0], SIZE[0]), new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: .72, side: THREE.DoubleSide }));
+    // slices lie flat and stack upwards, the way a CT scanner takes them
+    p.rotation.x = -Math.PI / 2; p.position.y = (i - (NSL - 1) / 2) * .17; input.add(p);
+  }
+  const shell = new THREE.BoxGeometry(SIZE[0], NSL * .17, SIZE[0]);
+  input.add(new THREE.LineSegments(new THREE.EdgesGeometry(shell), new THREE.LineBasicMaterial({ color: 0x5f6b76, transparent: true, opacity: .5 })));
+  line([V(INPUT_X + SIZE[0] / 2 + .05, 0), V(ENC_X[0] - THICK[0] / 2 - .05, 0)], muted);
+  // one 3 × 3 × 3 filter, sliding through the scan block
+  const filt = new THREE.Mesh(new THREE.BoxGeometry(.33, .33, .33), new THREE.MeshBasicMaterial({ color: hex('mask'), transparent: true, opacity: .35 }));
+  filt.add(new THREE.LineSegments(new THREE.EdgesGeometry(filt.geometry), new THREE.LineBasicMaterial({ color: hex('mask') })));
+  input.add(filt);
+
+  // the output: a lumpy 3D outline of the tumour-like ball
+  const OUT_X = 6.3, og = new THREE.IcosahedronGeometry(.72, 3), pos = og.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const v = V(pos.getX(i), pos.getY(i), pos.getZ(i)), n = 1 + .09 * Math.sin(v.x * 7) * Math.sin(v.y * 6 + 1) + .06 * Math.sin(v.z * 9);
+    v.multiplyScalar(n); pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  og.computeVertexNormals();
+  const out = new THREE.Mesh(og, new THREE.MeshStandardMaterial({ color: hex('mask'), roughness: .5, emissive: hex('mask'), emissiveIntensity: 0 }));
+  out.position.set(OUT_X, 0, 0); scene.add(out);
+  line([V(DEC_X[0] + THICK[0] / 2 + .05, 0), V(OUT_X - .85, 0)], muted);
+
+  // the data: one bright packet down and up the U; copies ride the skip connections across
+  const ROUTE = [V(INPUT_X, 0), ...ENC_X.map((x, k) => V(x, Y[k])), V(DEC_X[2], Y[2]), V(DEC_X[1], Y[1]), V(DEC_X[0], Y[0]), V(OUT_X, 0)];
+  const STOPS = [input, ...enc, dec[2], dec[1], dec[0], out];
+  const packet = new THREE.Mesh(new THREE.SphereGeometry(.13, 20, 16), new THREE.MeshBasicMaterial({ color: hex('mask') }));
+  scene.add(packet);
+  const skipPackets = [0, 1, 2].map(() => {
+    const s = new THREE.Mesh(new THREE.SphereGeometry(.09, 16, 12), new THREE.MeshBasicMaterial({ color: hex('signal') }));
+    scene.add(s); return s;
+  });
+  const CYCLE = 10;   // seconds: 8 legs of 1 s, then a pause
+  const at = tt => {   // packet position at time tt (0..8)
+    const i = Math.min(7, Math.floor(tt)), f = tt - i;
+    return ROUTE[i].clone().lerp(ROUTE[i + 1], f * f * (3 - 2 * f));
+  };
+
+  // labels: HTML tags that follow their 3D points
+  const tags = [];
+  function tag(text, x, y, z = 0, cls = '') {
+    const el = document.createElement('span'); el.className = 'u3d-label ' + cls; el.textContent = text;
+    wrap.appendChild(el); tags.push({ el, p: V(x, y, z) });
+  }
+  tag('scan block', INPUT_X, NSL * .17 / 2 + .2, 0, 'strong');
+  ENC_X.forEach((x, k) => tag(TEXT[k], x, Y[k] - SIZE[k] / 2 - .05, SIZE[k] / 2, 'below'));
+  tag('3D outline', OUT_X, 1.15, 0, 'strong');
+  tag('skip connections', 0, .95);
+  const tmp = new THREE.Vector3();
+  function placeTags() {
+    tags.forEach(({ el, p }) => {
+      tmp.copy(p).project(camera);
+      const hidden = tmp.z > 1 || Math.abs(tmp.x) > 1.05 || Math.abs(tmp.y) > 1.05;
+      el.style.display = hidden ? 'none' : '';
+      el.style.left = ((tmp.x + 1) / 2 * W) + 'px'; el.style.top = ((1 - tmp.y) / 2 * H) + 'px';
+    });
+  }
+
+  // controls
+  let flowing = !reduceMotion, flying = false, clock = 0, last = performance.now(), visible = false, raf = null;
+  const flowBtn = document.getElementById('u3d-flow'), flyBtn = document.getElementById('u3d-fly');
+  const showFlow = () => { flowBtn.textContent = flowing ? '❚❚ Pause flow' : '▶ Play flow'; };
+  showFlow();
+  flowBtn.addEventListener('click', () => { flowing = !flowing; showFlow(); });
+  flyBtn.addEventListener('click', () => {
+    flying = !flying; flyBtn.textContent = flying ? '■ Stop flying' : '✈ Fly through';
+    if (flying) { flowing = true; showFlow(); clock = 0; }
+    else { camera.position.copy(homeFor()); controls.target.copy(HOME_TARGET); }
+    controls.enabled = !flying;
+  });
+  const dolly = k => { const off = camera.position.clone().sub(controls.target).multiplyScalar(k); camera.position.copy(controls.target).add(off); };
+  document.getElementById('u3d-in').addEventListener('click', () => dolly(.82));
+  document.getElementById('u3d-out').addEventListener('click', () => dolly(1.22));
+  document.getElementById('u3d-reset').addEventListener('click', () => {
+    if (flying) flyBtn.click();
+    camera.position.copy(homeFor()); controls.target.copy(HOME_TARGET);
+  });
+
+  function frame(now) {
+    // the first frame's timestamp can be a little earlier than `last`, so never step backwards
+    const dt = Math.max(0, Math.min(.05, (now - last) / 1000)); last = now;
+    if (flowing) clock = (clock + dt) % CYCLE;
+    const tt = Math.min(8, clock);
+    packet.position.copy(at(tt)); packet.visible = clock < 8.2;
+    // blocks glow as the packet passes through them
+    STOPS.forEach((m, i) => {
+      if (!m.material) return;
+      m.material.emissiveIntensity = Math.max(0, .55 - Math.abs(tt - i) * .9);
+    });
+    // skip copy k leaves encoder level k at time k+1 and reaches decoder level k at time 7−k
+    skipPackets.forEach((s, k) => {
+      const t0 = k + 1, t1 = 7 - k, on = tt >= t0 && tt <= t1;
+      s.visible = on;
+      if (on) {
+        const f = (tt - t0) / (t1 - t0), y = Y[k] + SIZE[k] * .3;
+        s.position.set(lerp(ENC_X[k] + THICK[k] / 2, DEC_X[k] - THICK[k] / 2, f), y, 0);
+      }
+    });
+    // the filter slides through the scan block, row by row
+    const ft = (now / 1000) % 6, row = Math.floor(ft / 1.5), fx = (ft % 1.5) / 1.5;
+    filt.position.set(lerp(-.8, .8, fx), .5 - row * .33, .25 - .5 * (row % 2));
+    out.rotation.y += dt * .4;
+    if (flying) {
+      const ahead = at(Math.min(8, tt + .6));
+      camera.position.lerp(packet.position.clone().add(V(-.6, .9, 2.6)), .08);
+      controls.target.lerp(ahead, .1);
+      camera.lookAt(controls.target);
+    } else controls.update();
+    renderer.render(scene, camera);
+    placeTags();
+    raf = visible ? requestAnimationFrame(frame) : null;
+  }
+  // only draw while the scene is on screen
+  new IntersectionObserver(([en]) => {
+    visible = en.isIntersecting;
+    if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+  }).observe(wrap);
+  window.addEventListener('resize', () => {
+    W = wrap.clientWidth; H = wrap.clientHeight;
+    renderer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix();
+  });
+}
+
+/* ---------- chapter 10: one block of lung CT through our U-Net, step by step ---------- */
+// maps, size (slices × rows × columns), voxel size in mm, weights added at this step (counted from model/unet3d.py, base 32)
+const LAYERS = [
+  { name: 'Input block', maps: 1, size: [48, 160, 160], mm: [3, 1, 1], w: 0, kind: 'in',
+    why: 'One block cut from the scan: 48 slices of 160 × 160 pixels. Brightness is clipped to −1000 (air) … 500 and scaled to small numbers.' },
+  { name: 'Level 1: filters', maps: 32, size: [48, 160, 160], mm: [3, 1, 1], w: 28704, kind: 'enc',
+    why: 'Two rounds of 32 filters, each a 3 × 3 × 3 cube, each followed by InstanceNorm and LeakyReLU. Out come 32 feature maps: simple signs like edges and bright spots.' },
+  { name: 'Shrink (1, 2, 2)', maps: 32, size: [48, 80, 80], mm: [3, 2, 2], w: 0, kind: 'pool',
+    why: 'Halve within each slice only, keeping the strongest value. Slices are already 3 mm apart, so the voxels become about 3 × 2 × 2 mm: close to cubes.' },
+  { name: 'Level 2: filters', maps: 64, size: [48, 80, 80], mm: [3, 2, 2], w: 166272, kind: 'enc',
+    why: 'Twice as many maps as the level above. Each one combines the simple signs into bigger patterns.' },
+  { name: 'Shrink (2, 2, 2)', maps: 64, size: [24, 40, 40], mm: [6, 4, 4], w: 0, kind: 'pool',
+    why: 'Now the voxels are nearly cubes, so halve in all three directions.' },
+  { name: 'Level 3: filters', maps: 128, size: [24, 40, 40], mm: [6, 4, 4], w: 664320, kind: 'enc',
+    why: '128 maps. Each cell here depends on a few centimetres of the chest.' },
+  { name: 'Shrink (2, 2, 2)', maps: 128, size: [12, 20, 20], mm: [12, 8, 8], w: 0, kind: 'pool',
+    why: 'Halve again in all three directions.' },
+  { name: 'Bottom: filters', maps: 256, size: [12, 20, 20], mm: [12, 8, 8], w: 2655744, kind: 'enc',
+    why: 'The bottom of the U: 256 maps, and almost half of all the knobs. Each cell sees a wide area, enough to tell a tumour from a vessel or the chest wall. It knows what, but only roughly where.' },
+  { name: 'Grow + skip, level 3', maps: 128, size: [24, 40, 40], mm: [6, 4, 4], w: 262272 + 1327872, kind: 'dec',
+    why: 'Double the size with an up-convolution, stack on the 128 sharp maps saved on the way down (the skip connection), then two more rounds of filters.' },
+  { name: 'Grow + skip, level 2', maps: 64, size: [48, 80, 80], mm: [3, 2, 2], w: 65600 + 332160, kind: 'dec',
+    why: 'The same again: grow, add the level-2 copy, filter. The outline gets sharper.' },
+  { name: 'Grow + skip, level 1', maps: 32, size: [48, 160, 160], mm: [3, 1, 1], w: 8224 + 83136, kind: 'dec',
+    why: 'Back to full size, the first halving undone within each slice, with the sharpest maps of all handed across.' },
+  { name: 'Head: 2 scores per voxel', maps: 2, size: [48, 160, 160], mm: [3, 1, 1], w: 66, kind: 'head',
+    why: 'A 1 × 1 × 1 filter turns the 32 maps into two scores for every voxel, “not tumour” and “tumour”, then into a probability from 0 to 1.' },
+  { name: 'Cut-off → outline', maps: 1, size: [48, 160, 160], mm: [3, 1, 1], w: 0, kind: 'out',
+    why: 'Every voxel with tumour probability above the cut-off (0.3, chosen in Part 4) is tumour. We keep the largest connected piece. That is the outline.' },
+];
+const TOTAL_W = LAYERS.reduce((s, l) => s + l.w, 0);   // 5,594,370
+let layerI = 0;
+document.getElementById('layer-list').innerHTML = LAYERS.map((l, i) =>
+  `<li><button type="button" data-layer="${i}"><span class="ln">${i + 1}</span>${l.name}</button></li>`).join('');
+function drawLayerView() {
+  const L = LAYERS[layerI], [z, y, x] = L.size, k = .7;
+  const w = x * k, h = y * k, d = z * k * .9, ox = 40, oy = 70 + (112 - h) / 2;
+  const colour = L.kind === 'dec' || L.kind === 'head' || L.kind === 'out' ? col('mask') : L.kind === 'in' ? '#5f6b76' : col('signal');
+  const soft = L.kind === 'dec' || L.kind === 'head' || L.kind === 'out' ? col('mask-soft') : L.kind === 'in' ? '#e8e6e1' : col('signal-soft');
+  const dx = d * .7, dy = d * .45;
+  // a few stacked copies behind the block stand for its feature maps
+  const copies = Math.min(6, Math.round(Math.log2(L.maps)));
+  let g = '';
+  for (let c = copies; c >= 0; c--) {
+    const sx = ox + c * 5, sy = oy - c * 5;
+    g += `<path d="M${sx},${sy} l${dx},${-dy} h${w} v${h} l${-dx},${dy} z" fill="${soft}" stroke="${colour}" stroke-width="1.2" opacity="${c ? .55 : 1}"/>` +
+      `<rect x="${sx}" y="${sy}" width="${w}" height="${h}" fill="${c ? soft : soft}" stroke="${colour}" stroke-width="${c ? 1 : 2}" opacity="${c ? .55 : 1}"/>`;
+  }
+  if (L.kind === 'out') g += `<ellipse cx="${ox + w / 2 + 8}" cy="${oy + h / 2 - 4}" rx="${w * .16}" ry="${h * .2}" fill="${col('mask')}" opacity=".85"/>`;
+  g += `<text x="${ox + w / 2}" y="${oy + h + 22}" text-anchor="middle" font-size="12" font-family="JetBrains Mono, monospace" fill="${col('muted')}">${z} × ${y} × ${x}</text>`;
+  document.getElementById('layer-svg').innerHTML = g;
+  const sofar = LAYERS.slice(0, layerI + 1).reduce((s, l) => s + l.w, 0);
+  document.getElementById('layer-facts').innerHTML =
+    `<dt>Feature maps</dt><dd>${L.maps}</dd>` +
+    `<dt>Block size</dt><dd>${z} × ${y} × ${x}</dd>` +
+    `<dt>One voxel</dt><dd>${L.mm.join(' × ')} mm</dd>` +
+    `<dt>Knobs here</dt><dd>${L.w ? L.w.toLocaleString() : '0'}</dd>` +
+    `<dt>Knobs so far</dt><dd>${(sofar / 1e6).toFixed(2)} M of ${(TOTAL_W / 1e6).toFixed(2)} M</dd>`;
+  document.getElementById('layer-why').textContent = L.why;
+  document.querySelectorAll('[data-layer]').forEach(b => b.setAttribute('aria-current', +b.dataset.layer === layerI));
+}
+document.getElementById('layer-list').addEventListener('click', e => {
+  const b = e.target.closest('[data-layer]'); if (!b) return;
+  layerI = +b.dataset.layer; drawLayerView();
+});
+drawLayerView();
+makeScene('layers', document.getElementById('layers-widget'), LAYERS.length * 2.4 + 2, t => {
+  const i = Math.min(LAYERS.length - 1, Math.floor(t / 2.4));
+  if (i !== layerI) { layerI = i; drawLayerView(); }
+  setCaption('layers', `Step ${i + 1} of ${LAYERS.length}: ${LAYERS[i].name}`);
+});
+
+/* ---------- chapter 11: nnU-Net's fingerprint → rules → settings (a simplified version of its rules) ---------- */
+const NN_DATA = [
+  { key: 'lung', label: 'Our lung CT', modality: 'CT', scans: '415 scans (NSCLC-Radiomics)', shape: [112, 512, 512], spacing: [3, .98, .98] },
+  { key: 'brain', label: 'Brain tumour MRI', modality: 'MRI', scans: '484 scans (Decathlon)', shape: [138, 169, 138], spacing: [1, 1, 1] },
+  { key: 'hippo', label: 'Hippocampus MRI', modality: 'MRI', scans: '260 scans (Decathlon)', shape: [36, 50, 35], spacing: [1, 1, 1] },
+];
+const BUDGET = 1.25e6;   // voxels per block that fit in memory, in this simplified version
+function nnPlan(d) {
+  const sp = d.spacing, prod = a => a.reduce((s, v) => s * v, 1);
+  // block: start from a typical scan, then shrink the axis that is longest in millimetres until it fits
+  const p = d.shape.slice();
+  while (prod(p) > BUDGET) {
+    let i = 0;
+    p.forEach((v, j) => { if (v * sp[j] > p[i] * sp[i]) i = j; });
+    p[i] = Math.max(8, p[i] - 2);
+  }
+  // halvings: an axis is halved only once its spacing is within 2 × of the finest, and while it stays ≥ 4 voxels
+  const pools = [], s = sp.slice(), n = p.slice(), count = [0, 0, 0];
+  while (pools.length < 5) {
+    const fine = Math.min(...s);
+    const step = s.map((v, j) => (v <= 2 * fine && n[j] / 2 >= 4 ? 2 : 1));
+    if (step.every(v => v === 1)) break;
+    pools.push(step);
+    step.forEach((v, j) => { s[j] *= v; n[j] /= v; if (v === 2) count[j]++; });
+  }
+  // the block must divide evenly by every halving
+  const block = p.map((v, j) => { const m = 2 ** count[j]; return Math.max(m, Math.round(v / m) * m); });
+  const lowres = prod(d.shape) > 4 * prod(block);
+  return { block, pools, lowres };
+}
+const NN_RULES = [
+  'Target spacing: the typical (median) voxel spacing.',
+  'Block: as big as memory allows, shaped like a typical scan in millimetres.',
+  'Halve an axis only once its spacing is within 2 × of the finest one; stop at about 4 voxels.',
+  'Brightness: CT, clip to the range seen inside outlines, then scale. MRI, scale each scan on its own.',
+  'If one block covers under a quarter of a scan, also train a low-resolution 3D version.',
+  'Train 2D and 3D, test with 5-fold cross-validation, keep the best (or a mix).',
+];
+let nnI = 0;
+document.getElementById('nn-pick').innerHTML = NN_DATA.map((d, i) => `<button type="button" data-nn="${i}">${d.label}</button>`).join('');
+function drawNn(reveal = 99) {   // reveal: how many items to show, for the animation
+  const d = NN_DATA[nnI], plan = nnPlan(d);
+  const m = [
+    ['Scan type', d.modality], ['Dataset', d.scans],
+    ['Typical scan', d.shape.join(' × ') + ' voxels'], ['Voxel spacing', d.spacing.join(' × ') + ' mm'],
+    ['Brightness', d.modality === 'CT' ? 'fixed scale (air −1000)' : 'no fixed scale'],
+  ];
+  const p = [
+    ['Block size', plan.block.join(' × ')],
+    ['Halvings', plan.pools.map(s => `(${s.join(',')})`).join(' ')],
+    ['Levels', `${plan.pools.length + 1}`],
+    ['Brightness', d.modality === 'CT' ? 'clip to outline range, then scale' : 'scale each scan'],
+    ['Versions', plan.lowres ? '2D, 3D, low-res 3D' : '2D, 3D'],
+    ['Batch', '2 blocks'],
+  ];
+  const on = i => (i < reveal ? ' class="on"' : '');
+  document.getElementById('nn-measure').innerHTML = m.map(([a, b], i) => `<div${on(i)}><dt>${a}</dt><dd>${b}</dd></div>`).join('');
+  document.getElementById('nn-rules').innerHTML = NN_RULES.map((r, i) => `<li${on(i + m.length)}>${r}</li>`).join('');
+  document.getElementById('nn-plan').innerHTML = p.map(([a, b], i) => `<div${on(i + m.length + NN_RULES.length)}><dt>${a}</dt><dd>${b}</dd></div>`).join('');
+  document.querySelectorAll('[data-nn]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.nn === nnI));
+}
+document.getElementById('nn-pick').addEventListener('click', e => {
+  const b = e.target.closest('[data-nn]'); if (!b) return;
+  nnI = +b.dataset.nn; drawNn();
+});
+drawNn();
+const NN_ITEMS = 5 + NN_RULES.length + 6;
+makeScene('nn', document.getElementById('nn-widget'), NN_DATA.length * 10, t => {
+  const i = Math.floor(t / 10), local = t % 10;
+  nnI = i; drawNn(Math.floor(local / 6.5 * NN_ITEMS) + 1);
+  setCaption('nn', local < 2.6 ? `${NN_DATA[i].label}: first, measure the dataset.`
+    : local < 5 ? 'Then apply the same fixed rules to those measurements.'
+    : `Out come the settings for ${NN_DATA[i].label.toLowerCase()}.`);
+}, () => drawNn());
+
+/* ---------- chapter 12: what one patch looks at, with filters, full attention and Swin windows ---------- */
+// a 32 × 32 picture: a tumour-like blob, a smaller bright node far away, and a vessel running across
+const ATTN_PIC = grid2(32, (r, c) => {
+  const blob = (x, y, rad) => Math.exp(-((c + .5 - x) ** 2 + (r + .5 - y) ** 2) / rad ** 2);
+  const vessel = Math.exp(-(((c - r * .55 - 14) / 1.3) ** 2)) * .55;
+  return clamp01(.1 + .85 * Math.max(blob(9, 9, 4.2), blob(25, 24, 2.8)) + vessel + .08 * (noise(r, c) - .5));
+});
+const PATCHES = grid2(8, (r, c) => {   // mean brightness of each 4 × 4 patch
+  let s = 0;
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) s += ATTN_PIC[r * 4 + i][c * 4 + j];
+  return s / 16;
+});
+let attnMode = 'filter', attnSel = [2, 2];
+const sameWindow = (a, b, shift) => {   // 4 × 4-patch windows; shifted windows start 2 patches in
+  const w = v => Math.floor((v + shift) / 4);
+  return w(a[0]) === w(b[0]) && w(a[1]) === w(b[1]);
+};
+function attnWeights() {
+  const [sr, sc] = attnSel, me = PATCHES[sr][sc];
+  const raw = grid2(8, (r, c) => {
+    if (attnMode === 'filter') return Math.abs(r - sr) <= 1 && Math.abs(c - sc) <= 1 ? 1 : 0;
+    if (attnMode !== 'full' && !sameWindow([r, c], attnSel, attnMode === 'shift' ? 2 : 0)) return 0;
+    return Math.exp(-(((PATCHES[r][c] - me) / .16) ** 2));   // stand-in for how well query and key match
+  });
+  const max = Math.max(...raw.flat());
+  return raw.map(row => row.map(v => v / max));
+}
+const ATTN_NOTE = {
+  filter: 'A 3 × 3 filter: the chosen patch only sees its 8 neighbours. Far-away patches cannot affect it in this layer.',
+  full: 'Full attention: the chosen patch looks at every patch at once, most of all at the ones like it, even the bright node on the far side.',
+  window: 'Swin: attention only inside the green window. Much cheaper, but nothing crosses the window border yet.',
+  shift: 'Next layer, the windows shift by half. Now patches from different old windows meet, and news spreads across borders.',
+};
+function drawAttn() {
+  const p = plotSetup(document.getElementById('attn-canvas')), { ctx, S } = p, cell = S / 8;
+  ctx.clearRect(0, 0, S, S);
+  drawGrid(ctx, ATTN_PIC, 0, 0, S);
+  const w = attnWeights();
+  w.forEach((row, r) => row.forEach((v, c) => {
+    if (v > .02) { ctx.fillStyle = hexA(col('mask'), .7 * v); ctx.fillRect(c * cell, r * cell, cell, cell); }
+  }));
+  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 1;
+  for (let i = 1; i < 8; i++) {
+    ctx.beginPath(); ctx.moveTo(i * cell, 0); ctx.lineTo(i * cell, S); ctx.moveTo(0, i * cell); ctx.lineTo(S, i * cell); ctx.stroke();
+  }
+  if (attnMode === 'window' || attnMode === 'shift') {
+    const off = attnMode === 'shift' ? -2 : 0;
+    ctx.strokeStyle = col('signal'); ctx.lineWidth = 3;
+    for (let r = off; r < 8; r += 4) for (let c = off; c < 8; c += 4) ctx.strokeRect(c * cell + 1.5, r * cell + 1.5, 4 * cell - 3, 4 * cell - 3);
+  }
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.strokeRect(attnSel[1] * cell + 1.5, attnSel[0] * cell + 1.5, cell - 3, cell - 3);
+  document.getElementById('attn-note').textContent = ATTN_NOTE[attnMode];
+  document.querySelectorAll('[data-attn]').forEach(b => b.setAttribute('aria-pressed', b.dataset.attn === attnMode));
+}
+document.getElementById('attn-modes').addEventListener('click', e => {
+  const b = e.target.closest('[data-attn]'); if (!b) return;
+  attnMode = b.dataset.attn; drawAttn();
+});
+document.getElementById('attn-canvas').addEventListener('click', e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  attnSel = [Math.min(7, Math.floor((e.clientY - r.top) / r.height * 8)), Math.min(7, Math.floor((e.clientX - r.left) / r.width * 8))];
+  drawAttn();
+});
+drawAttn();
+const ATTN_ORDER = ['filter', 'full', 'window', 'shift'];
+makeScene('attn', document.getElementById('attn-widget'), 16, t => {
+  const m = ATTN_ORDER[Math.floor(t / 4)];
+  if (m !== attnMode) { attnMode = m; attnSel = [2, 2]; drawAttn(); }
+  setCaption('attn', { filter: 'Filters see only next door…', full: '…attention sees the whole picture at once…',
+    window: '…Swin keeps it cheap with small windows…', shift: '…and shifts them so news crosses the borders.' }[m]);
+});
+
+// results so far on fold 0
+document.getElementById('swin-bars').innerHTML = [
+  ['Our 3D U-Net', .45, 'signal', '0.45'], ['Swin UNETR', .517, 'mask', '0.52'], ['nnU-Net', .581, 'ink', '0.58'],
+].map(([name, v, c, text]) => `<div class="bar"><span class="bar-name">${name}</span>
+  <span class="bar-track"><span class="bar-fill" style="width:${v * 100}%;background:${col(c)}"></span></span>
+  <span class="bar-val">${text}</span></div>`).join('');
+
+/* ---------- chapter 13: MedSAM outlines whatever you put a box around ---------- */
+// the lumpy shape from chapter 7, plus a bright tube running down the right-hand side
+const SAM_PIC = SHAPE_PIC.map((row, r) => row.map((v, c) => clamp01(Math.max(v, .9 * Math.exp(-(((c - 28.5 - r * .05) / 1.2) ** 2))))));
+let samBox = null, samDrag = null;
+function samOutline(box) {
+  // inside the box: bright pixels, then keep only the biggest connected piece
+  const [r0, c0, r1, c1] = box, inBox = (r, c) => r >= r0 && r <= r1 && c >= c0 && c <= c1;
+  const on = grid2(32, (r, c) => (inBox(r, c) && SAM_PIC[r][c] > .5 ? 1 : 0));
+  const seen = grid2(32, () => 0);
+  let best = [];
+  for (let r = 0; r < 32; r++) for (let c = 0; c < 32; c++) {
+    if (!on[r][c] || seen[r][c]) continue;
+    const piece = [], stack = [[r, c]]; seen[r][c] = 1;
+    while (stack.length) {
+      const [y, x] = stack.pop(); piece.push([y, x]);
+      [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dy, dx]) => {
+        const yy = y + dy, xx = x + dx;
+        if (yy >= 0 && yy < 32 && xx >= 0 && xx < 32 && on[yy][xx] && !seen[yy][xx]) { seen[yy][xx] = 1; stack.push([yy, xx]); }
+      });
+    }
+    if (piece.length > best.length) best = piece;
+  }
+  const mask = grid2(32, () => 0);
+  best.forEach(([y, x]) => { mask[y][x] = 1; });
+  return mask;
+}
+const SAM_S = 360;
+function drawSam(partial) {   // partial: 0..1 of the box being drawn, for the animation
+  const ctx = canvasCtx('sam-canvas', SAM_S, SAM_S), cell = SAM_S / 32;
+  drawGrid(ctx, SAM_PIC, 0, 0, SAM_S);
+  drawOutline(ctx, TRUTH, 0, 0, SAM_S, col('signal'), 2, [5, 4]);
+  const box = samDrag || samBox;
+  if (box) {
+    let [r0, c0, r1, c1] = box;
+    if (partial !== undefined) { r1 = r0 + (r1 - r0) * partial; c1 = c0 + (c1 - c0) * partial; }
+    ctx.save(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.setLineDash([8, 5]);
+    ctx.strokeRect(c0 * cell, r0 * cell, (c1 - c0 + 1) * cell, (r1 - r0 + 1) * cell); ctx.restore();
+  }
+  const note = document.getElementById('sam-note');
+  if (samBox && !samDrag && partial === undefined) {
+    const mask = samOutline(samBox);
+    drawOutline(ctx, mask, 0, 0, SAM_S, col('mask'), 3.5);
+    const score = Math.round(overlap(mask, TRUTH) * 100);
+    note.textContent = score > 60
+      ? `Outline inside your box: overlap with the true outline ${score}%.`
+      : mask.flat().some(Boolean)
+        ? `It outlined what you boxed, but that is not the lumpy shape (overlap ${score}%). It draws what you point at; it does not decide what matters.`
+        : 'Nothing bright inside this box, so there is nothing to outline.';
+  } else if (!samBox && !samDrag) note.textContent = 'Drag a box around something on the picture.';
+}
+const samCanvas = document.getElementById('sam-canvas');
+const samCell = e => {
+  const r = samCanvas.getBoundingClientRect();
+  return [Math.max(0, Math.min(31, Math.floor((e.clientY - r.top) / r.height * 32))), Math.max(0, Math.min(31, Math.floor((e.clientX - r.left) / r.width * 32)))];
+};
+let samStart = null;
+samCanvas.addEventListener('pointerdown', e => { samStart = samCell(e); samDrag = [...samStart, ...samStart]; samCanvas.setPointerCapture(e.pointerId); drawSam(); });
+samCanvas.addEventListener('pointermove', e => {
+  if (!samStart) return;
+  const [r, c] = samCell(e);
+  samDrag = [Math.min(r, samStart[0]), Math.min(c, samStart[1]), Math.max(r, samStart[0]), Math.max(c, samStart[1])]; drawSam();
+});
+samCanvas.addEventListener('pointerup', () => {
+  if (!samStart) return;
+  samBox = samDrag; samDrag = null; samStart = null;
+  if (samBox[2] - samBox[0] < 1 && samBox[3] - samBox[1] < 1) samBox = null;   // a click, not a box
+  drawSam();
+});
+const SAM_BOXES = { tumour: [3, 3, 28, 27], vessel: [6, 26, 26, 31] };
+document.getElementById('sam-tumour').addEventListener('click', () => { samBox = SAM_BOXES.tumour; drawSam(); });
+document.getElementById('sam-vessel').addEventListener('click', () => { samBox = SAM_BOXES.vessel; drawSam(); });
+document.getElementById('sam-clear').addEventListener('click', () => { samBox = null; drawSam(); });
+drawSam();
+makeScene('sam', document.getElementById('sam-widget'), 14, t => {
+  const which = t < 7 ? 'tumour' : 'vessel', local = t % 7;
+  samBox = SAM_BOXES[which];
+  if (local < 1.6) drawSam(Math.max(.05, local / 1.6)); else drawSam();
+  setCaption('sam', which === 'tumour'
+    ? (local < 1.6 ? 'A person draws a rough box around the lumpy shape…' : '…and MedSAM draws the exact outline inside it.')
+    : (local < 1.6 ? 'Now the box goes around the tube instead…' : '…so it outlines the tube. It draws what you point at.'));
+}, () => { samBox = null; drawSam(); });
+
+/* ---------- chapter 14: a drawn CT slice in Hounsfield units, and cutting training blocks ---------- */
+const CTN = 64;
+const inEll = (x, y, cx, cy, rx, ry) => ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2;
+// one slice of a drawn chest; lung and tumour scale the lungs and tumour, so chapter 18 can stack slices into 3D
+function ctPhantom(r, c, lung = 1, tumour = 1) {   // returns [HU, 1 if tumour]
+  const x = (c + .5) / CTN * 2 - 1, y = (r + .5) / CTN * 2 - 1, n = noise(r, c) - .5;
+  const body = inEll(x, y, 0, .02, .92, .7);
+  if (body > 1) return [-1000 + 10 * n, 0];
+  const spine = inEll(x, y, 0, .5, .12, .12);
+  if (spine < 1) return [spine < .3 ? 250 + 40 * n : 950 + 60 * n, 0];
+  for (let k = 0; k < 10; k++) {   // ribs round the edge
+    const a = (k + .5) * Math.PI / 5;
+    if (inEll(x, y, .8 * Math.cos(a), .02 + .6 * Math.sin(a), .05, .05) < 1) return [750 + 50 * n, 0];
+  }
+  if (body > .78) return [-100 + 20 * n, 0];   // a layer of fat under the skin
+  // the tumour: a lumpy blob in the right lung, which is on the left of the picture
+  const a = Math.atan2(y + .06, x + .44);
+  if (tumour > 0 && inEll(x, y, -.44, -.06, .13 * tumour, .12 * tumour) < 1 + .25 * Math.sin(3 * a + 1)) return [35 + 25 * n, 1];
+  if (inEll(x, y, .1, .14, .24, .22) < 1) return [40 + 15 * n, 0];   // heart
+  if (inEll(x, y, -.42, -.02, .3 * lung, .47 * lung) < 1 || inEll(x, y, .44, -.02, .28 * lung, .45 * lung) < 1)
+    return [noise(r * 3 + 7, c * 5 + 1) > .95 ? -450 + 80 * n : -850 + 30 * n, 0];   // lung, with a few vessels
+  return [40 + 15 * n, 0];
+}
+const CT_SLICE = grid2(CTN, (r, c) => ctPhantom(r, c));
+const CT_HU = CT_SLICE.map(row => row.map(v => v[0])), CT_TUMOUR = CT_SLICE.map(row => row.map(v => v[1]));
+const greyOf = v => { const g = Math.round(255 * clamp01(v)); return `rgb(${g},${g},${g})`; };
+const huWindow = (lo, hi) => CT_HU.map(row => row.map(h => (h - lo) / (hi - lo)));
+const HU_TISSUES = [[-1000, 'air', 0], [-850, 'lung', 1], [-100, 'fat', 0], [40, 'tumour', 1], [800, 'bone', 0]];
+const huLo = document.getElementById('hu-lo'), huHi = document.getElementById('hu-hi');
+function drawHU() {
+  let lo = +huLo.value, hi = +huHi.value;
+  if (hi - lo < 100) { hi = lo + 100; huHi.value = hi; }
+  document.getElementById('hu-lov').textContent = lo; document.getElementById('hu-hiv').textContent = hi;
+  const { ctx, S } = plotSetup(document.getElementById('hu-canvas'));
+  drawGrid(ctx, huWindow(lo, hi), 0, 0, S, greyOf);
+  // the HU scale, coloured with the grey each value gets in this window
+  const R = canvasCtx('hu-ruler', 360, 86), X = h => 12 + (h + 1000) / 4000 * 336;
+  for (let h = -1000; h < 3000; h += 25) { R.fillStyle = greyOf((h - lo) / (hi - lo)); R.fillRect(X(h), 40, X(h + 25) - X(h) + .5, 16); }
+  R.strokeStyle = col('line'); R.lineWidth = 1; R.strokeRect(X(-1000), 40, X(3000) - X(-1000), 16);
+  HU_TISSUES.forEach(([h, name, row]) => {
+    R.strokeStyle = col('muted'); R.beginPath(); R.moveTo(X(h), row ? 33 : 18); R.lineTo(X(h), 40); R.stroke();
+    ctxLabel(R, name, Math.max(X(h), 16), row ? 30 : 14, h === 40 ? col('mask') : col('muted'), '12px Atkinson Hyperlegible, sans-serif');
+  });
+  R.strokeStyle = col('signal'); R.lineWidth = 3;
+  R.beginPath(); R.moveTo(X(lo), 58); R.lineTo(X(lo), 64); R.lineTo(X(hi), 64); R.lineTo(X(hi), 58); R.stroke();
+  ctxLabel(R, `window ${lo} … ${hi} HU`, Math.min(Math.max((X(lo) + X(hi)) / 2, 80), 280), 80, col('signal'), '600 12px JetBrains Mono, monospace');
+  document.getElementById('hu-note').textContent =
+    lo <= -900 && hi >= 2500 ? 'All values: lung, tumour and heart are squeezed into the darker part of the grey range, and most shades are spent on bone, which we do not need.'
+    : lo <= -900 && hi >= 300 && hi <= 700 ? 'Our window: air is black, lung is dark with its vessels visible, and the tumour and heart stand out clearly. Bone is plain white, which costs us nothing.'
+    : lo >= 200 ? 'Bone window: everything softer than bone turns black, the tumour included. Good for broken bones, useless for finding a lung tumour.'
+    : `Showing ${lo} to ${hi} HU: anything below is black, anything above is white.`;
+  document.querySelectorAll('[data-hu]').forEach(b => b.setAttribute('aria-pressed', b.dataset.hu === `${lo},${hi}`));
+}
+[huLo, huHi].forEach(el => el.addEventListener('input', drawHU));
+document.getElementById('hu-presets').addEventListener('click', e => {
+  const b = e.target.closest('[data-hu]'); if (!b) return;
+  [huLo.value, huHi.value] = b.dataset.hu.split(','); drawHU();
+});
+drawHU();
+makeScene('hu', document.getElementById('hu-widget'), 13, t => {
+  const lo = t < 8 ? -1000 : lerp(-1000, 300, seg(t, 8, 10)), hi = t < 8 ? lerp(3000, 500, seg(t, 3, 5)) : lerp(500, 1500, seg(t, 8, 10));
+  huLo.value = Math.round(lo / 10) * 10; huHi.value = Math.round(hi / 10) * 10; drawHU();
+  setCaption('hu', t < 3 ? 'All brightness values, from air to dense bone…' : t < 8 ? '…keep only −1000 to 500, and the lung and tumour get the whole grey range.'
+    : '…but pick the wrong window and the tumour disappears.');
+}, () => { huLo.value = -1000; huHi.value = 500; drawHU(); });
+
+// training blocks: 160 of the scan's 512 pixels across, so 20 of this drawing's 64
+const BLOCK = 20, CT_OURS = huWindow(-1000, 500);
+const TUMOUR_CELLS = [];
+CT_TUMOUR.forEach((row, r) => row.forEach((v, c) => { if (v) TUMOUR_CELLS.push([r, c]); }));
+const seeded = seed => () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+function cutBlock(p, rnd) {
+  const room = CTN - BLOCK, centred = rnd() < p;
+  let r0, c0;
+  if (centred) {
+    const [r, c] = TUMOUR_CELLS[Math.floor(rnd() * TUMOUR_CELLS.length)];
+    r0 = Math.max(0, Math.min(room, r - BLOCK / 2)); c0 = Math.max(0, Math.min(room, c - BLOCK / 2));
+  } else { r0 = Math.floor(rnd() * (room + 1)); c0 = Math.floor(rnd() * (room + 1)); }
+  let t = 0;
+  for (let r = r0; r < r0 + BLOCK; r++) for (let c = c0; c < c0 + BLOCK; c++) t += CT_TUMOUR[r][c];
+  return { r0, c0, centred, t };
+}
+let blocks = [];
+const blockP = document.getElementById('block-p');
+function drawBlocks() {
+  const { ctx, S } = plotSetup(document.getElementById('block-canvas')), cell = S / CTN;
+  drawGrid(ctx, CT_OURS, 0, 0, S, greyOf);
+  drawOutline(ctx, CT_TUMOUR, 0, 0, S, col('signal'), 1.5, [3, 2]);
+  blocks.forEach(b => {
+    ctx.strokeStyle = b.t ? col('mask') : '#ffffff'; ctx.lineWidth = b.t ? 2.5 : 1.5;
+    ctx.strokeRect(b.c0 * cell + 1, b.r0 * cell + 1, BLOCK * cell - 2, BLOCK * cell - 2);
+  });
+  document.getElementById('block-pv').textContent = Math.round(blockP.value * 100) + '%';
+  const hits = blocks.filter(b => b.t).length, share = blocks.reduce((s, b) => s + b.t, 0) / (blocks.length * BLOCK * BLOCK || 1);
+  document.getElementById('block-stat').textContent = blocks.length
+    ? `${hits} of ${blocks.length} blocks hold tumour\ntumour = ${(share * 100).toFixed(1)}% of pixels seen` : '';
+  if (blocks.length) document.getElementById('block-note').textContent = blocks.length < 6 ? 'Keep cutting to see the pattern…'
+    : hits <= blocks.length / 4
+    ? 'Most blocks show only healthy chest. A model trained on these hears “no tumour” almost every time.'
+    : 'Now a good share of blocks hold tumour, and the rest still teach the model what healthy chest looks like.';
+}
+document.getElementById('block-draw').addEventListener('click', () => {
+  for (let i = 0; i < 12; i++) blocks.push(cutBlock(+blockP.value, Math.random));
+  blocks = blocks.slice(-24); drawBlocks();
+});
+document.getElementById('block-clear').addEventListener('click', () => { blocks = []; drawBlocks(); });
+blockP.addEventListener('input', drawBlocks);
+drawBlocks();
+const BLOCK_DEMO = [0, 1 / 3].map((p, i) => { const rnd = seeded([11, 5][i]); return Array.from({ length: 12 }, () => cutBlock(p, rnd)); });
+makeScene('block', document.getElementById('block-widget'), 15, t => {
+  const half = t < 7.5 ? 0 : 1, local = t - 7.5 * half;
+  blockP.value = half ? .33 : 0;
+  blocks = BLOCK_DEMO[half].slice(0, Math.min(12, Math.floor(local / .45) + 1)); drawBlocks();
+  setCaption('block', half ? 'One block in three centred on the tumour: plenty of examples of both.' : 'Blocks cut at random: most of them miss the tumour.');
+}, () => { blocks = []; blockP.value = .33; drawBlocks(); });
+
+/* ---------- chapter 15: Dice, and one training step ---------- */
+const DN = 64;
+const DICE_TRUTH = grid2(DN, (r, c) => {
+  const a = Math.atan2(r - 31.5, c - 31.5);
+  return Math.hypot(r - 31.5, c - 31.5) < 6.5 * (1 + .1 * Math.sin(3 * a)) ? 1 : 0;
+});
+const diceX = document.getElementById('dice-x'), diceR = document.getElementById('dice-r');
+function drawDice() {
+  const dx = +diceX.value, rad = +diceR.value;
+  document.getElementById('dice-xv').textContent = dx; document.getElementById('dice-rv').textContent = rad;
+  const guess = grid2(DN, (r, c) => (Math.hypot(r - 31.5, c - 31.5 - dx) < rad ? 1 : 0));
+  const { ctx, S } = plotSetup(document.getElementById('dice-canvas')), cell = S / DN;
+  ctx.fillStyle = col('bg'); ctx.fillRect(0, 0, S, S);
+  let both = 0, a = 0, b = 0;
+  guess.forEach((row, r) => row.forEach((g, c) => {
+    const t = DICE_TRUTH[r][c]; both += g && t; a += t; b += g;
+    if (g) { ctx.fillStyle = t ? col('mask') : col('mask-soft'); ctx.fillRect(Math.round(c * cell), Math.round(r * cell), Math.ceil(cell), Math.ceil(cell)); }
+  }));
+  drawOutline(ctx, guess, 0, 0, S, col('mask'), 2);
+  drawOutline(ctx, DICE_TRUTH, 0, 0, S, col('signal'), 2.5, [5, 4]);
+  ctx.strokeStyle = col('line'); ctx.lineWidth = 1; ctx.strokeRect(0, 0, S, S);
+  const dice = 2 * both / (a + b), right = 1 - (a + b - 2 * both) / (DN * DN);
+  document.getElementById('dice-sum').innerHTML = `Dice = 2 × ${both} ÷ (${a} + ${b}) = <b>${dice.toFixed(2)}</b>`;
+  document.getElementById('dice-table').innerHTML = `<tr><th>Score</th><th>Value</th></tr>
+    <tr><td>Share of pixels right</td><td class="${right > .9 ? 'ok' : 'no'}">${(right * 100).toFixed(1)}%</td></tr>
+    <tr><td>Dice (overlap)</td><td class="${dice > .7 ? 'ok' : 'no'}">${dice.toFixed(2)}</td></tr>`;
+  document.querySelectorAll('[data-dice]').forEach(el => el.setAttribute('aria-pressed', el.dataset.dice === `${dx},${rad}`));
+}
+[diceX, diceR].forEach(el => el.addEventListener('input', drawDice));
+document.getElementById('dice-presets').addEventListener('click', e => {
+  const b = e.target.closest('[data-dice]'); if (!b) return;
+  [diceX.value, diceR.value] = b.dataset.dice.split(','); drawDice();
+});
+drawDice();
+makeScene('dice', document.getElementById('dice-widget'), 14, t => {
+  const dx = lerp(-18, 0, seg(t, 0, 3)), rad = t < 5 ? 6.5 : t < 12 ? lerp(6.5, 0, seg(t, 5, 9)) : lerp(0, 6.5, seg(t, 12, 14));
+  diceX.value = Math.round(dx * 2) / 2; diceR.value = Math.round(rad * 2) / 2; drawDice();
+  setCaption('dice', t < 3 ? 'The model’s outline slides onto the expert’s: Dice climbs.'
+    : t < 5 ? 'Spot on: Dice near 1.'
+    : t < 9 ? 'Now it shrinks. The share of pixels right hardly moves…'
+    : t < 12 ? '…it draws nothing and still gets 97% of pixels right. Dice says 0.' : '');
+}, () => { diceX.value = 0; diceR.value = 6.5; drawDice(); });
+
+// one training step: a guess that gets better as the steps go by (drawn, not real model output)
+const STEP_NAMES = ['Step 1', 'Step 500', 'Step 5,000', 'Step 50,000'];
+const junk = grid2(SN, (r, c) => .95 * Math.exp(-((c - 7) ** 2 + (r - 23) ** 2) / 30) + .9 * Math.exp(-((c - 25) ** 2 + (r - 6) ** 2) / 14) + .35 * noise(r, c));
+const STEP_GUESS = [0, .4, .66, .86].map(q => grid2(SN, (r, c) => ((1 - q) * junk[r][c] + q * shapeField[r][c] > .5 ? 1 : 0)));
+let stepLevel = 3;
+function drawStep(level, t) {   // t: 0..4 through the four moves; 4 = everything shown
+  // on a phone, draw smaller but keep the text the same size, so it stays readable
+  const cw = document.getElementById('step-canvas').clientWidth, k = cw && cw < 560 ? Math.max(.5, cw / 560) : 1, fs = k < .8 ? .8 : 1;
+  const ctx = canvasCtx('step-canvas', 560 * k, 276 * k), P = 120, Y = 52, guess = STEP_GUESS[level];
+  ctx.scale(k, k);
+  const f = (px, w = '') => `${w} ${px * fs / k}px Atkinson Hyperlegible, sans-serif`;
+  const big = f(15, 600), small = f(14);
+  ctx.textAlign = 'left'; ctxLabel(ctx, `${STEP_NAMES[level]} of 50,000`, 16, 26, col('ink'), f(16, 600));
+  ctx.textAlign = 'center';
+  drawGrid(ctx, SHAPE_PIC, 16, Y, P);
+  ctxLabel(ctx, 'block', 76, Y + P + 22, col('muted'), small);
+  // the U-Net
+  const on = t < 1;
+  ctx.save(); ctx.strokeStyle = col('signal'); ctx.lineWidth = on ? 9 : 7; ctx.lineJoin = 'round'; ctx.globalAlpha = on ? 1 : .7;
+  ctx.beginPath(); ctx.moveTo(172, Y + 10); ctx.lineTo(194, Y + 100); ctx.lineTo(230, Y + 100); ctx.lineTo(252, Y + 10); ctx.stroke(); ctx.restore();
+  ctxLabel(ctx, 'U-Net', 212, Y + P + 22, col('signal'), big);
+  arrow(ctx, 142, Y + 60, 164, Y + 60, col('muted')); arrow(ctx, 260, Y + 60, 282, Y + 60, col('muted'));
+  if (t < 1) {   // a signal travelling through
+    const k = t, x = k < .5 ? lerp(142, 212, k * 2) : lerp(212, 282, k * 2 - 1), y = Y + 60 + 40 * Math.sin(Math.PI * k);
+    ctx.fillStyle = col('signal'); ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill();
+  }
+  // the guess
+  const GX = 290;
+  ctx.globalAlpha = t < 1 ? .25 : 1; drawGrid(ctx, SHAPE_PIC, GX, Y, P); ctx.globalAlpha = 1;
+  if (t >= 1) {
+    ctx.globalAlpha = Math.min(1, t - 1); drawOutline(ctx, guess, GX, Y, P, col('mask'), 3); ctx.globalAlpha = 1;
+  }
+  ctxLabel(ctx, 'its outline', GX + 60, Y + P + 22, col('mask'), small);
+  // the score
+  const dice = overlap(guess, TRUTH);
+  if (t >= 2) {
+    ctx.globalAlpha = Math.min(1, t - 2);
+    drawOutline(ctx, TRUTH, GX, Y, P, col('signal'), 2, [5, 4]);
+    ctxLabel(ctx, 'vs expert', 482, Y + 30, col('signal'), small);
+    ctxLabel(ctx, `Dice ${dice.toFixed(2)}`, 482, Y + 62, col('ink'), f(20, 700));
+    if (k >= .8) ctxLabel(ctx, 'loss = 1 − Dice + CE', 476, Y + 90, col('muted'), f(12));
+    ctx.globalAlpha = 1;
+  }
+  // the blame flows back
+  if (t >= 3) {
+    const k = Math.min(1, t - 3), y = Y + P + 48;
+    ctx.save(); ctx.strokeStyle = col('mask'); ctx.lineWidth = 2.5; ctx.setLineDash([7, 5]);
+    ctx.beginPath(); ctx.moveTo(482, Y + 104); ctx.lineTo(482, y); ctx.lineTo(lerp(482, 212, k), y); ctx.stroke(); ctx.restore();
+    if (k === 1) arrow(ctx, 212, y, 212, Y + P + 30, col('mask'), [7, 5]);
+    ctx.globalAlpha = k; ctxLabel(ctx, 'blame flows back, every knob is nudged', 347, y + 22, col('mask'), small); ctx.globalAlpha = 1;
+  }
+  document.querySelectorAll('[data-step]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.step === level));
+}
+document.getElementById('step-widget').addEventListener('click', e => {
+  const b = e.target.closest('[data-step]'); if (!b) return;
+  stepLevel = +b.dataset.step; drawStep(stepLevel, 4);
+});
+drawStep(stepLevel, 4);
+makeScene('step', document.getElementById('step-widget'), 18, t => {
+  const level = Math.min(3, Math.floor(t / 4.5)), local = t - level * 4.5;
+  drawStep(level, Math.min(4, local * 1.05));
+  setCaption('step', local < 1 ? 'Guess: the block runs through the U-Net…' : local < 2 ? '…and out comes an outline.'
+    : local < 3 ? 'Score it against the expert’s outline…' : '…and send the blame back to nudge every knob.');
+}, () => drawStep(stepLevel, 4));
+
+/* ---------- chapter 16: 415 patients dealt into a locked test group and five folds ---------- */
+// patients by tumour size rank; deal in groups of 7, one of each to the test, the rest round the folds
+const SPLIT = (() => {
+  const rnd = seeded(42), test = [], folds = [[], [], [], [], []], rest = [];
+  for (let s = 0; s < 415; s += 7) {
+    const g = Array.from({ length: Math.min(7, 415 - s) }, (_, i) => s + i);
+    for (let i = g.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [g[i], g[j]] = [g[j], g[i]]; }
+    test.push(g[0]); rest.push(...g.slice(1));
+  }
+  rest.forEach((p, i) => folds[i % 5].push(p));
+  return { test, folds };
+})();
+const SPLIT_HOME = [];   // where each patient ends up: [group, index in group]
+SPLIT.test.forEach((p, i) => { SPLIT_HOME[p] = [0, i]; });
+SPLIT.folds.forEach((f, k) => f.forEach((p, i) => { SPLIT_HOME[p] = [k + 1, i]; }));
+let splitRound = 0;
+function drawSplit(deal, round) {   // deal: 0..1 how far the dots have travelled; round: 0-4 = checking fold, 5 = final test
+  const cw = document.getElementById('split-canvas').clientWidth, k = cw && cw < 560 ? Math.max(.5, cw / 560) : 1, fs = k < .8 ? .8 : 1;
+  const ctx = canvasCtx('split-canvas', 560 * k, 352 * k); ctx.scale(k, k);
+  const f = (px, w = '') => `${w} ${px * fs / k}px Atkinson Hyperlegible, sans-serif`;
+  const BW = 84, BX = i => 13 + i * 91, BY = 166, rad = p => 1.6 + 2.4 * p / 414;
+  ctxLabel(ctx, deal < 1 ? '415 patients, smallest tumour → largest' : 'Every patient has one place, and it never changes', 280, 22, col('muted'), f(13));
+  for (let i = 0; i < 6; i++) {
+    const checking = round === 5 ? i === 0 : i === round + 1;
+    const role = deal < 1 ? '' : i === 0 && round < 5 ? 'locked' : checking ? 'checking' : 'training';
+    ctx.strokeStyle = checking && deal >= 1 ? col('mask') : col('line'); ctx.lineWidth = checking && deal >= 1 ? 2.5 : 1;
+    ctx.strokeRect(BX(i), BY, BW, 160);
+    ctxLabel(ctx, i ? `Fold ${i}` : 'Test', BX(i) + BW / 2, BY - 22, col('ink'), f(13, 600));
+    ctxLabel(ctx, i ? '71' : '60', BX(i) + BW / 2, BY - 7, col('muted'), f(11));
+    ctxLabel(ctx, role, BX(i) + BW / 2, BY + 180, role === 'checking' ? col('mask') : role === 'training' ? col('signal') : col('ink'), f(12, 600));
+  }
+  for (let p = 0; p < 415; p++) {
+    const x0 = 22 + (p % 42) * 12.6, y0 = 40 + Math.floor(p / 42) * 8.6;
+    const [g, i] = SPLIT_HOME[p], x1 = BX(g) + 9 + (i % 7) * 11, y1 = BY + 11 + Math.floor(i / 7) * 13.5;
+    const k2 = ease(clamp01((deal - p / 415 * .75) / .25));   // smallest tumours leave the pile first
+    const x = lerp(x0, x1, k2), y = lerp(y0, y1, k2);
+    const checking = round === 5 ? g === 0 : g === round + 1;
+    ctx.fillStyle = k2 < 1 ? col('muted') : checking ? col('mask') : g === 0 ? col('ink') : col('signal');
+    ctx.beginPath(); ctx.arc(x, y, rad(p), 0, 7); ctx.fill();
+  }
+  document.querySelectorAll('[data-round]').forEach(b => b.setAttribute('aria-pressed', deal >= 1 && +b.dataset.round === round));
+}
+document.getElementById('split-rounds').addEventListener('click', e => {
+  const b = e.target.closest('[data-round]'); if (!b) return;
+  splitRound = +b.dataset.round; drawSplit(1, splitRound);
+});
+drawSplit(1, splitRound);
+makeScene('split', document.getElementById('split-widget'), 19, t => {
+  const round = t < 5 ? 0 : t < 17 ? Math.floor((t - 5) / 2.4) : 5;
+  drawSplit(seg(t, 1.2, 4.8), round);
+  setCaption('split', t < 1.2 ? '415 patients, sorted by tumour size…'
+    : t < 5 ? '…one in every 7 is locked away for the final test, the rest are dealt round 5 folds.'
+    : t < 17 ? `Round ${round + 1}: train on the other 4 folds, check on fold ${round + 1}.`
+    : 'Only at the very end: the 60 locked patients, once.');
+}, () => drawSplit(1, splitRound));
+
+/* ---------- chapter 17: lowering the cut-off, and the hall of attempts ---------- */
+// a timid model: likelihood tops out around 0.7 and fades early towards the edges
+const CUT_PROB = grid2(SN, (r, c) => .7 * sig(5 * (shapeField[r][c] - .55)) + .03 * (noise(r, c) - .5));
+const CUT_REAL = [[.2, .457], [.3, .506], [.4, .480], [.5, .412]];
+const cutV = document.getElementById('cut-v');
+function drawCut() {
+  const v = +cutV.value, mask = CUT_PROB.map(row => row.map(p => (p > v ? 1 : 0)));
+  document.getElementById('cut-vv').textContent = v.toFixed(2);
+  const { ctx, S } = plotSetup(document.getElementById('cut-canvas'));
+  drawGrid(ctx, CUT_PROB, 0, 0, S, orangeOf);
+  drawOutline(ctx, TRUTH, 0, 0, S, col('signal'), 2.5, [5, 4]);
+  drawOutline(ctx, mask, 0, 0, S, col('mask'), 3);
+  const a = TRUTH.flat().reduce((s, x) => s + x, 0), b = mask.flat().reduce((s, x) => s + x, 0), size = Math.round((b / a - 1) * 100);
+  document.getElementById('cut-sum').innerHTML = `Dice <b>${overlap(mask, TRUTH).toFixed(2)}</b> · size ${size > 0 ? '+' : ''}${size}% against the expert`;
+  const near = CUT_REAL.reduce((m, x) => (Math.abs(x[0] - v) < Math.abs(m[0] - v) ? x : m));
+  document.getElementById('cut-bars').innerHTML = CUT_REAL.map(([cv, d]) => `<div class="bar${cv === near[0] ? ' on' : ''}"><span class="bar-name">cut-off ${cv}</span>
+    <span class="bar-track"><span class="bar-fill" style="width:${d / .6 * 100}%;background:${cv === near[0] ? col('mask') : col('line')}"></span></span>
+    <span class="bar-val">${d.toFixed(3)}</span></div>`).join('');
+}
+cutV.addEventListener('input', drawCut);
+drawCut();
+makeScene('cut', document.getElementById('cut-widget'), 12, t => {
+  cutV.value = (t < 2 ? .5 : t < 5 ? lerp(.5, .15, seg(t, 2, 5)) : t < 8 ? lerp(.15, .3, seg(t, 5, 7)) : .3).toFixed(2); drawCut();
+  setCaption('cut', t < 2 ? 'At the usual 0.5 the outline is far too small…' : t < 5 ? '…lower the cut-off and it grows; too low, and it spills over…'
+    : '…0.3 fits best, here and on the real checking folds.');
+}, () => { cutV.value = .5; drawCut(); });
+
+const HALL = [
+  ['Nothing changed, new random start', .496, 'seed'],
+  ['Bigger block (64 × 192 × 192)', .545], ['All changes together', .538], ['Swin UNETR', .517],
+  ['nnU-Net brightness scaling', .464], ['Deep supervision', .453], ['Blocks only from the body', .452],
+  ['Left-right flip', .451], ['Only 25% of patients', .448], ['More random changes', .445],
+  ['Bigger network (5 levels)', .438], ['Wider HU window', .428], ['Only 50% of patients', .416],
+  ["nnU-Net's optimizer (SGD)", .372],
+];
+const HALL_BASE = .450, HALL_LO = .35, HALL_HI = .56, hallX = v => ((v - HALL_LO) / (HALL_HI - HALL_LO) * 100).toFixed(2) + '%';
+const hall = document.getElementById('hall');
+const hallMarks = `<span class="hall-band" style="left:${hallX(HALL_BASE - .05)};width:calc(${hallX(HALL_BASE + .05)} - ${hallX(HALL_BASE - .05)})"></span>
+  <span class="hall-base" style="left:${hallX(HALL_BASE)}"></span>`;
+hall.innerHTML = HALL.map(([name, v, kind]) => {
+    const out = Math.abs(v - HALL_BASE) > .05, colour = kind ? col('muted') : out && v > HALL_BASE ? col('signal') : out ? col('mask') : '#a7b0b8';
+    return `<div class="hall-row${kind ? ' seed' : ''}"><span class="hall-name">${name}</span><span class="hall-track">${hallMarks}
+      <span class="hall-bar" style="left:${hallX(Math.min(v, HALL_BASE))};--w:calc(${hallX(Math.max(v, HALL_BASE))} - ${hallX(Math.min(v, HALL_BASE))});background:${colour}"></span></span>
+      <span class="hall-val">${v.toFixed(3)}</span></div>`;
+  }).join('');
+const hallRows = [...hall.querySelectorAll('.hall-row')], hallBand = document.getElementById('hall-band');
+function showHall(n, band) {
+  hallRows.forEach((r, i) => r.classList.toggle('on', i < n));
+  hall.classList.toggle('band', band); hallBand.setAttribute('aria-pressed', band);
+}
+hallBand.addEventListener('click', () => showHall(HALL.length, !hall.classList.contains('band')));
+showHall(HALL.length, true);
+makeScene('hall', document.getElementById('hall-widget'), 16, t => {
+  const n = Math.min(HALL.length, Math.floor(Math.max(0, t - 1) / .5));
+  showHall(t < 1 ? 0 : t < 10 ? n : HALL.length, t >= 10);
+  setCaption('hall', t < 9 ? 'Each idea, one at a time, against our U-Net’s 0.450…'
+    : t < 10 ? '' : '…but the same model with a new random start moves this much. Only three ideas clear it upwards.');
+}, () => showHall(HALL.length, true));
+
+/* ---------- chapter 18: one scan from file to outline ---------- */
+// a wide drawing that shrinks on a phone but keeps its text readable
+function scaledCanvas(id, W, H) {
+  const cw = document.getElementById(id).clientWidth, k = cw && cw < W ? Math.max(.5, cw / W) : 1, fs = k < .8 ? .8 : 1;
+  const ctx = canvasCtx(id, W * k, H * k); ctx.scale(k, k);
+  return { ctx, f: (px, w = '') => `${w} ${px * fs / k}px Atkinson Hyperlegible, sans-serif` };
+}
+function blur2(img, rad) {   // box blur, for a smooth likelihood map
+  const n = img.length;
+  return grid2(n, (r, c) => {
+    let s = 0, m = 0;
+    for (let i = -rad; i <= rad; i++) for (let j = -rad; j <= rad; j++) {
+      const rr = r + i, cc = c + j;
+      if (rr >= 0 && rr < n && cc >= 0 && cc < n) { s += img[rr][cc]; m++; }
+    }
+    return s / m;
+  });
+}
+function pieces(mask) {   // connected pieces, biggest first
+  const n = mask.length, seen = grid2(n, () => 0), out = [];
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    if (!mask[r][c] || seen[r][c]) continue;
+    const piece = [], stack = [[r, c]]; seen[r][c] = 1;
+    while (stack.length) {
+      const [y, x] = stack.pop(); piece.push([y, x]);
+      [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dy, dx]) => {
+        const yy = y + dy, xx = x + dx;
+        if (yy >= 0 && yy < n && xx >= 0 && xx < n && mask[yy][xx] && !seen[yy][xx]) { seen[yy][xx] = 1; stack.push([yy, xx]); }
+      });
+    }
+    out.push(piece);
+  }
+  return out.sort((a, b) => b.length - a.length);
+}
+const fromPiece = piece => { const m = grid2(CTN, () => 0); piece.forEach(([y, x]) => { m[y][x] = 1; }); return m; };
+// the stitched likelihood: a soft tumour, plus a small false alarm by the heart
+const PRED = (() => {
+  const soft = blur2(blur2(CT_TUMOUR, 2), 1);
+  return grid2(CTN, (r, c) => clamp01(.85 * soft[r][c] + .42 * Math.exp(-((r - 36) ** 2 + (c - 41) ** 2) / 4) + .03 * (noise(r, c) - .5)));
+})();
+const PRED_PIECES = pieces(PRED.map(row => row.map(p => (p > .3 ? 1 : 0))));
+const PRED_MASK = fromPiece(PRED_PIECES[0]);
+const CT_ALL = huWindow(-1000, 3000);
+const PIPE_NOTES = [
+  'Read: the scan arrives as about 112 files, one per slice. They are joined into one 3D scan of 112 × 512 × 512 voxels, slices 3 mm apart.',
+  'Brightness: the same window as in training, −1000 to 500 HU, mapped onto −1 to 1. A model must see new scans exactly the way it saw its training blocks.',
+  'Blocks: the whole scan does not fit through the model at once, so it is cut into 48 × 160 × 160 blocks that overlap by half: 144 blocks for this scan.',
+  'Five models: every block goes through all five fold models (720 runs). Each gives a likelihood per voxel, and the five are averaged.',
+  'Stitch: the blocks’ likelihoods are put back where they came from, averaged where blocks overlap, into one likelihood map for the whole scan.',
+  'Cut-off: above 0.3 counts as tumour. That gives the tumour and a small false spot by the heart; only the largest piece is kept, the main tumour.',
+  'Outline: the kept piece is drawn on the scan and, for a test patient, scored against the expert’s outline.',
+];
+let pipeStep = 6;
+function drawPipe(step, k = 1) {   // k: 0..1 progress within the step, for the moving parts
+  const { ctx, f } = scaledCanvas('pipe-canvas', 560, 300), P = 170, Y = 58;
+  ctx.textAlign = 'left'; ctxLabel(ctx, `Step ${step + 1} of 7`, 16, 26, col('ink'), f(16, 600)); ctx.textAlign = 'center';
+  const slice = (img, x, colour = greyOf) => drawGrid(ctx, img, x, Y, P, colour);
+  const under = (text, x, colour = col('muted')) => ctxLabel(ctx, text, x + P / 2, Y + P + 24, colour, f(14));
+  const cell = P / CTN;
+  if (step === 0) {
+    for (let i = 0; i < 9; i++) {   // the files, fanned out
+      const x = 30 + i * 9, y = Y + 40 + i * 6;
+      ctx.fillStyle = col('panel'); ctx.strokeStyle = col('muted'); ctx.lineWidth = 1;
+      ctx.fillRect(x, y, 56, 70); ctx.strokeRect(x, y, 56, 70);
+    }
+    ctxLabel(ctx, '≈ 112 files', 100, Y + P + 24, col('muted'), f(14));
+    arrow(ctx, 196, Y + 85, 240, Y + 85, col('muted'));
+    for (let i = 7; i >= 0; i--) {   // one 3D scan: slices stacked with a slight offset
+      const o = i * 8 * ease(k);
+      ctx.globalAlpha = i ? .5 : 1; drawGrid(ctx, CT_ALL, 290 + o, Y - o * .6 + 20, P - 30, greyOf); ctx.globalAlpha = 1;
+    }
+    ctxLabel(ctx, 'one 3D scan', 360, Y + P + 24, col('ink'), f(14, 600));
+  } else if (step === 1) {
+    slice(CT_ALL, 40); under('as stored (−1000 … 3000)', 40);
+    arrow(ctx, 228, Y + P / 2, 322, Y + P / 2, col('muted'));
+    ctx.globalAlpha = .25 + .75 * ease(k); slice(CT_OURS, 340); ctx.globalAlpha = 1; under('window −1000 … 500', 340, col('signal'));
+  } else if (step === 2) {
+    slice(CT_OURS, 40);
+    const starts = [0, 10, 20, 30, 40, 44], i = Math.min(35, Math.floor(k * 36)), br = starts[Math.floor(i / 6)], bc = starts[i % 6];
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 1;
+    for (let j = 0; j < i; j++) ctx.strokeRect(40 + starts[j % 6] * cell, Y + starts[Math.floor(j / 6)] * cell, BLOCK * cell, BLOCK * cell);
+    ctx.strokeStyle = col('mask'); ctx.lineWidth = 3; ctx.strokeRect(40 + bc * cell, Y + br * cell, BLOCK * cell, BLOCK * cell);
+    under('this slice: 6 × 6 positions', 40);
+    ctx.textAlign = 'left';
+    ctxLabel(ctx, `block ${Math.floor(i / 6) * 6 + (i % 6) + 1} of 36 on this slice`, 250, Y + 50, col('ink'), f(15, 600));
+    ctxLabel(ctx, '× 4 layers of slices = 144 blocks', 250, Y + 80, col('muted'), f(14));
+    ctxLabel(ctx, 'each half a block from the last,', 250, Y + 110, col('muted'), f(14));
+    ctxLabel(ctx, 'so every voxel is seen several times', 250, Y + 132, col('muted'), f(14));
+    ctx.textAlign = 'center';
+  } else if (step === 3) {
+    const crop = (img, r0, c0, n) => grid2(n, (r, c) => img[r0 + r][c0 + c]);
+    drawGrid(ctx, crop(CT_OURS, 14, 4, 20), 16, Y + 45, 80, greyOf); ctxLabel(ctx, 'one block', 56, Y + 148, col('muted'), f(13));
+    for (let m = 0; m < 5; m++) {
+      const y = Y - 8 + m * 38, on = k * 5 > m;
+      ctx.strokeStyle = col('muted'); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(100, Y + 85); ctx.lineTo(150, y + 16); ctx.stroke();
+      ctx.save(); ctx.strokeStyle = col('signal'); ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.globalAlpha = on ? 1 : .3;
+      ctx.beginPath(); ctx.moveTo(156, y + 4); ctx.lineTo(164, y + 28); ctx.lineTo(178, y + 28); ctx.lineTo(186, y + 4); ctx.stroke(); ctx.restore();
+      ctx.globalAlpha = on ? 1 : .15;
+      drawGrid(ctx, crop(PRED.map((row, r) => row.map((p, c) => p * (.85 + .3 * noise(r + 9 * m, c + 4 * m)))), 14, 4, 20), 200, y, 32, orangeOf);
+      ctx.globalAlpha = 1;
+      ctxLabel(ctx, `fold ${m + 1}`, 262, y + 21, col('muted'), f(12));
+      ctx.strokeStyle = col('line'); ctx.beginPath(); ctx.moveTo(236, y + 16); ctx.lineTo(330, Y + 85); ctx.stroke();
+    }
+    ctx.globalAlpha = .2 + .8 * seg(k, .7, 1); drawGrid(ctx, crop(PRED, 14, 4, 20), 340, Y + 30, 110, orangeOf); ctx.globalAlpha = 1;
+    ctxLabel(ctx, 'averaged likelihood', 395, Y + 165, col('mask'), f(14));
+  } else if (step === 4) {
+    slice(CT_OURS, 40); slice(CT_OURS, 300);
+    ctx.globalAlpha = ease(k);
+    drawGrid(ctx, PRED, 300, Y, P, v => (v > .03 ? hexA(col('mask'), clamp01(v) * .9) : 'rgba(0,0,0,0)'));
+    ctx.globalAlpha = 1; under('the scan', 40); under('likelihood, all blocks stitched', 300, col('mask'));
+    arrow(ctx, 222, Y + P / 2, 290, Y + P / 2, col('muted'));
+  } else if (step === 5) {
+    slice(CT_OURS, 40);
+    const all = PRED.map(row => row.map(p => (p > .3 ? 1 : 0)));
+    drawOutline(ctx, all, 40, Y, P, col('mask'), 2.5);
+    under('above 0.3: two pieces', 40);
+    slice(CT_OURS, 300);
+    PRED_PIECES.slice(1).forEach(pc => drawOutline(ctx, fromPiece(pc), 300, Y, P, '#a7b0b8', 2, [3, 3]));
+    if (k > .4) drawOutline(ctx, PRED_MASK, 300, Y, P, col('mask'), 3);
+    under('keep the largest', 300, col('mask'));
+    arrow(ctx, 222, Y + P / 2, 290, Y + P / 2, col('muted'));
+  } else {
+    slice(CT_OURS, 40);
+    drawOutline(ctx, CT_TUMOUR, 40, Y, P, col('signal'), 2.5, [5, 4]);
+    drawOutline(ctx, PRED_MASK, 40, Y, P, col('mask'), 3);
+    ctx.textAlign = 'left';
+    ctxLabel(ctx, 'orange: the model', 250, Y + 50, col('mask'), f(15, 600));
+    ctxLabel(ctx, 'green dashed: the expert', 250, Y + 78, col('signal'), f(15, 600));
+    ctxLabel(ctx, `Dice on this slice ${overlap(PRED_MASK, CT_TUMOUR).toFixed(2)}`, 250, Y + 120, col('ink'), f(18, 700));
+    ctx.textAlign = 'center';
+  }
+  document.getElementById('pipe-note').textContent = PIPE_NOTES[step];
+  document.querySelectorAll('[data-pipe]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.pipe === step));
+}
+document.getElementById('pipe-steps').addEventListener('click', e => {
+  const b = e.target.closest('[data-pipe]'); if (!b) return;
+  pipeStep = +b.dataset.pipe; drawPipe(pipeStep, 1);
+});
+drawPipe(pipeStep, 1);
+makeScene('pipe', document.getElementById('pipe-widget'), 7 * 3.4, t => {
+  const step = Math.min(6, Math.floor(t / 3.4)), k = clamp01((t - step * 3.4) / 2.6);
+  drawPipe(step, k);
+  setCaption('pipe', ['Read the scan…', '…set its brightness…', '…cut it into overlapping blocks…', '…run every block through five models…',
+    '…stitch the answers back together…', '…apply the cut-off…', '…and draw the outline.'][step]);
+}, () => drawPipe(pipeStep, 1));
+
+// the same chest in 3D: 24 slices, the tumour growing and shrinking through them
+const SCAN_Z = 24;
+const tumourScale = z => Math.sqrt(Math.max(0, 1 - ((z - 11.5) / 7.6) ** 2));
+const SCAN = Array.from({ length: SCAN_Z }, (_, z) => {
+  const lung = 1 - .3 * ((z - 11.5) / 11.5) ** 2, ts = tumourScale(z), ms = ts < .5 ? 0 : ts * .9;   // the model misses the thin ends
+  const exp = grid2(CTN, (r, c) => ctPhantom(r, c, lung, ts)), mod = grid2(CTN, (r, c) => ctPhantom(r, c, lung, ms)[1]);
+  return { img: exp.map(row => row.map(v => (v[0] + 1000) / 1500)), expert: exp.map(row => row.map(v => v[1])), model: mod };
+});
+const SCAN_DICE = (() => {
+  let both = 0, a = 0, b = 0;
+  SCAN.forEach(s => s.expert.forEach((row, r) => row.forEach((v, c) => { both += v && s.model[r][c]; a += v; b += s.model[r][c]; })));
+  return { dice: 2 * both / (a + b), vol: Math.round((b / a - 1) * 100) };
+})();
+const scanZ = document.getElementById('scan3d-z'), show = { expert: true, model: true };
+let scan3dSet = null;   // set by the 3D scene once it has loaded
+function drawScanSlice() {
+  const z = +scanZ.value, s = SCAN[z];
+  document.getElementById('scan3d-zv').textContent = `${z + 1}/${SCAN_Z}`;
+  const { ctx, S } = plotSetup(document.getElementById('scan3d-slice'));
+  drawGrid(ctx, s.img, 0, 0, S, greyOf);
+  if (show.expert) drawOutline(ctx, s.expert, 0, 0, S, col('signal'), 2.5, [5, 4]);
+  if (show.model) drawOutline(ctx, s.model, 0, 0, S, col('mask'), 3);
+  const e = s.expert.flat().some(Boolean), m = s.model.flat().some(Boolean);
+  document.getElementById('scan3d-stat').textContent = (!e ? 'No tumour on this slice.'
+    : !m ? 'The expert outlined a thin edge here; the model missed it.'
+    : `Dice on this slice: ${overlap(s.model, s.expert).toFixed(2)}`) + `\nWhole tumour (3D): Dice ${SCAN_DICE.dice.toFixed(2)}, size ${SCAN_DICE.vol}%`;
+  scan3dSet && scan3dSet(z);
+}
+scanZ.addEventListener('input', drawScanSlice);
+['expert', 'model'].forEach(w => document.getElementById('scan3d-' + w).addEventListener('click', e => {
+  show[w] = !show[w]; e.currentTarget.setAttribute('aria-pressed', show[w]); drawScanSlice();
+}));
+drawScanSlice();
+makeScene('scan3d', document.getElementById('scan3d-widget'), 14, t => {
+  scanZ.value = Math.round(11.5 - 11.5 * Math.cos(t / 14 * Math.PI * 2)); drawScanSlice();
+  setCaption('scan3d', 'Stepping through the scan, slice by slice. Drag the 3D view to turn it.');
+});
+new IntersectionObserver(([en], obs) => {
+  if (!en.isIntersecting) return;
+  obs.disconnect();
+  threeReady().then(initScan3d).catch(() => {
+    document.getElementById('scan3d-msg').textContent = 'The 3D view could not load. Check the internet connection and reload the page.';
+  });
+}, { rootMargin: '700px' }).observe(document.getElementById('scan3d-widget'));
+
+function initScan3d() {
+  const wrap = document.getElementById('scan3d'), probe = document.createElement('canvas');
+  if (!(probe.getContext('webgl') || probe.getContext('experimental-webgl'))) {
+    document.getElementById('scan3d-msg').textContent = 'This browser cannot show 3D (WebGL is turned off).';
+    return;
+  }
+  document.getElementById('scan3d-msg').remove();
+  let W = wrap.clientWidth, H = wrap.clientHeight;
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.setSize(W, H); renderer.setClearColor(0xffffff);
+  wrap.prepend(renderer.domElement);
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(36, W / H, .1, 100);
+  const home = () => new THREE.Vector3(4.3, 3.4, 5.3).multiplyScalar(Math.max(1, 1.6 / (W / H)));
+  camera.position.copy(home());
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true;
+  const GAP = .14, SIZE = 4, stack = new THREE.Group(); scene.add(stack);
+  const yOf = z => (z - (SCAN_Z - 1) / 2) * GAP, xy = (r, c) => [(c / CTN - .5) * SIZE, (r / CTN - .5) * SIZE];
+  function outline(mask, y, colour) {   // the mask's border as line segments on the slice's plane
+    const pts = [], m = (r, c) => (r >= 0 && r < CTN && c >= 0 && c < CTN ? mask[r][c] : 0), P = (r, c) => { const [x, zz] = xy(r, c); return new THREE.Vector3(x, y, zz); };
+    for (let r = 0; r < CTN; r++) for (let c = 0; c < CTN; c++) {
+      if (!mask[r][c]) continue;
+      if (!m(r - 1, c)) pts.push(P(r, c), P(r, c + 1));
+      if (!m(r + 1, c)) pts.push(P(r + 1, c), P(r + 1, c + 1));
+      if (!m(r, c - 1)) pts.push(P(r, c), P(r + 1, c));
+      if (!m(r, c + 1)) pts.push(P(r, c + 1), P(r + 1, c + 1));
+    }
+    return new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: new THREE.Color(colour), transparent: true }));
+  }
+  const layers = SCAN.map((s, z) => {
+    const cv = document.createElement('canvas'); cv.width = cv.height = CTN;
+    const g = cv.getContext('2d'), id = g.createImageData(CTN, CTN);
+    s.img.forEach((row, r) => row.forEach((v, c) => { const i = (r * CTN + c) * 4, k = Math.round(255 * clamp01(v)); id.data[i] = id.data[i + 1] = id.data[i + 2] = k; id.data[i + 3] = v < .03 ? 0 : 255; }));   // air outside the body is see-through
+    g.putImageData(id, 0, 0);
+    const tex = new THREE.CanvasTexture(cv); tex.magFilter = THREE.NearestFilter;
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(SIZE, SIZE), new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, depthWrite: false }));
+    plane.rotation.x = -Math.PI / 2; plane.position.y = yOf(z); stack.add(plane);
+    const expert = outline(s.expert, yOf(z) + .004, col('signal')), model = outline(s.model, yOf(z) + .008, col('mask'));
+    stack.add(expert, model);
+    return { plane, expert, model };
+  });
+  const frame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(SIZE, SIZE)), new THREE.LineBasicMaterial({ color: new THREE.Color(col('ink')) }));
+  frame.rotation.x = -Math.PI / 2; stack.add(frame);
+  scan3dSet = z => {
+    layers.forEach((L, i) => {
+      const on = i === z;
+      L.plane.material.opacity = on ? 1 : .05;
+      L.expert.visible = show.expert; L.model.visible = show.model;
+      L.expert.material.opacity = L.model.material.opacity = on ? 1 : .85;
+    });
+    frame.position.y = yOf(z);
+  };
+  scan3dSet(+scanZ.value);
+  let spin = true, raf = null, visible = false, last = 0;
+  controls.addEventListener('start', () => { spin = false; });
+  function tick(now) {
+    const dt = Math.max(0, Math.min(.05, (now - last) / 1000)); last = now;
+    if (spin && !reduceMotion) stack.rotation.y += dt * .18;
+    controls.update(); renderer.render(scene, camera);
+    raf = visible ? requestAnimationFrame(tick) : null;
+  }
+  new IntersectionObserver(([en]) => {
+    visible = en.isIntersecting;
+    if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }).observe(wrap);
+  window.addEventListener('resize', () => {
+    W = wrap.clientWidth; H = wrap.clientHeight;
+    renderer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix();
+  });
+}
+
+/* ---------- chapter 19: one result, three readers; and the road ahead ---------- */
+const THREE_WAYS = {
+  patient: () => `<p>The computer drew a line around the lump in the lung on this scan (orange). Compared with the line a
+    specialist drew, it covers almost the same area: a score of <b>${SCAN_DICE.dice.toFixed(2)}</b>, where 1 would be a perfect match.</p>
+    <p>It is somewhat smaller (${-SCAN_DICE.vol}% less volume), mostly at the very top and bottom of the lump, where the lump is thinnest. This is a research tool. It
+    has never been used to treat anyone, and if it ever is, a doctor will always check and correct the line.</p>`,
+  doctor: () => `<p>Auto-contour of the primary GTV against the reference (this drawn case): Dice <b>${SCAN_DICE.dice.toFixed(2)}</b>,
+    volume ${SCAN_DICE.vol}%, with the most cranial and caudal slices missed.</p>
+    <p>On 60 held-out test patients: Dice 0.533 (nnU-Net 0.591), found 43 of 60, volume −9%, HD95 10.2 mm. Weakest on
+    GTVs under 20 cc (0.27). Trained on a single centre's public data and not yet validated externally. Research use only;
+    every contour needs review.</p>`,
+  scientist: () => `<p>A 3D U-Net (4 levels, 32 to 256 channels, instance norm, 5.6 M parameters), trained on 48 × 160 × 160
+    blocks with Dice + cross-entropy. Inference: sliding window with 50% overlap, five fold models averaged, cut-off 0.3
+    chosen on validation, largest connected component kept.</p>
+    <p>Locked test (n = 60): Dice 0.533, HD95 10.2 mm, detection 43/60. Seed-to-seed spread on one fold is about ±0.05, so
+    single-run comparisons under that are not meaningful. External test on NSCLC-Radiogenomics is next.</p>`,
+};
+let threeWho = 'patient';
+function drawThree() {
+  const { ctx, S } = plotSetup(document.getElementById('three-canvas')), s = SCAN[12];
+  drawGrid(ctx, s.img, 0, 0, S, greyOf);
+  if (threeWho === 'scientist') {
+    const soft = blur2(blur2(s.model, 2), 1);
+    drawGrid(ctx, soft, 0, 0, S, v => (v > .03 ? hexA(col('mask'), .85 * v) : 'rgba(0,0,0,0)'));
+    ctxLabel(ctx, 'likelihood, cut at 0.3', 10, S - 10, '#ffffff', '600 12px JetBrains Mono, monospace');
+  }
+  if (threeWho !== 'patient') drawOutline(ctx, s.expert, 0, 0, S, col('signal'), 2.5, [5, 4]);
+  drawOutline(ctx, s.model, 0, 0, S, col('mask'), 3);
+  document.getElementById('three-text').innerHTML = THREE_WAYS[threeWho]();
+  document.querySelectorAll('[data-who]').forEach(b => b.setAttribute('aria-selected', b.dataset.who === threeWho));
+  document.querySelectorAll('[data-who]').forEach(b => b.setAttribute('aria-pressed', b.dataset.who === threeWho));
+}
+document.getElementById('three-tabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-who]'); if (!b) return;
+  threeWho = b.dataset.who; drawThree();
+});
+drawThree();
+makeScene('three', document.getElementById('three-widget'), 24, t => {
+  const who = ['patient', 'doctor', 'scientist'][Math.floor(t / 8)];
+  if (who !== threeWho) { threeWho = who; drawThree(); }
+  setCaption('three', { patient: 'For a patient: what it drew, and what that means for them…', doctor: '…for a doctor: how far to trust it…',
+    scientist: '…for a scientist: exactly how it was made and measured.' }[who]);
+}, () => { threeWho = 'patient'; drawThree(); });
+
+const roadItems = [...document.querySelectorAll('#road li')];
+const ROAD_WORDS = { done: 'Done', now: 'Running now', next: 'Next', later: 'Needs others to agree' };
+makeScene('road', document.getElementById('road-widget'), roadItems.length * 1.6 + 2, t => {
+  const i = Math.min(roadItems.length - 1, Math.floor(t / 1.6));
+  roadItems.forEach((li, j) => li.classList.toggle('lit', j === i));
+  setCaption('road', `${ROAD_WORDS[roadItems[i].dataset.state]}: ${roadItems[i].querySelector('b').textContent.replace(/\.$/, '')}`);
+}, () => roadItems.forEach(li => li.classList.remove('lit')));
 </script>
 </body>
 </html>
